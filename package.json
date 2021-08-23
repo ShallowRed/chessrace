@@ -1,0 +1,49 @@
+{
+  "name": "chessrace",
+  "version": "0.0.A",
+  "description": "chessrace",
+  "scripts": {
+    "serve": "npx http-server ./dist/",
+    "dev": "export NODE_ENV=dev && webpack --config webpack.config.js",
+    "prod": "export NODE_ENV=production && webpack --config webpack.config.js",
+    "analyse": "export NODE_ENV=analyse && webpack --config webpack.config.js"
+  },
+  "browserslist": [
+    "last 3 version, > 0.5%, not dead, not ie <= 11"
+  ],
+  "dependencies": {
+    "core-js": "^3.6.5"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.5",
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^3.6.0",
+    "css-minimizer-webpack-plugin": "^3.0.2",
+    "ejs-loader": "^0.3.7",
+    "eslint": "^7.9.0",
+    "eslint-loader": "^4.0.2",
+    "eslint-webpack-plugin": "^3.0.1",
+    "html-webpack-plugin": "^4.3.0",
+    "json-loader": "^0.5.7",
+    "mini-css-extract-plugin": "^2.1.0",
+    "postcss-loader": "^6.1.1",
+    "postcss-normalize": "^10.0.0",
+    "postcss-preset-env": "^6.7.0",
+    "terser-webpack-plugin": "^2.3.7",
+    "webpack": "^5.47.1",
+    "webpack-bundle-analyzer": "^4.4.2",
+    "webpack-cli": "^4.7.2"
+  },
+  "author": "Lucas Poulain (ShallowRed)",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ShallowRed/chessrace.git"
+  },
+  "homepage": "https://github.com/ShallowRed/chessrace#readme",
+  "bugs": {
+    "url": "https://github.com/ShallowRed/chessrace/issues"
+  }
+}
