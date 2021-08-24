@@ -7,21 +7,33 @@ export default class Piece extends GameObject {
     super("sprite");
 
     this.pieceName = pieceName;
-    this.position = position;
-    this.move();
+    this.className = className;
+    this.color = color;
 
+    this.createSprite();
+    this.setSpriteClassName();
+    this.move(position);
+  }
+
+  createSprite() {
     this.sprite = document.createElement("div");
-    this.sprite.className = `piece ${pieceName} ${color} ${className}`;
     this.container.append(this.sprite);
     this.sprite.style.width =
       this.sprite.style.height =
       `${this.squareSize}px`;
   }
 
-  move(duration = 0.3) {
+  setSpriteClassName() {
+    this.sprite.className =
+      `piece ${this.pieceName} ${this.color} ${this.className}`;
+  }
 
-    const [left, bottom] = this.position.map(x =>
-      (x - 1) * this.squareSize
+  move(position, duration = 0.3) {
+
+    this.position = position;
+
+    const [left, bottom] = this.position.map(coord =>
+      (coord - 1) * this.squareSize
     );
 
     const movePiece = () => {
@@ -37,6 +49,6 @@ export default class Piece extends GameObject {
 
   moveOneSquareDown() {
     --this.position[1];
-    this.move(0);
+    this.move(this.position, 0);
   }
 }

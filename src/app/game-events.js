@@ -8,7 +8,7 @@ export function START_GAME() {
   this.on = true;
 
   setTimeout(() =>
-    events.emit("SCROLL_B0ARD"),
+    events.emit("SCROLL_ONE_SQUARE"),
     10
   );
 }
@@ -27,12 +27,12 @@ export function GAME_OVER() {
   );
 }
 
-export function SCROLL_B0ARD() {
+export function SCROLL_ONE_SQUARE() {
 
   const { player, board, translationDuration } = this;
 
-  [board, player, ...Ennemies.list].forEach(el =>
-    el.translateY(board.squareSize, translationDuration)
+  [board, player, ...Ennemies.list].forEach(gameObject =>
+    gameObject.translateY(board.squareSize, translationDuration)
   );
 
   animationTimeout(() =>
@@ -50,19 +50,22 @@ export function NEXT_SCROLL_STEP() {
   board.clear();
   board.render();
 
-  [player, ...Ennemies.list].forEach(piece => {
-    piece.moveOneSquareDown();
-  });
-
-  [board, player, ...Ennemies.list].forEach(part =>
-    part.resetTranslation()
+  [player, ...Ennemies.list].forEach(piece =>
+    piece.moveOneSquareDown()
   );
 
-  if (player.position[1] === 0) {
+  [board, player, ...Ennemies.list].forEach(gameObject =>
+    gameObject.resetTranslation()
+  );
+
+  if (!player.position[1]) {
+
     events.emit("GAME_OVER");
+
   } else {
+
     window.requestAnimationFrame(() =>
-      events.emit("SCROLL_B0ARD")
+      events.emit("SCROLL_ONE_SQUARE")
     );
   }
 }
@@ -71,7 +74,7 @@ export function SQUARE_CLICKED(clickedSquare) {
 
   events.emit("MOVE_ATTEMPT", clickedSquare, "move")
     .then(() => {
-      this.player.moveToSquare(clickedSquare);
+      this.player.move(clickedSquare);
     })
 }
 
@@ -86,19 +89,16 @@ export function ENNEMY_CLICKED(ennemy) {
       Ennemies.remove(ennemy);
 
       setTimeout(() => {
-        player.sprite.style.transitionDuration = 0;
         player.updatePiece(ennemy.pieceName);
       })
 
-      player.moveToSquare(ennemy.position);
+      player.move(ennemy.position);
     })
 }
 
 export function MOVE_ATTEMPT(square, type) {
 
   const { player: { pieceName, position }, board } = this;
-
-  events.emit("SQUARE_DOWN", square);
 
   if (!isValid[type](pieceName, position, square)) return;
 
@@ -124,6 +124,7 @@ export function MOVE_ATTEMPT(square, type) {
   }
 
   if (!this.on) {
+    
     events.emit("START_GAME", square);
   }
 
@@ -132,7 +133,7 @@ export function MOVE_ATTEMPT(square, type) {
 
 export function FALL_IN_HOLE(square) {
 
-  this.player.moveToSquare(square);
+  this.player.move(square);
 
   animationTimeout(() => {
     this.player.fall(this.on);
@@ -142,26 +143,3 @@ export function FALL_IN_HOLE(square) {
     events.emit("GAME_OVER");
   }, 0.9);
 }
-
-// export function SQUARE_DOWN(square) {
-//
-//   if (this.board.isHole(square)) return;
-//
-//   this.board.renderDownSquare(square, 2);
-//
-//   animationTimeout(() => {
-//     this.board.renderDownSquare(square, 4);
-//   }, 0.05);
-//
-//   animationTimeout(() => {
-//     this.board.fillSquare(square);
-//   }, 0.15);
-//
-//   animationTimeout(() => {
-//     this.board.renderDownSquare(square, 2);
-//   }, 0.16);
-//
-//   animationTimeout(() => {
-//     this.board.fillSquare(square);
-//   }, 0.2);
-// }

@@ -1,4 +1,3 @@
-import { getSquaresOnTrajectory } from 'app/utils/pieces';
 import { generateMapBlueprint } from 'app/utils/map-generator';
 import { Ennemies } from 'app/components/ennemies';
 import GameObject from 'app/components/Game-object';
@@ -54,44 +53,60 @@ export default class Board extends GameObject {
 
     const regularSquares = [];
 
-    this.model.forEach((row, i) => {
+    const renderModelValue = (value, coords, isPiece) => {
 
-      row.forEach((value, j) => {
+      if (value) {
+        regularSquares.push(coords);
+      }
 
-        const coords = this.getCoords([i, j]);
+      if (this.nRenders == 0 && isPiece) {
+        Ennemies.add(value, coords)
+      }
+    }
 
-        if (value) {
-          regularSquares.push(coords);
-        }
+    this.forEachModelValue(renderModelValue);
 
-        if (
-          this.nRenders == 0 &&
-          typeof value == "string"
-        ) {
-          Ennemies.add(value, coords)
-        }
-      });
-    });
-
-    this.ctx.shadowBlur = this.shadowShift / 2;
-    this.ctx.shadowOffsetX = this.shadowShift / 4;
-    this.ctx.shadowOffsetY = this.shadowShift / 4;
-    this.ctx.shadowColor = "lightgrey";
-
-    regularSquares.forEach(square => {
-      this.fillSquare(square);
-    });
-
-    this.ctx.shadowColor = "transparent";
-
-    regularSquares.forEach(square => {
-      this.fillSquare(square);
-    });
+    this.shadowOn();
+    this.fillSquares(regularSquares);
+    this.shadowOff();
+    this.fillSquares(regularSquares);
 
     this.nRenders++;
   }
 
-  fillSquare([x, y], color) {
+  forEachModelValue(callback) {
+
+    const modelRows = this.model.length;
+
+    for (let i = 0; i < modelRows; i++) {
+      for (let j = 0; j < this.columns; j++) {
+
+        const value = this.model[i][j];
+        const coords = this.getCoords([i, j]);
+
+        callback(value, coords, typeof value == "string");
+      }
+    }
+  }
+
+  fillSquares(squares) {
+    squares.forEach(square => {
+      this.fillSquare(square);
+    });
+  }
+
+  shadowOn() {
+    this.ctx.shadowColor = "lightgrey";
+    this.ctx.shadowBlur = this.shadowShift / 2;
+    this.ctx.shadowOffsetX = this.shadowShift / 4;
+    this.ctx.shadowOffsetY = this.shadowShift / 4;
+  }
+
+  shadowOff() {
+    this.ctx.shadowColor = "transparent";
+  }
+
+  fillSquare([x, y]) {
 
     this.ctx.fillStyle = this.getSquareColor([x, y]);
 
@@ -161,12 +176,29 @@ export default class Board extends GameObject {
       this.isHole(square) || this.isEnnemy(square)
 
     const firstObstacle =
-      getSquaresOnTrajectory(position, targetSquare)
+      this.getSquaresOnTrajectory(position, targetSquare)
       .find(isObstacle);
 
     if (firstObstacle) return {
       coords: firstObstacle,
       isHole: this.isHole(firstObstacle)
     }
+  }
+
+  getSquaresOnTrajectory([x, y], [tx, ty]) {
+
+    const deltaLength = Math.max(
+      Math.abs(tx - x),
+      Math.abs(ty - y)
+    );
+
+    const getSquareOnTrajectory = (e, i) => ([
+      x + Math.sign(tx - x) * (i + 1),
+      y + Math.sign(ty - y) * (i + 1)
+    ]);
+
+    return new Array(deltaLength - 1)
+      .fill()
+      .map(getSquareOnTrajectory)
   }
 }

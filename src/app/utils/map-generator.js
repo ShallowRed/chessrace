@@ -21,3 +21,8 @@ export function generateMapBlueprint() {
 function randomBinary() {
   return Math.round((Math.random() + 0.8) / 2);
 }
+
+export const piecesColors = (() => {
+  return Math.round(Math.random()) ? ["white", "black"] : ["black",
+  "white"];
+})();

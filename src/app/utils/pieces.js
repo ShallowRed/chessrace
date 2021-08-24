@@ -1,4 +1,4 @@
-export const pieces = {
+export const Pieces = {
 
   pawn: {
     isValidMove: ([x, y], [tx, ty]) => (
@@ -46,8 +46,8 @@ export const pieces = {
 
   queen: {
     isValidMove: (...args) => (
-      pieces.bishop.isValidMove(...args) ||
-      pieces.rook.isValidMove(...args)
+      Pieces.bishop.isValidMove(...args) ||
+      Pieces.rook.isValidMove(...args)
     )
   }
 }
@@ -56,34 +56,17 @@ export const isValid = {
 
   move(pieceName, position, clickedSquare) {
 
-    return pieces[pieceName].isValidMove(position, clickedSquare);
+    return Pieces[pieceName].isValidMove(position, clickedSquare);
   },
 
   take(pieceName, position, clickedSquare) {
 
     return (
       pieceName === "pawn" &&
-      pieces.pawn.isValidTake(position, clickedSquare)
+      Pieces.pawn.isValidTake(position, clickedSquare)
     ) || (
       pieceName !== "pawn" &&
       this.move(pieceName, position, clickedSquare)
     )
   }
-}
-
-export function getSquaresOnTrajectory([x, y], [tx, ty]) {
-
-  const deltaLength = Math.max(
-    Math.abs(tx - x),
-    Math.abs(ty - y)
-  );
-
-  return new Array(deltaLength - 1)
-    .fill()
-    .map((e, i) => {
-      return [
-        x + Math.sign(tx - x) * (i + 1),
-        y + Math.sign(ty - y) * (i + 1)
-      ];
-    })
 }
