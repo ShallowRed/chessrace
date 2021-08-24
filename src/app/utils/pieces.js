@@ -54,21 +54,18 @@ export const Pieces = {
   }
 }
 
-export const isValid = {
+export function isValidMove({ pieceName, position }, square) {
 
-  moveSprite(pieceName, position, clickedSquare) {
+  return Pieces[pieceName].isValidMove(position, square);
+}
 
-    return Pieces[pieceName].isValidMove(position, clickedSquare);
-  },
+export function isValidTake({ pieceName, position }, square) {
 
-  take(pieceName, position, clickedSquare) {
-
-    return (
-      pieceName === "pawn" &&
-      Pieces.pawn.isValidTake(position, clickedSquare)
-    ) || (
-      pieceName !== "pawn" &&
-      this.moveSprite(pieceName, position, clickedSquare)
-    )
-  }
+  return (
+    pieceName === "pawn" &&
+    Pieces.pawn.isValidTake(position, square)
+  ) || (
+    pieceName !== "pawn" &&
+    isValidMove({pieceName, position}, square)
+  )
 }

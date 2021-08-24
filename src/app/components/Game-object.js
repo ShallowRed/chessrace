@@ -15,8 +15,4 @@ export default class GameObject {
     this.domEl.style.transitionDuration = `${duration}s`;
     this.domEl.style.transform = `translateY(${distance}px)`;
   }
-
-  resetTranslation() {
-    this.translateY();
-  }
 }

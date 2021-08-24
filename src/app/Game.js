@@ -15,14 +15,13 @@ export default {
     }
 
     this.ennemies = Ennemies;
-
     this.player = new Player();
-
     this.board = new Board();
 
     this.board.canvas.addEventListener("mousedown", ({ clientX, clientY }) => {
 
-      events.emit("SQUARE_CLICKED", this.board.getClickedSquare(clientX, clientY));
+      events.emit("SQUARE_CLICKED", this.board.getClickedSquare(clientX,
+        clientY));
     })
   }
 }

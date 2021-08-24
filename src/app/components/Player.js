@@ -13,7 +13,7 @@ export default class Player extends Piece {
   }
 
   reset() {
-    this.resetTranslation();
+    this.translateY();
     this.updatePiece(startPiece.slice());
     this.moveSprite([...startPos], 0);
   }

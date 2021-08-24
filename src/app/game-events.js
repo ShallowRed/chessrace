@@ -1,5 +1,5 @@
 import events from 'app/utils/event-emitter';
-import { isValid } from 'app/utils/pieces';
+import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
 import { squareSize, translationDuration } from "app/config";
 
@@ -8,7 +8,7 @@ export function START_GAME() {
   this.on = true;
 
   setTimeout(() =>
-    events.emit("SCROLL_ONE_SQUARE"),
+    events.emit("SCROLL_ONE_SQUARE_DOWN"),
     10
   );
 }
@@ -27,7 +27,7 @@ export function GAME_OVER() {
   );
 }
 
-export function SCROLL_ONE_SQUARE() {
+export function SCROLL_ONE_SQUARE_DOWN() {
 
   const { player, board, ennemies } = this;
 
@@ -55,7 +55,7 @@ export function NEXT_SCROLL_STEP() {
   );
 
   [board, player, ...ennemies.list].forEach(gameObject =>
-    gameObject.resetTranslation()
+    gameObject.translateY()
   );
 
   if (!player.position[1]) {
@@ -65,42 +65,42 @@ export function NEXT_SCROLL_STEP() {
   } else {
 
     window.requestAnimationFrame(() =>
-      events.emit("SCROLL_ONE_SQUARE")
+      events.emit("SCROLL_ONE_SQUARE_DOWN")
     );
   }
 }
 
-export function SQUARE_CLICKED(clickedSquare) {
+export function SQUARE_CLICKED(square) {
 
-  events.emit("MOVE_ATTEMPT", clickedSquare, "moveSprite")
-    .then(() => {
-      this.player.moveSprite(clickedSquare);
-    })
+  if (!isValidMove(this.player, square)) return;
+
+  events.emit("MOVE_ATTEMPT", square)
+    .then(() =>
+      this.player.moveSprite(square)
+    )
 }
 
 export function ENNEMY_CLICKED(ennemy) {
 
-  events.emit("MOVE_ATTEMPT", ennemy.position, "take")
-    .then(() => {
+  if (!isValidTake(this.player, ennemy.position)) return;
 
-      const { player, board, ennemies } = this;
+  events.emit("MOVE_ATTEMPT", ennemy.position)
+    .then(eatPiece);
 
-      board.removeEnemy(ennemy.position);
-      ennemies.remove(ennemy);
+  function eatPiece() {
 
-      setTimeout(() => {
-        player.updatePiece(ennemy.pieceName);
-      })
+    events.emit("REMOVE_ENNEMY", ennemy);
 
-      player.moveSprite(ennemy.position);
+    setTimeout(() => {
+      this.player.updatePiece(ennemy.pieceName);
+      this.player.moveSprite(ennemy.position);
     })
+  }
 }
 
-export function MOVE_ATTEMPT(square, type) {
+export function MOVE_ATTEMPT(square) {
 
   const { player: { pieceName, position }, board } = this;
-
-  if (!isValid[type](pieceName, position, square)) return;
 
   const pieceCanFall = ["bishop", "rook", "queen"].includes(pieceName);
 
@@ -111,13 +111,19 @@ export function MOVE_ATTEMPT(square, type) {
       const firstObstacle =
         board.getFirstObstacleOnTrajectory(position, square);
 
-      if (firstObstacle && !firstObstacle.isHole) {
+      if (firstObstacle) {
+
+        if (firstObstacle.isHole) {
+
+          events.emit("FALL_IN_HOLE", firstObstacle.coords);
+        }
 
         return;
       }
     }
 
     events.emit("FALL_IN_HOLE", square);
+
     return;
   }
 
@@ -160,4 +166,9 @@ export function FALL_IN_HOLE(square) {
 
 export function NEW_ENNEMY(value, coords) {
   this.ennemies.add(value, coords)
+}
+
+export function REMOVE_ENNEMY(ennemy) {
+  this.board.removeEnemy(ennemy.position);
+  this.ennemies.remove(ennemy);
 }

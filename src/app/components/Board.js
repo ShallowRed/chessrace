@@ -46,7 +46,7 @@ export default class Board extends GameObject {
     this.clear();
     this.setModel();
     this.render();
-    this.resetTranslation();
+    this.translateY();
   }
 
   setModel() {
