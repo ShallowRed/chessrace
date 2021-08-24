@@ -1,5 +1,6 @@
-import Board from 'app/components/Board';
-import Player from 'app/components/Player';
+import Board from 'app/components/Board/Board';
+// import Board from 'app/components/Board';
+import Player from 'app/components/Pieces/Player';
 import Ennemies from 'app/components/ennemies';
 import * as GameEvents from 'app/game-events';
 import events from 'app/utils/event-emitter';
@@ -17,11 +18,5 @@ export default {
     this.ennemies = Ennemies;
     this.player = new Player();
     this.board = new Board();
-
-    this.board.canvas.addEventListener("mousedown", ({ clientX, clientY }) => {
-
-      events.emit("SQUARE_CLICKED", this.board.getClickedSquare(clientX,
-        clientY));
-    })
   }
 }

@@ -31,7 +31,7 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   const { player, board, ennemies } = this;
 
-  [board, player, ...ennemies.list].forEach(gameObject =>
+  [board.map, player, ...ennemies.list].forEach(gameObject =>
     gameObject.translateY(squareSize, translationDuration)
   );
 
@@ -47,18 +47,17 @@ export function NEXT_SCROLL_STEP() {
 
   if (!on) return;
 
-  board.clear();
   board.render();
 
   [player, ...ennemies.list].forEach(piece =>
     piece.moveSpriteOneSquareDown()
   );
 
-  [board, player, ...ennemies.list].forEach(gameObject =>
+  [board.map, player, ...ennemies.list].forEach(gameObject =>
     gameObject.translateY()
   );
 
-  if (!player.position[1]) {
+  if (player.position[1] < 0) {
 
     events.emit("GAME_OVER");
 
@@ -170,11 +169,17 @@ export function FALL_IN_HOLE(square) {
   }, 0.9);
 }
 
-export function NEW_ENNEMY(value, coords) {
+export function NEW_ENNEMIES(ennemyPieces) {
+  ennemyPieces.forEach(ennemy => {
+    events.emit("NEW_ENNEMY", ennemy)
+  });
+}
+
+export function NEW_ENNEMY({ value, coords }) {
   this.ennemies.add(value, coords)
 }
 
 export function REMOVE_ENNEMY(ennemy) {
-  this.board.removeEnemy(ennemy.position);
+  this.board.model.removeEnnemy(ennemy.position);
   this.ennemies.remove(ennemy);
 }

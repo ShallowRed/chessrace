@@ -1,6 +1,5 @@
 import GameObject from 'app/components/Game-object';
 import { squareSize, shadowShift } from "app/config";
-import { animationTimeout } from 'app/utils/animation-timeout';
 
 export default class Piece extends GameObject {
 
@@ -41,7 +40,7 @@ export default class Piece extends GameObject {
     this.position = position;
 
     const [left, bottom] = this.position.map(coord =>
-      (coord - 1) * squareSize
+      coord * squareSize
     );
 
     const move = () => {

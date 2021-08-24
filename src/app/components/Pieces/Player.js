@@ -1,4 +1,4 @@
-import Piece from 'app/components/Piece';
+import Piece from 'app/components/Pieces/Piece';
 import { squareSize, startPiece, startPos, piecesColors } from "app/config";
 
 export default class Player extends Piece {

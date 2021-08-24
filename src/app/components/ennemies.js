@@ -1,4 +1,4 @@
-import EnnemyPiece from 'app/components/Ennemy-piece';
+import EnnemyPiece from 'app/components/Pieces/Ennemy-piece';
 
 export default {
 
