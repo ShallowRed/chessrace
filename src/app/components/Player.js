@@ -2,11 +2,8 @@ import Piece from 'app/components/Piece';
 
 export default class Player extends Piece {
 
-  constructor(pieceName, map) {
-
-    const sprite = document.getElementById('player');
-
-    super(pieceName, sprite, map);
+  constructor(pieceName, position) {
+    super(pieceName, position, "white", "player");
   }
 
   reset({ startPiece, startPos }) {
@@ -18,7 +15,7 @@ export default class Player extends Piece {
 
   updatePiece(pieceName) {
     this.pieceName = pieceName;
-    this.sprite.className = `piece ${pieceName} white`;
+    this.sprite.className = `player piece ${pieceName} white`;
   }
 
   updatePosition(position) {
@@ -31,9 +28,7 @@ export default class Player extends Piece {
   }
 
   fall(gameIsOn) {
-
     const centerSquare = gameIsOn ? `translateY(-${this.size / 2}px)` : "";
-
     this.sprite.style.transitionDuration = 0.6;
     this.sprite.style.transform += `${centerSquare} scale(0) rotate(180deg)`;
   }

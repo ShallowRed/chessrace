@@ -1,6 +1,6 @@
 import * as GameEvents from 'app/game-events';
 import Player from 'app/components/Player';
-import Map from 'app/components/Map';
+import Board from 'app/components/Board';
 import events from 'app/utils/event-emitter';
 
 export default {
@@ -13,24 +13,16 @@ export default {
   init() {
 
     for (const message in GameEvents) {
-      // console.log(GameEvents[message]);
-      // console.log(GameEvents[message].bind(this));
       events.on(message, GameEvents[message].bind(this));
     }
 
-    // for (const [key,value] of Object.entries(GameEvents)) {
-    //   events.on(key, value.bind(this));
-    // }
+    this.board = new Board();
 
-    this.map = new Map();
+    this.player = new Player(this.startPiece, this.startPos);
 
-    this.player = new Player("knight", this.map);
+    this.board.canvas.addEventListener("mousedown", ({ clientX, clientY }) => {
 
-    this.player.reset(this);
-
-    this.map.canvas.addEventListener("mousedown", ({ clientX, clientY }) => {
-
-      events.emit("SQUARE_CLICKED", this.map.getClickedSquare(clientX, clientY));
+      events.emit("SQUARE_CLICKED", this.board.getClickedSquare(clientX, clientY));
     })
   }
 }

@@ -18,7 +18,7 @@ export function GAME_OVER() {
   this.on = false;
 
   Ennemies.reset();
-  this.map.reset();
+  this.board.reset();
   this.player.reset(this);
 
   setTimeout(() =>
@@ -29,10 +29,10 @@ export function GAME_OVER() {
 
 export function SCROLL_B0ARD() {
 
-  const { player, map, translationDuration } = this;
+  const { player, board, translationDuration } = this;
 
-  [map, player, ...Ennemies.list].forEach(el =>
-    el.translateY(map.squareSize, translationDuration)
+  [board, player, ...Ennemies.list].forEach(el =>
+    el.translateY(board.squareSize, translationDuration)
   );
 
   animationTimeout(() =>
@@ -43,18 +43,18 @@ export function SCROLL_B0ARD() {
 
 export function NEXT_SCROLL_STEP() {
 
-  const { player, map, on } = this;
+  const { player, board, on } = this;
 
   if (!on) return;
 
-  map.clear();
-  map.render();
+  board.clear();
+  board.render();
 
   [player, ...Ennemies.list].forEach(piece => {
     piece.moveOneSquareDown();
   });
 
-  [map, player, ...Ennemies.list].forEach(part =>
+  [board, player, ...Ennemies.list].forEach(part =>
     part.resetTranslation()
   );
 
@@ -80,9 +80,9 @@ export function ENNEMY_CLICKED(ennemy) {
   events.emit("MOVE_ATTEMPT", ennemy.position, "take")
     .then(() => {
 
-      const { player, map } = this;
+      const { player, board } = this;
 
-      map.removeEnemy(ennemy.position);
+      board.removeEnemy(ennemy.position);
       Ennemies.remove(ennemy);
 
       setTimeout(() => {
@@ -96,13 +96,13 @@ export function ENNEMY_CLICKED(ennemy) {
 
 export function MOVE_ATTEMPT(square, type) {
 
-  const { player: { pieceName, position }, map } = this;
+  const { player: { pieceName, position }, board } = this;
 
   events.emit("SQUARE_DOWN", square);
 
   if (!isValid[type](pieceName, position, square)) return;
 
-  if (map.isHole(square)) {
+  if (board.isHole(square)) {
     events.emit("FALL_IN_HOLE", square);
     return;
   }
@@ -110,7 +110,7 @@ export function MOVE_ATTEMPT(square, type) {
   if (["bishop", "rook", "queen"].includes(pieceName)) {
 
     const firstObstacle =
-      map.getFirstObstacleOnTrajectory(position, square);
+      board.getFirstObstacleOnTrajectory(position, square);
 
     if (firstObstacle) {
 
@@ -145,23 +145,23 @@ export function FALL_IN_HOLE(square) {
 
 // export function SQUARE_DOWN(square) {
 //
-//   if (this.map.isHole(square)) return;
+//   if (this.board.isHole(square)) return;
 //
-//   this.map.renderDownSquare(square, 2);
+//   this.board.renderDownSquare(square, 2);
 //
 //   animationTimeout(() => {
-//     this.map.renderDownSquare(square, 4);
+//     this.board.renderDownSquare(square, 4);
 //   }, 0.05);
 //
 //   animationTimeout(() => {
-//     this.map.fillSquare(square);
+//     this.board.fillSquare(square);
 //   }, 0.15);
 //
 //   animationTimeout(() => {
-//     this.map.renderDownSquare(square, 2);
+//     this.board.renderDownSquare(square, 2);
 //   }, 0.16);
 //
 //   animationTimeout(() => {
-//     this.map.fillSquare(square);
+//     this.board.fillSquare(square);
 //   }, 0.2);
 // }

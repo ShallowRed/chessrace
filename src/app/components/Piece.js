@@ -1,22 +1,27 @@
-export default class Piece {
+import GameObject from 'app/components/Game-object';
 
-  constructor(pieceName, sprite, map) {
+export default class Piece extends GameObject {
+
+  constructor(pieceName, position, color, className = "") {
+
+    super("sprite");
 
     this.pieceName = pieceName;
+    this.position = position;
+    this.move();
 
-    this.sprite = sprite;
-    this.size = map.squareSize;
-    this.shadowShift = map.shadowShift;
-
+    this.sprite = document.createElement("div");
+    this.sprite.className = `piece ${pieceName} ${color} ${className}`;
+    this.container.append(this.sprite);
     this.sprite.style.width =
       this.sprite.style.height =
-      `${this.size}px`;
+      `${this.squareSize}px`;
   }
 
   move(duration = 0.3) {
 
     const [left, bottom] = this.position.map(x =>
-      (x - 1) * this.size
+      (x - 1) * this.squareSize
     );
 
     const movePiece = () => {
@@ -28,15 +33,6 @@ export default class Piece {
     duration === 0 ?
       movePiece() :
       setTimeout(movePiece);
-  }
-
-  translateY(distance = 0, duration = 0) {
-    this.sprite.style.transitionDuration = `${duration}s`;
-    this.sprite.style.transform = `translateY(${distance}px)`;
-  }
-
-  resetTranslation() {
-    this.translateY();
   }
 
   moveOneSquareDown() {

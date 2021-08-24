@@ -3,22 +3,16 @@ import Piece from 'app/components/Piece';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position, map) {
+  constructor(pieceName, position) {
 
-    const sprite = document.createElement("div");
+    super(pieceName, position, "black");
 
-    super(pieceName, sprite, map);
-
-    map.container.append(this.sprite);
-    this.sprite.className = `piece ${pieceName} black`;
-    this.position = position;
-    this.move();
     this.sprite.addEventListener("click", () =>
       events.emit("ENNEMY_CLICKED", this)
     );
   }
 
-  remove() {
-    this.sprite.parentNode.removeChild(this.sprite);
+  removeSprite() {
+    this.container.removeChild(this.sprite);
   }
 }

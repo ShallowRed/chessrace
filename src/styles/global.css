@@ -6,26 +6,19 @@ main {
   overflow: hidden;
 }
 
-canvas {
-  position: absolute;
-  transition-timing-function: linear;
-}
-
+canvas,
 .piece {
   position: absolute;
   transition-timing-function: linear;
-  position: absolute;
+
+  &:not(.player):hover {
+    cursor: pointer;
+  }
+}
+
+.piece {
   background-size: 90%;
   background-repeat: no-repeat;
   background-position-x: center;
   background-position-y: center;
 }
-
-.piece:not(#player),
-canvas#board {
-  &:hover {
-    cursor: pointer;
-  }
-}
-
-#player {}
