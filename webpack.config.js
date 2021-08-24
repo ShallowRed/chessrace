@@ -87,7 +87,8 @@ module.exports = {
   entry: config.input.js,
   resolve: {
     alias: {
-      app: path.resolve(__dirname, "/src/app/"),
+      styles: path.resolve(__dirname, "/src/styles/"),
+      app: path.resolve(__dirname, "/src/app/")
     }
   },
   output: {

@@ -1,3 +1,5 @@
+const { abs } = Math;
+
 export const Pieces = {
 
   pawn: {
@@ -16,24 +18,24 @@ export const Pieces = {
 
   king: {
     isValidMove: ([x, y], [tx, ty]) => (
-      Math.abs(x - tx) <= 1 &&
-      Math.abs(y - ty) <= 1
+      abs(x - tx) <= 1 &&
+      abs(y - ty) <= 1
     )
   },
 
   knight: {
     isValidMove: ([x, y], [tx, ty]) => (
-      Math.abs(x - tx) === 2 &&
-      Math.abs(y - ty) === 1
+      abs(x - tx) === 2 &&
+      abs(y - ty) === 1
     ) || (
-      Math.abs(x - tx) === 1 &&
-      Math.abs(y - ty) === 2
+      abs(x - tx) === 1 &&
+      abs(y - ty) === 2
     )
   },
 
   bishop: {
     isValidMove: ([x, y], [tx, ty]) => (
-      Math.abs(x - tx) === Math.abs(y - ty)
+      abs(x - tx) === abs(y - ty)
     )
   },
 
@@ -54,7 +56,7 @@ export const Pieces = {
 
 export const isValid = {
 
-  move(pieceName, position, clickedSquare) {
+  moveSprite(pieceName, position, clickedSquare) {
 
     return Pieces[pieceName].isValidMove(position, clickedSquare);
   },
@@ -66,7 +68,7 @@ export const isValid = {
       Pieces.pawn.isValidTake(position, clickedSquare)
     ) || (
       pieceName !== "pawn" &&
-      this.move(pieceName, position, clickedSquare)
+      this.moveSprite(pieceName, position, clickedSquare)
     )
   }
 }

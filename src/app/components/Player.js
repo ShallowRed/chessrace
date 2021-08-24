@@ -1,16 +1,21 @@
 import Piece from 'app/components/Piece';
-import { piecesColors } from 'app/utils/map-generator';
+import { squareSize, startPiece, startPos, piecesColors } from "app/config";
 
 export default class Player extends Piece {
 
-  constructor(pieceName, position) {
-    super(pieceName, position, piecesColors[0], "player");
+  constructor() {
+    super({
+      pieceName: startPiece,
+      position: startPos,
+      color: piecesColors[0],
+      className: "player"
+    });
   }
 
-  reset({ startPiece, startPos }) {
+  reset() {
     this.resetTranslation();
     this.updatePiece(startPiece.slice());
-    this.move([...startPos], 0);
+    this.moveSprite([...startPos], 0);
   }
 
   updatePiece(pieceName) {
@@ -20,7 +25,7 @@ export default class Player extends Piece {
   }
 
   fall(gameIsOn) {
-    const centerSquare = gameIsOn ? `translateY(-${this.squareSize / 2}px)` : "";
+    const centerSquare = gameIsOn ? `translateY(-${squareSize / 2}px)` : "";
     this.sprite.style.transitionDuration = 0.6;
     this.sprite.style.transform += `${centerSquare} scale(0) rotate(180deg)`;
   }

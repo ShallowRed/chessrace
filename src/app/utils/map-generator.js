@@ -1,28 +1,27 @@
+import { columns, boardRows } from "app/config";
+
+const { floor, round, random } = Math;
+
 export function generateMapBlueprint() {
 
   const ennemies = ["bishop", "pawn", "knight", "rook",
     "queen"
   ];
 
-  return new Array(30)
-    .fill(new Array(8)
-      .fill(1)
+  return new Array(boardRows)
+    .fill(new Array(columns)
+      .fill()
     )
     .map((array, i) =>
       array.map(() =>
         i < 4 ? 1 :
         !randomBinary() ?
-        ennemies[Math.floor(Math.random() * ennemies.length)] :
+        ennemies[floor(random() * ennemies.length)] :
         randomBinary()
       )
     );
 }
 
 function randomBinary() {
-  return Math.round((Math.random() + 0.8) / 2);
+  return round((random() + 0.8) / 2);
 }
-
-export const piecesColors = (() => {
-  return Math.round(Math.random()) ? ["white", "black"] : ["black",
-  "white"];
-})();

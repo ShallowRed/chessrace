@@ -1,6 +1,6 @@
 import EnnemyPiece from 'app/components/Ennemy-piece';
 
-export const Ennemies = {
+export default {
 
   list: [],
 
@@ -16,9 +16,9 @@ export const Ennemies = {
 
   reset() {
 
-    this.list.forEach(ennemy => {
-      ennemy.removeSprite();
-    });
+    this.list.forEach(ennemy =>
+      ennemy.removeSprite()
+    );
 
     this.list = [];
   }

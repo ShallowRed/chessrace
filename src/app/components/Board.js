@@ -1,21 +1,29 @@
-import { generateMapBlueprint } from 'app/utils/map-generator';
-import { Ennemies } from 'app/components/ennemies';
 import GameObject from 'app/components/Game-object';
+import events from 'app/utils/event-emitter';
+import { generateMapBlueprint } from 'app/utils/map-generator';
+import {
+  squareSize,
+  shadowShift,
+  columns,
+  visibleRows,
+  boardRows,
+  darkColor,
+  lightColor
+} from "app/config";
+
+const { abs, ceil, sign, max } = Math;
 
 export default class Board extends GameObject {
 
-  rows = 12;
-  darkColor = "#ae835a";
-  lightColor = "#f5dbc2";
-
-  canvas = document.querySelector('canvas');
   ctx = this.canvas.getContext('2d');
+
+  blueprint = generateMapBlueprint();
 
   constructor() {
 
-    super("canvas");
-
-    this.blueprint = generateMapBlueprint();
+    super({
+      canvas: document.querySelector('canvas')
+    });
 
     this.setCanvasDimensions();
     this.setContainerDimensions();
@@ -23,14 +31,14 @@ export default class Board extends GameObject {
   }
 
   setCanvasDimensions() {
-    this.canvas.width = this.columns * this.squareSize + this.shadowShift;
-    this.canvas.height = this.rows * this.squareSize + this.shadowShift;
-    this.canvas.style.top = `-${this.squareSize}px`;
+    this.canvas.width = columns * squareSize + shadowShift;
+    this.canvas.height = visibleRows * squareSize + shadowShift;
+    this.canvas.style.top = `-${squareSize}px`;
   }
 
   setContainerDimensions() {
     this.container.style.width = `${this.canvas.width}px`;
-    this.container.style.height = `${this.canvas.height - this.squareSize}px`;
+    this.container.style.height = `${this.canvas.height - squareSize}px`;
   }
 
   reset() {
@@ -53,18 +61,16 @@ export default class Board extends GameObject {
 
     const regularSquares = [];
 
-    const renderModelValue = (value, coords, isPiece) => {
+    this.forEachModelValue((value, coords, isPiece) => {
 
       if (value) {
         regularSquares.push(coords);
       }
 
       if (this.nRenders == 0 && isPiece) {
-        Ennemies.add(value, coords)
+        events.emit("NEW_ENNEMY", value, coords)
       }
-    }
-
-    this.forEachModelValue(renderModelValue);
+    });
 
     this.shadowOn();
     this.fillSquares(regularSquares);
@@ -76,10 +82,8 @@ export default class Board extends GameObject {
 
   forEachModelValue(callback) {
 
-    const modelRows = this.model.length;
-
-    for (let i = 0; i < modelRows; i++) {
-      for (let j = 0; j < this.columns; j++) {
+    for (let i = 0; i < boardRows; i++) {
+      for (let j = 0; j < columns; j++) {
 
         const value = this.model[i][j];
         const coords = this.getCoords([i, j]);
@@ -97,9 +101,9 @@ export default class Board extends GameObject {
 
   shadowOn() {
     this.ctx.shadowColor = "lightgrey";
-    this.ctx.shadowBlur = this.shadowShift / 2;
-    this.ctx.shadowOffsetX = this.shadowShift / 4;
-    this.ctx.shadowOffsetY = this.shadowShift / 4;
+    this.ctx.shadowBlur = shadowShift / 2;
+    this.ctx.shadowOffsetX = shadowShift / 4;
+    this.ctx.shadowOffsetY = shadowShift / 4;
   }
 
   shadowOff() {
@@ -111,17 +115,15 @@ export default class Board extends GameObject {
     this.ctx.fillStyle = this.getSquareColor([x, y]);
 
     this.ctx.fillRect(
-      (x - 1) * this.squareSize,
-      (this.rows - y) * this.squareSize,
-      this.squareSize,
-      this.squareSize
+      (x - 1) * squareSize,
+      (visibleRows - y) * squareSize,
+      squareSize,
+      squareSize
     );
   }
 
   getSquareColor([x, y]) {
-    return (x + y + this.nRenders) % 2 === 0 ?
-      this.lightColor :
-      this.darkColor;
+    return [lightColor, darkColor][(x + y + this.nRenders) % 2];
   }
 
   getClickedSquare(clientX, clientY) {
@@ -129,8 +131,8 @@ export default class Board extends GameObject {
     const { left, bottom } = this.canvas.getBoundingClientRect();
 
     return [
-      Math.ceil((clientX - left) / this.squareSize),
-      Math.ceil((bottom - clientY) / this.squareSize)
+      ceil((clientX - left) / squareSize),
+      ceil((bottom - clientY - shadowShift) / squareSize)
     ];
   }
 
@@ -187,14 +189,14 @@ export default class Board extends GameObject {
 
   getSquaresOnTrajectory([x, y], [tx, ty]) {
 
-    const deltaLength = Math.max(
-      Math.abs(tx - x),
-      Math.abs(ty - y)
+    const deltaLength = max(
+      abs(tx - x),
+      abs(ty - y)
     );
 
     const getSquareOnTrajectory = (e, i) => ([
-      x + Math.sign(tx - x) * (i + 1),
-      y + Math.sign(ty - y) * (i + 1)
+      x + sign(tx - x) * (i + 1),
+      y + sign(ty - y) * (i + 1)
     ]);
 
     return new Array(deltaLength - 1)
