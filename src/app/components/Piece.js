@@ -1,5 +1,6 @@
 import GameObject from 'app/components/Game-object';
 import { squareSize, shadowShift } from "app/config";
+import { animationTimeout } from 'app/utils/animation-timeout';
 
 export default class Piece extends GameObject {
 

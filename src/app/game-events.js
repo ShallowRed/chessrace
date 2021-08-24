@@ -72,7 +72,9 @@ export function NEXT_SCROLL_STEP() {
 
 export function SQUARE_CLICKED(square) {
 
-  if (!isValidMove(this.player, square)) return;
+  if (
+    !isValidMove(this.player, square)
+  ) return;
 
   events.emit("MOVE_ATTEMPT", square)
     .then(() =>
@@ -82,7 +84,11 @@ export function SQUARE_CLICKED(square) {
 
 export function ENNEMY_CLICKED(ennemy) {
 
-  if (!isValidTake(this.player, ennemy.position)) return;
+  const { player } = this;
+
+  if (
+    !isValidTake(player, ennemy.position)
+  ) return;
 
   events.emit("MOVE_ATTEMPT", ennemy.position)
     .then(eatPiece);
@@ -92,8 +98,8 @@ export function ENNEMY_CLICKED(ennemy) {
     events.emit("REMOVE_ENNEMY", ennemy);
 
     setTimeout(() => {
-      this.player.updatePiece(ennemy.pieceName);
-      this.player.moveSprite(ennemy.position);
+      player.updatePiece(ennemy.pieceName);
+      player.moveSprite(ennemy.position);
     })
   }
 }
