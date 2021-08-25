@@ -2,6 +2,7 @@ import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
 import { squareSize, translationDuration } from "app/config";
+import { translateY } from "app/utils/utils";
 
 export function START_GAME() {
 
@@ -29,11 +30,10 @@ export function GAME_OVER() {
 
 export function SCROLL_ONE_SQUARE_DOWN() {
 
-  const { player, board, ennemies } = this;
-
-  [board.map, player, ...ennemies.list].forEach(gameObject =>
-    gameObject.translateY(squareSize, translationDuration)
-  );
+  translateY(this.board.map.container, {
+    distance: squareSize * (this.board.nRenders),
+    duration: translationDuration
+  });
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
@@ -43,21 +43,11 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
 export function NEXT_SCROLL_STEP() {
 
-  const { player, board, ennemies, on } = this;
+  if (!this.on) return;
 
-  if (!on) return;
+  this.board.render();
 
-  board.render();
-
-  [player, ...ennemies.list].forEach(piece =>
-    piece.moveSpriteOneSquareDown()
-  );
-
-  [board.map, player, ...ennemies.list].forEach(gameObject =>
-    gameObject.translateY()
-  );
-
-  if (player.position[1] < 0) {
+  if (this.player.position[1] < 0) {
 
     events.emit("GAME_OVER");
 
@@ -71,23 +61,20 @@ export function NEXT_SCROLL_STEP() {
 
 export function SQUARE_CLICKED(square) {
 
-  if (
-    !isValidMove(this.player, square)
-  ) return;
+  if (!isValidMove(this.player, square)) return;
 
   events.emit("MOVE_ATTEMPT", square)
-    .then(() =>
-      this.player.moveSprite(square)
-    )
+    .then(() => {
+      this.player.updatePosition(square);
+      this.player.moveSprite();
+    })
 }
 
 export function ENNEMY_CLICKED(ennemy) {
 
   const { player } = this;
 
-  if (
-    !isValidTake(player, ennemy.position)
-  ) return;
+  if (!isValidTake(player, ennemy.position)) return;
 
   events.emit("MOVE_ATTEMPT", ennemy.position)
     .then(eatPiece);
@@ -98,7 +85,8 @@ export function ENNEMY_CLICKED(ennemy) {
 
     setTimeout(() => {
       player.updatePiece(ennemy.pieceName);
-      player.moveSprite(ennemy.position);
+      player.updatePosition(ennemy.position);
+      player.moveSprite();
     })
   }
 }
@@ -158,7 +146,8 @@ export function MOVE_ATTEMPT(square) {
 
 export function FALL_IN_HOLE(square) {
 
-  this.player.moveSprite(square);
+  this.player.updatePosition(square);
+  this.player.moveSprite();
 
   animationTimeout(() => {
     this.player.fall(this.on);
@@ -176,10 +165,32 @@ export function NEW_ENNEMIES(ennemyPieces) {
 }
 
 export function NEW_ENNEMY({ value, coords }) {
-  this.ennemies.add(value, coords)
+  this.ennemies.add(value, coords, this.board.nRenders)
 }
 
 export function REMOVE_ENNEMY(ennemy) {
   this.board.model.removeEnnemy(ennemy.position);
   this.ennemies.remove(ennemy);
+}
+
+export function RESET_N_RENDERS() {
+  this.ennemies.list.forEach(ennemy =>
+    ennemy.nRenders = 0
+  );
+  this.player.nRenders = 0;
+  this.board.nRenders = 0;
+  this.board.model.nRenders = 0;
+  this.board.map.nRenders = 0;
+}
+
+export function INCREMENT_N_RENDERS() {
+  this.ennemies.list.forEach(ennemy => {
+    ennemy.nRenders++;
+    ennemy.position[1]--;
+  });
+  this.player.position[1]--;
+  this.player.nRenders++;
+  this.board.nRenders++;
+  this.board.model.nRenders++;
+  this.board.map.nRenders++;
 }

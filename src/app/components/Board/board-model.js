@@ -1,14 +1,12 @@
-import { generateMapBlueprint } from 'app/utils/map-generator';
 import { columns, boardRows, visibleRows } from "app/config";
 
 export default class BoardModel {
 
-  blueprint = generateMapBlueprint();
-
-  constructor() {}
+  constructor(blueprint) {
+    this.blueprint = blueprint;
+  }
 
   reset() {
-    this.nRenders = 0;
     this.values = this.blueprint.map(row => ([...row]));
   }
 
@@ -38,9 +36,7 @@ export default class BoardModel {
         }
       }
     });
-
-    this.nRenders++;
-
+    // Todo remove ennemies who disapearred 
     return { regularSquares, newEnnemyPieces };
   }
 
@@ -54,6 +50,7 @@ export default class BoardModel {
       for (let j = 0; j < columns; j++) {
 
         const value = this.values[i][j];
+
         callback({
           value,
           coords: [j, i - this.nRenders],

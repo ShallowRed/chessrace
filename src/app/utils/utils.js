@@ -16,3 +16,8 @@ export function getSquaresOnTrajectory([x, y], [tx, ty]) {
     .fill()
     .map(getSquareOnTrajectory)
 }
+
+export function translateY(element, { distance, duration }) {
+  element.style.transitionDuration = `${duration}s`;
+  element.style.transform = `translateY(${distance}px)`;
+}

@@ -28,9 +28,10 @@ export default new class EventEmitter {
 
     return new Promise(function(resolve) {
 
-      if (results.length ===
-        results.filter(Boolean)
-        .length) {
+      if (
+        results.length === results.filter(Boolean)
+        .length
+      ) {
         resolve(results);
       }
     });

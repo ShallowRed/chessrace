@@ -1,5 +1,4 @@
 import Board from 'app/components/Board/Board';
-// import Board from 'app/components/Board';
 import Player from 'app/components/Pieces/Player';
 import Ennemies from 'app/components/ennemies';
 import * as GameEvents from 'app/game-events';
@@ -12,11 +11,16 @@ export default {
   init() {
 
     for (const message in GameEvents) {
-      events.on(message, GameEvents[message].bind(this));
+      if (typeof GameEvents[message] === "function") {
+        events.on(message, GameEvents[message].bind(this));
+      }
     }
 
     this.ennemies = Ennemies;
     this.player = new Player();
     this.board = new Board();
+
+    this.board.reset();
+    this.player.reset();
   }
 }

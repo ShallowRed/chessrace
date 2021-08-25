@@ -12,16 +12,6 @@ export default class Piece extends GameObject {
     this.assign(props);
     this.setSpriteDimensions();
     this.setSpriteClassName();
-    this.spawnSprite();
-    this.moveSprite(props.position);
-  }
-
-  spawnSprite() {
-    this.container.append(this.sprite);
-  }
-
-  removeSprite() {
-    this.container.removeChild(this.sprite);
   }
 
   setSpriteDimensions() {
@@ -35,27 +25,20 @@ export default class Piece extends GameObject {
       `piece ${this.pieceName} ${this.color} ${this.className}`;
   }
 
-  moveSprite(position, duration = 0.3) {
-
-    this.position = position;
-
-    const [left, bottom] = this.position.map(coord =>
-      coord * squareSize
-    );
-
-    const move = () => {
-      this.sprite.style.transitionDuration = `${duration}s`;
-      this.sprite.style.left = `${left}px`;
-      this.sprite.style.bottom = `${bottom + shadowShift}px`;
-    }
-
-    duration === 0 ?
-      move() :
-      setTimeout(move);
+  removeSprite() {
+    this.container.removeChild(this.sprite);
   }
 
-  moveSpriteOneSquareDown() {
-    --this.position[1];
-    this.moveSprite(this.position, 0);
+  updatePosition(position) {
+    this.position = position;
+  }
+
+  getOffset() {
+    const [x, y] = this.position;
+
+    return {
+      left: x * squareSize,
+      bottom: (y + this.nRenders - 1) * squareSize + shadowShift
+    }
   }
 }

@@ -7,6 +7,10 @@ export function generateMapBlueprint() {
   const ennemies = ["bishop", "pawn", "knight", "rook",
     "queen"
   ];
+  // return new Array(boardRows)
+  //   .fill(new Array(columns)
+  //     .fill(1)
+  //   )
 
   return new Array(boardRows)
     .fill(new Array(columns)

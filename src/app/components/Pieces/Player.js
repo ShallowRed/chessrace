@@ -1,5 +1,5 @@
 import Piece from 'app/components/Pieces/Piece';
-import { squareSize, startPiece, startPos, piecesColors } from "app/config";
+import { startPiece, startPos, piecesColors } from "app/config";
 
 export default class Player extends Piece {
 
@@ -13,20 +13,26 @@ export default class Player extends Piece {
   }
 
   reset() {
-    this.translateY();
     this.updatePiece(startPiece.slice());
-    this.moveSprite([...startPos], 0);
+    this.updatePosition([...startPos]);
+    this.moveSprite(0);
   }
 
   updatePiece(pieceName) {
     this.pieceName = pieceName;
-    this.sprite.style.transitionDuration = 0;
     this.setSpriteClassName();
   }
 
-  fall(gameIsOn) {
-    const centerSquare = gameIsOn ? `translateY(-${squareSize / 2}px)` : "";
+  moveSprite(duration = 0.3) {
+
+    const { left, bottom } = this.getOffset();
+
+    this.sprite.style.transitionDuration = `${duration}s`;
+    this.sprite.style.transform = `translate(${left}px, ${-bottom}px)`;
+  }
+
+  fall() {
     this.sprite.style.transitionDuration = 0.6;
-    this.sprite.style.transform += `${centerSquare} scale(0) rotate(180deg)`;
+    this.sprite.style.transform += ` scale(0) rotate(180deg)`;
   }
 }

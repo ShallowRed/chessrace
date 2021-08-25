@@ -4,13 +4,17 @@ export default {
 
   list: [],
 
-  add(pieceName, position) {
-    const ennemy = new EnnemyPiece(pieceName, position);
+  add(pieceName, position, nRenders) {
+    
+    const ennemy = new EnnemyPiece(pieceName, position, nRenders);
+    
     this.list.push(ennemy);
   },
 
   remove(ennemy) {
+
     ennemy.removeSprite();
+
     this.list.splice(this.list.indexOf(ennemy), 1);
   },
 

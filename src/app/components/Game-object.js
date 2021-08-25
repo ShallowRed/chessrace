@@ -1,18 +1,25 @@
+const gameObjectsContainer = document.querySelector("main>div");
+
 export default class GameObject {
 
-  container = document.querySelector("main");
+  container = gameObjectsContainer;
 
-  constructor(obj) {
-    const [[key, value]] = Object.entries(obj);
-    this.domEl = this[key] = value;
+  constructor(domElement, key) {
+
+    [
+      [key, domElement]
+    ] = Object.entries(domElement);
+
+    this.domEl = this[key] = domElement;
+    this.container.append(domElement);
+
   }
 
   assign(props) {
     Object.assign(this, props);
   }
 
-  translateY(distance = 0, duration = 0) {
-    this.domEl.style.transitionDuration = `${duration}s`;
-    this.domEl.style.transform = `translateY(${distance}px)`;
+  onClick(callback) {
+    this.domEl.addEventListener("click", callback);
   }
 }

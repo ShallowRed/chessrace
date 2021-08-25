@@ -6,7 +6,7 @@ export const
   visibleRows = 12,
   boardRows = 30,
 
-  squareSize = ceil(min(window.innerWidth * 0.5, 500) / columns),
+  squareSize = ceil(min(window.innerWidth * 0.7, 500) / columns),
   shadowShift = round(squareSize / 4),
 
   darkColor = "#ae835a",
@@ -19,5 +19,6 @@ export const
 
   piecesColors = (() => {
     return round(random()) ? ["white", "black"] : ["black",
-    "white"];
+      "white"
+    ];
   })();
