@@ -15,7 +15,6 @@ export default class Player extends Piece {
   reset() {
     this.updatePiece(startPiece.slice());
     this.updatePosition([...startPos]);
-    this.moveSprite(0);
   }
 
   updatePiece(pieceName) {

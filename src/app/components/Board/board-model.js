@@ -1,4 +1,5 @@
-import { columns, boardRows, visibleRows } from "app/config";
+import { columns, boardRows, visibleRows, nRenders } from "app/config";
+import { getSquaresOnTrajectory } from 'app/utils/utils';
 
 export default class BoardModel {
 
@@ -11,12 +12,15 @@ export default class BoardModel {
   }
 
   parse() {
+
     const regularSquares = [];
     const newEnnemyPieces = [];
 
     this.forEachValue(({ value, coords, isPiece }) => {
 
-      if (this.squareOffset(coords) > 1) return;
+      const squareOffset = this.getSquareOffset(coords);
+
+      if (squareOffset > 1 || squareOffset < -(visibleRows + 2)) return;
 
       if (value) {
 
@@ -25,23 +29,19 @@ export default class BoardModel {
 
       if (isPiece) {
 
-        if (!this.nRenders) {
+        if (!nRenders) {
 
           newEnnemyPieces.push({ value, coords });
 
-        } else if (this.squareOffset(coords) === 1) {
+        } else if (squareOffset === 1) {
 
           ++coords[1];
           newEnnemyPieces.push({ value, coords });
         }
       }
     });
-    // Todo remove ennemies who disapearred 
-    return { regularSquares, newEnnemyPieces };
-  }
 
-  squareOffset(coords) {
-    return coords[1] - visibleRows;
+    return { regularSquares, newEnnemyPieces };
   }
 
   forEachValue(callback) {
@@ -53,22 +53,49 @@ export default class BoardModel {
 
         callback({
           value,
-          coords: [j, i - this.nRenders],
+          coords: [j, i - nRenders],
           isPiece: typeof value == "string"
         });
       }
     }
   }
 
-  get([x,y]) {
-    return this.values[y + this.nRenders - 1]?.[x];
+  getSquareOffset(coords) {
+    return coords[1] - visibleRows;
   }
 
-  set([x,y], value) {
-    this.values[y + this.nRenders - 1][x] = value;
+  get([x, y]) {
+    return this.values[y + nRenders - 1]?.[x];
+  }
+
+  set([x, y], value) {
+    this.values[y + nRenders - 1][x] = value;
   }
 
   removeEnnemy(squareCoords) {
     this.set(squareCoords, 1)
+  }
+
+  isHole(squareCoord) {
+    return this.get(squareCoord) === 0;
+  }
+
+  isEnnemy(squareCoord) {
+    return typeof this.get(squareCoord) === "string";
+  }
+
+  getFirstObstacleOnTrajectory(currentPosition, targetSquare) {
+
+    const isObstacle = square =>
+      this.isHole(square) || this.isEnnemy(square)
+
+    const firstObstacle =
+      getSquaresOnTrajectory(currentPosition, targetSquare)
+      .find(isObstacle);
+
+    if (firstObstacle) return {
+      coords: firstObstacle,
+      isHole: this.isHole(firstObstacle)
+    }
   }
 }

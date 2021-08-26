@@ -1,7 +1,7 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { squareSize, translationDuration } from "app/config";
+import { squareSize, translationDuration, nRenders, skippedRows, setSkippedRows } from "app/config";
 import { translateY } from "app/utils/utils";
 
 export function START_GAME() {
@@ -17,10 +17,8 @@ export function START_GAME() {
 export function GAME_OVER() {
 
   this.on = false;
-
-  this.ennemies.reset();
-  this.board.reset();
-  this.player.reset();
+  this.reset();
+  this.render();
 
   setTimeout(() =>
     alert("Game Over"),
@@ -30,8 +28,10 @@ export function GAME_OVER() {
 
 export function SCROLL_ONE_SQUARE_DOWN() {
 
-  translateY(this.board.map.container, {
-    distance: squareSize * (this.board.nRenders),
+  if (!this.on) return;
+
+  translateY(this.board.container, {
+    distance: squareSize * nRenders,
     duration: translationDuration
   });
 
@@ -45,18 +45,21 @@ export function NEXT_SCROLL_STEP() {
 
   if (!this.on) return;
 
-  this.board.render();
+  this.render();
 
-  if (this.player.position[1] < 0) {
+  setSkippedRows(skippedRows + 1);
 
+  events.emit("SET_EACH_PIECE", piece =>
+    piece.decrementPositionY()
+  );
+
+  if (this.player.isBeyondLimit()) {
     events.emit("GAME_OVER");
-
-  } else {
-
-    window.requestAnimationFrame(() =>
-      events.emit("SCROLL_ONE_SQUARE_DOWN")
-    );
   }
+
+  window.requestAnimationFrame(() =>
+    events.emit("SCROLL_ONE_SQUARE_DOWN")
+  );
 }
 
 export function SQUARE_CLICKED(square) {
@@ -93,16 +96,16 @@ export function ENNEMY_CLICKED(ennemy) {
 
 export function MOVE_ATTEMPT(square) {
 
-  const { player: { pieceName, position }, board } = this;
+  const { player: { pieceName, position }, model } = this;
 
   const pieceCanFall = ["bishop", "rook", "queen"].includes(pieceName);
 
-  if (board.isHole(square)) {
+  if (model.isHole(square)) {
 
     if (pieceCanFall) {
 
       const firstObstacle =
-        board.getFirstObstacleOnTrajectory(position, square);
+        model.getFirstObstacleOnTrajectory(position, square);
 
       if (firstObstacle) {
 
@@ -123,7 +126,7 @@ export function MOVE_ATTEMPT(square) {
   if (pieceCanFall) {
 
     const firstObstacle =
-      board.getFirstObstacleOnTrajectory(position, square);
+      model.getFirstObstacleOnTrajectory(position, square);
 
     if (firstObstacle) {
 
@@ -144,6 +147,10 @@ export function MOVE_ATTEMPT(square) {
   return true;
 }
 
+export function SET_EACH_PIECE(callback) {
+  [this.player, ...this.ennemies.list].forEach(callback);
+}
+
 export function FALL_IN_HOLE(square) {
 
   this.player.updatePosition(square);
@@ -158,39 +165,9 @@ export function FALL_IN_HOLE(square) {
   }, 0.9);
 }
 
-export function NEW_ENNEMIES(ennemyPieces) {
-  ennemyPieces.forEach(ennemy => {
-    events.emit("NEW_ENNEMY", ennemy)
-  });
-}
-
-export function NEW_ENNEMY({ value, coords }) {
-  this.ennemies.add(value, coords, this.board.nRenders)
-}
 
 export function REMOVE_ENNEMY(ennemy) {
-  this.board.model.removeEnnemy(ennemy.position);
+  if (!this.on) return;
   this.ennemies.remove(ennemy);
-}
-
-export function RESET_N_RENDERS() {
-  this.ennemies.list.forEach(ennemy =>
-    ennemy.nRenders = 0
-  );
-  this.player.nRenders = 0;
-  this.board.nRenders = 0;
-  this.board.model.nRenders = 0;
-  this.board.map.nRenders = 0;
-}
-
-export function INCREMENT_N_RENDERS() {
-  this.ennemies.list.forEach(ennemy => {
-    ennemy.nRenders++;
-    ennemy.position[1]--;
-  });
-  this.player.position[1]--;
-  this.player.nRenders++;
-  this.board.nRenders++;
-  this.board.model.nRenders++;
-  this.board.map.nRenders++;
+  this.model.removeEnnemy(ennemy.position);
 }

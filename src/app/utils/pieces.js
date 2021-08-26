@@ -66,6 +66,6 @@ export function isValidTake({ pieceName, position }, square) {
     Pieces.pawn.isValidTake(position, square)
   ) || (
     pieceName !== "pawn" &&
-    isValidMove({pieceName, position}, square)
+    isValidMove({ pieceName, position }, square)
   )
 }

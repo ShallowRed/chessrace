@@ -4,7 +4,7 @@ import { piecesColors } from 'app/config';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position, nRenders) {
+  constructor(pieceName, position) {
 
     super({
       pieceName,
@@ -12,15 +12,7 @@ export default class EnnemyPiece extends Piece {
       className: "ennemy"
     });
 
-    this.nRenders = nRenders;
-
-    // weird workaround here, starting from 2nd render,
-    // ennemies position y is one square too far
-    const newpos = this.nRenders > 1 ? [position[0], position[1] - 1] :
-      position;
-    //
-
-    this.updatePosition(newpos);
+    this.updatePosition(position);
 
     const { left, bottom } = this.getOffset();
 
@@ -30,5 +22,12 @@ export default class EnnemyPiece extends Piece {
     this.onClick(() =>
       events.emit("ENNEMY_CLICKED", this)
     );
+  }
+
+  decrementPositionY() {
+    super.decrementPositionY();
+    if (this.isBeyondLimit()) {
+      events.emit("REMOVE_ENNEMY", this);
+    }
   }
 }

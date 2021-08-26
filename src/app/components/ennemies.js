@@ -2,13 +2,17 @@ import EnnemyPiece from 'app/components/Pieces/Ennemy-piece';
 
 export default {
 
-  list: [],
+  add(pieceName, position) {
 
-  add(pieceName, position, nRenders) {
-    
-    const ennemy = new EnnemyPiece(pieceName, position, nRenders);
-    
+    const ennemy = new EnnemyPiece(pieceName, position);
+
     this.list.push(ennemy);
+  },
+
+  addEach(ennemies) {
+    ennemies.forEach(({ value, coords }) => {
+      this.add(value, coords)
+    });
   },
 
   remove(ennemy) {
@@ -20,9 +24,11 @@ export default {
 
   reset() {
 
-    this.list.forEach(ennemy =>
-      ennemy.removeSprite()
-    );
+    if (this.list) {
+      this.list.forEach(ennemy =>
+        ennemy.removeSprite()
+      );
+    }
 
     this.list = [];
   }

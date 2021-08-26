@@ -1,5 +1,16 @@
 const { round, ceil, min, random } = Math;
 
+export let nRenders = 0;
+export let skippedRows = 0;
+
+export function setNRenders(value) {
+  nRenders = value;
+}
+
+export function setSkippedRows(value) {
+  skippedRows = value;
+}
+
 export const
 
   columns = 8,

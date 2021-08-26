@@ -12,7 +12,6 @@ export default class GameObject {
 
     this.domEl = this[key] = domElement;
     this.container.append(domElement);
-
   }
 
   assign(props) {
