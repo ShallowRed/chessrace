@@ -1,4 +1,10 @@
-import { columns, boardRows, visibleRows, nRenders } from "app/config";
+import {
+  columns,
+  boardRows,
+  visibleRows,
+  nRenders,
+  skippedRows
+} from "app/config";
 import { getSquaresOnTrajectory } from 'app/utils/utils';
 
 export default class BoardModel {
@@ -16,28 +22,24 @@ export default class BoardModel {
     const regularSquares = [];
     const newEnnemyPieces = [];
 
-    this.forEachValue(({ value, coords, isPiece }) => {
+    this.forEachValue((value, [x, y]) => {
 
-      const squareOffset = this.getSquareOffset(coords);
-
-      if (squareOffset > 1 || squareOffset < -(visibleRows + 2)) return;
+      if (y < -1 || y > visibleRows + 1) return;
 
       if (value) {
 
-        regularSquares.push(coords);
+        regularSquares.push([x, y]);
       }
 
-      if (isPiece) {
-
-        if (!nRenders) {
-
-          newEnnemyPieces.push({ value, coords });
-
-        } else if (squareOffset === 1) {
-
-          ++coords[1];
-          newEnnemyPieces.push({ value, coords });
-        }
+      if (
+        typeof value == "string" &&
+        !nRenders ||
+        y === visibleRows + 1
+      ) {
+        newEnnemyPieces.push({
+          value,
+          coords: [x, y + nRenders - skippedRows]
+        });
       }
     });
 
@@ -50,18 +52,10 @@ export default class BoardModel {
       for (let j = 0; j < columns; j++) {
 
         const value = this.values[i][j];
-
-        callback({
-          value,
-          coords: [j, i - nRenders],
-          isPiece: typeof value == "string"
-        });
+        const coords = [j, i - nRenders];
+        callback(value, coords);
       }
     }
-  }
-
-  getSquareOffset(coords) {
-    return coords[1] - visibleRows;
   }
 
   get([x, y]) {

@@ -1,8 +1,8 @@
-import BoardModel from 'app/components/Board/board-model';
-import BoardCanvas from 'app/components/Board/board-canvas';
-import Player from 'app/components/Pieces/Player';
-import Ennemies from 'app/components/ennemies';
 import * as GameEvents from 'app/game-events';
+import Ennemies from 'app/ennemies';
+import BoardModel from 'app/board-model';
+import BoardCanvas from 'app/components/Board-canvas';
+import Player from 'app/components/Player';
 import events from 'app/utils/event-emitter';
 import { nRenders, setNRenders, setSkippedRows } from 'app/config';
 
@@ -38,7 +38,6 @@ export default {
       regularSquares,
       newEnnemyPieces
     } = this.model.parse();
-
     this.board.render(regularSquares);
 
     if (newEnnemyPieces.length) {

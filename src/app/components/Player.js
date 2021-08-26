@@ -1,4 +1,4 @@
-import Piece from 'app/components/Pieces/Piece';
+import Piece from 'app/components/Piece';
 import { startPiece, startPos, piecesColors } from "app/config";
 
 export default class Player extends Piece {
