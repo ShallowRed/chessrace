@@ -1,5 +1,5 @@
 import GameObject from 'app/components/Game-object';
-import { squareSize, shadowShift, skippedRows } from "app/config";
+import { squareSize, shadowShift } from "app/config";
 
 export default class Piece extends GameObject {
 
@@ -43,10 +43,10 @@ export default class Piece extends GameObject {
 
   getOffset() {
     const [x, y] = this.position;
-    
+
     return {
       left: x * squareSize,
-      bottom: (y + skippedRows) * squareSize + shadowShift
+      bottom: (y + GameObject.skippedRows) * squareSize + shadowShift
     }
   }
 }

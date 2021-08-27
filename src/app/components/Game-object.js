@@ -2,6 +2,8 @@ const gameObjectsContainer = document.querySelector("main>div");
 
 export default class GameObject {
 
+  static skippedRows = 0;
+
   container = gameObjectsContainer;
 
   constructor(domElement, key) {

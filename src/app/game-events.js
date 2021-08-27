@@ -1,7 +1,7 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { squareSize, translationDuration, nRenders, skippedRows, setSkippedRows } from "app/config";
+import { squareSize, translationDuration } from "app/config";
 import { translateY } from "app/utils/utils";
 
 export function START_GAME() {
@@ -31,7 +31,7 @@ export function SCROLL_ONE_SQUARE_DOWN() {
   if (!this.on) return;
 
   translateY(this.board.container, {
-    distance: squareSize * nRenders,
+    distance: squareSize * this.board.nRenders,
     duration: translationDuration
   });
 
@@ -46,8 +46,7 @@ export function NEXT_SCROLL_STEP() {
   if (!this.on) return;
 
   this.render();
-
-  setSkippedRows(skippedRows + 1);
+  this.model.incrementSkippedRows();
 
   events.emit("SET_EACH_PIECE", piece =>
     piece.decrementPositionY()
@@ -111,7 +110,7 @@ export function MOVE_ATTEMPT(square) {
 
         if (firstObstacle.isHole) {
 
-          events.emit("FALL_IN_HOLE", firstObstacle.coords);
+          events.emit("FALL_IN_HOLE", firstObstacle.position);
         }
 
         return;
@@ -132,7 +131,7 @@ export function MOVE_ATTEMPT(square) {
 
       if (firstObstacle.isHole) {
 
-        events.emit("FALL_IN_HOLE", firstObstacle.coords);
+        events.emit("FALL_IN_HOLE", firstObstacle.position);
       }
 
       return;
@@ -164,7 +163,6 @@ export function FALL_IN_HOLE(square) {
     events.emit("GAME_OVER");
   }, 0.9);
 }
-
 
 export function REMOVE_ENNEMY(ennemy) {
   if (!this.on) return;

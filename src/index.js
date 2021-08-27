@@ -10,5 +10,6 @@ import { generateMapBlueprint } from 'app/utils/map-generator';
 const blueprint = generateMapBlueprint();
 
 Game.init(blueprint);
+Game.bindEvents();
 Game.reset();
 Game.render();

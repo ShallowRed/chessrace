@@ -2,7 +2,7 @@ import EnnemyPiece from 'app/components/Ennemy-piece';
 
 export default {
 
-  add(pieceName, position) {
+  add({ pieceName, position }) {
 
     const ennemy = new EnnemyPiece(pieceName, position);
 
@@ -10,8 +10,8 @@ export default {
   },
 
   addEach(ennemies) {
-    ennemies.forEach(({ value, coords }) => {
-      this.add(value, coords)
+    ennemies.forEach(ennemy => {
+      this.add(ennemy)
     });
   },
 

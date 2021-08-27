@@ -7,8 +7,7 @@ import {
   columns,
   visibleRows,
   darkColor,
-  lightColor,
-  nRenders,
+  lightColor
 } from "app/config";
 
 const { floor } = Math;
@@ -43,7 +42,7 @@ export default class BoardCanvas extends GameObject {
 
     translateY(this.canvas, {
       duration: 0,
-      distance: -squareSize * nRenders
+      distance: -squareSize * this.nRenders
     });
 
     this.clear();
@@ -51,9 +50,11 @@ export default class BoardCanvas extends GameObject {
     this.fillSquares(squares);
     this.shadowOff();
     this.fillSquares(squares);
+    this.nRenders++;
   }
 
   reset() {
+    this.nRenders = 0;
     translateY(this.canvas, { duration: 0, distance: 0 });
     translateY(this.container, { duration: 0, distance: 0 });
   }
@@ -74,14 +75,14 @@ export default class BoardCanvas extends GameObject {
 
     this.ctx.fillRect(
       squareSize * x,
-      squareSize * (visibleRows - y - 1),
+      squareSize * (visibleRows - y - 1 + this.nRenders),
       squareSize,
       squareSize
     );
   }
 
   getSquareColor([x, y]) {
-    return [lightColor, darkColor][(x + y + nRenders) % 2];
+    return [lightColor, darkColor][(x + y) % 2];
   }
 
   shadowOn() {

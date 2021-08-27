@@ -1,11 +1,6 @@
-import {
-  columns,
-  boardRows,
-  visibleRows,
-  nRenders,
-  skippedRows
-} from "app/config";
-import { getSquaresOnTrajectory } from 'app/utils/utils';
+import GameObject from 'app/components/Game-object';
+import { columns, boardRows, visibleRows, } from "app/config";
+import { getSquaresOnTrajectory, filterMap } from 'app/utils/utils';
 
 export default class BoardModel {
 
@@ -15,55 +10,78 @@ export default class BoardModel {
 
   reset() {
     this.values = this.blueprint.map(row => ([...row]));
+
+    this.skippedRows = 0;
+    GameObject.skippedRows = 0;
+    this.lastRowRendered = 0
+    this.lastRowToRender = visibleRows;
+
+    this.regularSquares = [];
+  }
+
+  incrementSkippedRows() {
+    GameObject.skippedRows++;
+    this.skippedRows++;
   }
 
   parse() {
 
-    const regularSquares = [];
     const newEnnemyPieces = [];
 
-    this.forEachValue((value, [x, y]) => {
+    for (let i = this.lastRowRendered; i < this.lastRowToRender; i++) {
 
-      if (y < -1 || y > visibleRows + 1) return;
+      const parsedRow = this.parseRow(i);
 
-      if (value) {
+      this.regularSquares.push(parsedRow.regularSquares);
+      newEnnemyPieces.push(...parsedRow.pieces);
 
-        regularSquares.push([x, y]);
-      }
+      this.lastRowRendered = i + 1;
+    }
 
-      if (
-        typeof value == "string" &&
-        !nRenders ||
-        y === visibleRows + 1
-      ) {
-        newEnnemyPieces.push({
-          value,
-          coords: [x, y + nRenders - skippedRows]
-        });
-      }
-    });
+    this.lastRowToRender = this.lastRowRendered + 1;
 
-    return { regularSquares, newEnnemyPieces };
+    if (this.skippedRows) {
+
+      this.regularSquares.splice(0,1);
+    }
+
+    return {
+      regularSquares: this.regularSquares.flat(),
+      newEnnemyPieces
+    };
   }
 
-  forEachValue(callback) {
+  parseRow(rowIndex) {
 
-    for (let i = 0; i < boardRows; i++) {
-      for (let j = 0; j < columns; j++) {
+    const row = this.values[rowIndex];
 
-        const value = this.values[i][j];
-        const coords = [j, i - nRenders];
-        callback(value, coords);
-      }
+    const isNotHole = ({ value }) => !!value;
+    const getSquareCoord = ({ index }) => [index, rowIndex];
+
+    const isPiece = ({ value }) => typeof value === "string";
+    const getPiecePositionAndName = ({ index }) => ({
+      pieceName: row[index],
+      position: [index, rowIndex - this.skippedRows]
+    });
+
+    return {
+      regularSquares: filterMap(row, {
+        filter: isNotHole,
+        map: getSquareCoord
+      }),
+      pieces: filterMap(row, {
+        filter: isPiece,
+        map: getPiecePositionAndName
+      })
     }
   }
 
   get([x, y]) {
-    return this.values[y + nRenders - 1]?.[x];
+    return this.values[y + this.skippedRows]?.[x];
   }
 
   set([x, y], value) {
-    this.values[y + nRenders - 1][x] = value;
+    this.values[y + this.skippedRows][x] = value;
   }
 
   removeEnnemy(squareCoords) {
@@ -88,7 +106,7 @@ export default class BoardModel {
       .find(isObstacle);
 
     if (firstObstacle) return {
-      coords: firstObstacle,
+      position: firstObstacle,
       isHole: this.isHole(firstObstacle)
     }
   }
