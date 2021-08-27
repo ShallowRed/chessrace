@@ -1,7 +1,7 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { translationDuration } from "app/config";
+import { translationDuration, spriteSpeed } from "app/config";
 import { translateY } from "app/utils/utils";
 import GameObject from 'app/components/Game-object';
 
@@ -74,7 +74,7 @@ export function SQUARE_CLICKED(square) {
   events.emit("MOVE_ATTEMPT", square)
     .then(() => {
       this.player.updatePosition(square);
-      this.player.moveSprite();
+      this.player.moveSprite({ duration: spriteSpeed });
     })
 }
 
@@ -94,44 +94,21 @@ export function ENNEMY_CLICKED(ennemy) {
     setTimeout(() => {
       player.updatePiece(ennemy.pieceName);
       player.updatePosition(ennemy.position);
-      player.moveSprite();
+      player.moveSprite({ duration: spriteSpeed });
     })
   }
 }
 
 export function MOVE_ATTEMPT(square) {
 
-  const { player: { pieceName, position }, model } = this;
+  const hasObstacleOnTrajectory = (() => {
 
-  const pieceCanFall = ["bishop", "rook", "queen"].includes(pieceName);
-
-  if (model.isHole(square)) {
-
-    if (pieceCanFall) {
-
-      const firstObstacle =
-        model.getFirstObstacleOnTrajectory(position, square);
-
-      if (firstObstacle) {
-
-        if (firstObstacle.isHole) {
-
-          events.emit("FALL_IN_HOLE", firstObstacle.position);
-        }
-
-        return;
-      }
-    }
-
-    events.emit("FALL_IN_HOLE", square);
-
-    return;
-  }
-
-  if (pieceCanFall) {
+    if (
+      !["bishop", "rook", "queen"].includes(this.player.pieceName)
+    ) return;
 
     const firstObstacle =
-      model.getFirstObstacleOnTrajectory(position, square);
+      this.model.getFirstObstacleOnTrajectory(this.player.position, square);
 
     if (firstObstacle) {
 
@@ -140,9 +117,20 @@ export function MOVE_ATTEMPT(square) {
         events.emit("FALL_IN_HOLE", firstObstacle.position);
       }
 
-      return;
+      return true;
     }
+  })();
+
+  if (this.model.isHole(square)) {
+
+    if (hasObstacleOnTrajectory) return;
+
+    events.emit("FALL_IN_HOLE", square);
+
+    return;
   }
+
+  if (hasObstacleOnTrajectory) return;
 
   if (!this.on) {
 
@@ -159,7 +147,7 @@ export function SET_EACH_PIECE(callback) {
 export function FALL_IN_HOLE(square) {
 
   this.player.updatePosition(square);
-  this.player.moveSprite();
+  this.player.moveSprite({ duration: spriteSpeed });
 
   animationTimeout(() => {
     this.player.fall(this.on);

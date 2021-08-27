@@ -24,11 +24,9 @@ export default class BoardCanvas extends GameObject {
     this.canvas.width = columns * squareSize + shadowShift;
     this.canvas.height = rows * squareSize + shadowShift;
 
-    container.style.width =
-      `${this.canvas.width}px`;
+    container.style.width = `${this.canvas.width}px`;
 
-    container.style.height =
-      `${this.canvas.height - squareSize}px`;
+    container.style.height = `${this.canvas.height - squareSize}px`;
 
     this.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.getClickedSquare(evt));
@@ -55,6 +53,7 @@ export default class BoardCanvas extends GameObject {
     this.fillSquares(squares);
     this.shadowOff();
     this.fillSquares(squares);
+
     this.nRenders++;
   }
 
@@ -110,7 +109,6 @@ export default class BoardCanvas extends GameObject {
   getClickedSquare({ clientX, clientY }) {
 
     const { squareSize, shadowShift } = GameObject;
-
     const { left, bottom } = this.canvas.getBoundingClientRect();
 
     return [

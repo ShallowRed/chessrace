@@ -8,7 +8,6 @@ export default class Player extends Piece {
       color: piecesColors[0],
       className: "player"
     });
-
   }
 
   reset() {
@@ -16,7 +15,7 @@ export default class Player extends Piece {
     this.updatePosition([...startPos]);
   }
 
-  moveSprite(duration = 0.3) {
+  moveSprite({ duration }) {
 
     const { left, bottom } = this.getOffset();
 

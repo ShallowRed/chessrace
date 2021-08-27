@@ -13,7 +13,7 @@ export default {
     this.model = new BoardModel(blueprint);
     this.board = new BoardCanvas();
   },
-  
+
   bindEvents() {
     for (const message in GameEvents) {
       if (typeof GameEvents[message] === "function") {
@@ -27,7 +27,8 @@ export default {
     this.model.reset();
     this.board.reset();
     this.player.reset();
-    this.player.moveSprite(0);
+     
+    this.player.moveSprite({ duration: 0 });
   },
 
   render() {

@@ -3,6 +3,7 @@ const { round, random } = Math;
 export const
 
   translationDuration = 1,
+  spriteSpeed = 0.3,
 
   columns = 8,
   rows = 12,
