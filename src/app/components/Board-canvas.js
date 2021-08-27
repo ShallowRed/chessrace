@@ -1,18 +1,15 @@
 import GameObject from 'app/components/Game-object';
 import events from 'app/utils/event-emitter';
 import { translateY } from "app/utils/utils";
-import {
-  columns,
-  rows,
-  darkColor,
-  lightColor
-} from "app/config";
+import { columns, rows } from "app/config";
 
 const { floor } = Math;
 
 export default class BoardCanvas extends GameObject {
 
   ctx = this.canvas.getContext('2d');
+  darkColor = "#ae835a";
+  lightColor = "#f5dbc2";
 
   constructor() {
 
@@ -36,6 +33,14 @@ export default class BoardCanvas extends GameObject {
     this.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.getClickedSquare(evt));
     });
+
+    // this.laser = new GameObject({
+    //   laser: document.createElement('div')
+    // })
+    //
+    // this.laser.domEl.className = "laser";
+    // this.laser.domEl.style.width = `${this.canvas.width - shadowShift}px`;
+    // this.laser.domEl.style.bottom = `${(squareSize * 1.1) + shadowShift}px`;
   }
 
   render(squares) {
@@ -57,6 +62,7 @@ export default class BoardCanvas extends GameObject {
     this.nRenders = 0;
     translateY(this.canvas, { duration: 0, distance: 0 });
     translateY(GameObject.container, { duration: 0, distance: 0 });
+    // translateY(this.laser.domEl, { duration: 0, distance: 0 });
   }
 
   clear() {
@@ -84,7 +90,7 @@ export default class BoardCanvas extends GameObject {
   }
 
   getSquareColor([x, y]) {
-    return [lightColor, darkColor][(x + y) % 2];
+    return [this.lightColor, this.darkColor][(x + y) % 2];
   }
 
   shadowOn() {

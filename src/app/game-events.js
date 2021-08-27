@@ -36,6 +36,11 @@ export function SCROLL_ONE_SQUARE_DOWN() {
     duration: translationDuration
   });
 
+  // translateY(this.board.laser.domEl, {
+  //   distance: - GameObject.squareSize * this.board.nRenders,
+  //   duration: translationDuration
+  // });
+
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
     translationDuration
@@ -162,7 +167,7 @@ export function FALL_IN_HOLE(square) {
 
   animationTimeout(() => {
     events.emit("GAME_OVER");
-  }, 0.9);
+  }, 1.3);
 }
 
 export function REMOVE_ENNEMY(ennemy) {

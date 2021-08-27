@@ -8,6 +8,7 @@ export default class Player extends Piece {
       color: piecesColors[0],
       className: "player"
     });
+
   }
 
   reset() {
@@ -24,7 +25,7 @@ export default class Player extends Piece {
   }
 
   fall() {
-    this.sprite.style.transitionDuration = 0.6;
+    this.sprite.style.transitionDuration = '1s';
     this.sprite.style.transform += ` scale(0) rotate(180deg)`;
   }
 }

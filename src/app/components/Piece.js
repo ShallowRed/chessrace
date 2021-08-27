@@ -43,6 +43,7 @@ export default class Piece extends GameObject {
 
   isBeyondLimit() {
     return this.position[1] < 0;
+    // return this.position[1] < 2;
   }
 
   getOffset() {

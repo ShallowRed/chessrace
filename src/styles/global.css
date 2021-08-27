@@ -13,7 +13,8 @@ canvas,
 
 canvas,
 main>div,
-.piece {
+.laser,
+.piece:not(.player) {
   transition-timing-function: linear;
 }
 
@@ -35,4 +36,13 @@ canvas,
 
 .player {
   z-index: 700;
+  transition-timing-function: ease-out;
+}
+
+.laser {
+  z-index: 710;
+  position: absolute;
+  /* left: 50%; */
+  /* transform: translate(-50%, 0); */
+  border-top: solid 2px red;
 }
