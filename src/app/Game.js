@@ -13,7 +13,7 @@ export default {
     this.model = new BoardModel(blueprint);
     this.board = new BoardCanvas();
   },
-
+  
   bindEvents() {
     for (const message in GameEvents) {
       if (typeof GameEvents[message] === "function") {

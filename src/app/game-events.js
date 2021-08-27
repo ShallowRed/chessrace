@@ -1,8 +1,9 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { squareSize, translationDuration } from "app/config";
+import { translationDuration } from "app/config";
 import { translateY } from "app/utils/utils";
+import GameObject from 'app/components/Game-object';
 
 export function START_GAME() {
 
@@ -30,8 +31,8 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
 
-  translateY(this.board.container, {
-    distance: squareSize * this.board.nRenders,
+  translateY(GameObject.container, {
+    distance: GameObject.squareSize * this.board.nRenders,
     duration: translationDuration
   });
 
@@ -46,7 +47,7 @@ export function NEXT_SCROLL_STEP() {
   if (!this.on) return;
 
   this.render();
-  this.model.incrementSkippedRows();
+  GameObject.skippedRows++;
 
   events.emit("SET_EACH_PIECE", piece =>
     piece.decrementPositionY()

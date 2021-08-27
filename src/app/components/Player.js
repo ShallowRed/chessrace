@@ -5,8 +5,6 @@ export default class Player extends Piece {
 
   constructor() {
     super({
-      pieceName: startPiece,
-      position: startPos,
       color: piecesColors[0],
       className: "player"
     });
@@ -15,11 +13,6 @@ export default class Player extends Piece {
   reset() {
     this.updatePiece(startPiece.slice());
     this.updatePosition([...startPos]);
-  }
-
-  updatePiece(pieceName) {
-    this.pieceName = pieceName;
-    this.setSpriteClassName();
   }
 
   moveSprite(duration = 0.3) {

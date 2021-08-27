@@ -7,21 +7,25 @@ export default class EnnemyPiece extends Piece {
   constructor(pieceName, position) {
 
     super({
-      pieceName,
       color: piecesColors[1],
       className: "ennemy"
     });
 
+    this.updatePiece(pieceName);
     this.updatePosition(position);
+    this.setAbsolutePosition();
+
+    this.onClick(() =>
+      events.emit("ENNEMY_CLICKED", this)
+    );
+  }
+
+  setAbsolutePosition() {
 
     const { left, bottom } = this.getOffset();
 
     this.sprite.style.left = `${left}px`;
     this.sprite.style.bottom = `${bottom}px`;
-
-    this.onClick(() =>
-      events.emit("ENNEMY_CLICKED", this)
-    );
   }
 
   decrementPositionY() {

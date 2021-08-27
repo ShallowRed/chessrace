@@ -1,10 +1,15 @@
+import { columns } from "app/config";
+
 const gameObjectsContainer = document.querySelector("main>div");
+const { ceil, min, round } = Math;
 
 export default class GameObject {
 
   static skippedRows = 0;
+  static squareSize = ceil(min(window.innerWidth * 0.7, 500) / columns);
+  static shadowShift = round(GameObject.squareSize / 4);
 
-  container = gameObjectsContainer;
+  static container = gameObjectsContainer;
 
   constructor(domElement, key) {
 
@@ -13,11 +18,7 @@ export default class GameObject {
     ] = Object.entries(domElement);
 
     this.domEl = this[key] = domElement;
-    this.container.append(domElement);
-  }
-
-  assign(props) {
-    Object.assign(this, props);
+    GameObject.container.append(domElement);
   }
 
   onClick(callback) {

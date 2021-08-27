@@ -27,6 +27,6 @@ export function filterMap(array, { filter, map }) {
   return array.map((value, index) => {
       return filter({ value, index }) && ({ value, index });
     })
-    .filter(({ value, index }) => typeof index === "number")
+    .filter(({ index }) => typeof index === "number")
     .map(map)
 }

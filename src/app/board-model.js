@@ -1,5 +1,5 @@
 import GameObject from 'app/components/Game-object';
-import { columns, boardRows, visibleRows, } from "app/config";
+import { rows } from "app/config";
 import { getSquaresOnTrajectory, filterMap } from 'app/utils/utils';
 
 export default class BoardModel {
@@ -11,17 +11,11 @@ export default class BoardModel {
   reset() {
     this.values = this.blueprint.map(row => ([...row]));
 
-    this.skippedRows = 0;
     GameObject.skippedRows = 0;
     this.lastRowRendered = 0
-    this.lastRowToRender = visibleRows;
+    this.lastRowToRender = rows;
 
     this.regularSquares = [];
-  }
-
-  incrementSkippedRows() {
-    GameObject.skippedRows++;
-    this.skippedRows++;
   }
 
   parse() {
@@ -40,9 +34,9 @@ export default class BoardModel {
 
     this.lastRowToRender = this.lastRowRendered + 1;
 
-    if (this.skippedRows) {
+    if (GameObject.skippedRows) {
 
-      this.regularSquares.splice(0,1);
+      this.regularSquares.splice(0, 1);
     }
 
     return {
@@ -56,12 +50,14 @@ export default class BoardModel {
     const row = this.values[rowIndex];
 
     const isNotHole = ({ value }) => !!value;
+
     const getSquareCoord = ({ index }) => [index, rowIndex];
 
     const isPiece = ({ value }) => typeof value === "string";
+
     const getPiecePositionAndName = ({ index }) => ({
       pieceName: row[index],
-      position: [index, rowIndex - this.skippedRows]
+      position: [index, rowIndex - GameObject.skippedRows]
     });
 
     return {
@@ -77,11 +73,11 @@ export default class BoardModel {
   }
 
   get([x, y]) {
-    return this.values[y + this.skippedRows]?.[x];
+    return this.values[y + GameObject.skippedRows]?.[x];
   }
 
   set([x, y], value) {
-    this.values[y + this.skippedRows][x] = value;
+    this.values[y + GameObject.skippedRows][x] = value;
   }
 
   removeEnnemy(squareCoords) {

@@ -1,15 +1,14 @@
 import GameObject from 'app/components/Game-object';
-import { squareSize, shadowShift } from "app/config";
 
 export default class Piece extends GameObject {
 
-  constructor(props) {
+  constructor({ pieceName, position, color, className }) {
 
     super({
       sprite: document.createElement('div')
     });
 
-    this.assign(props);
+    Object.assign(this, { pieceName, position, color, className });
     this.setSpriteDimensions();
     this.setSpriteClassName();
   }
@@ -17,7 +16,7 @@ export default class Piece extends GameObject {
   setSpriteDimensions() {
     this.sprite.style.width =
       this.sprite.style.height =
-      `${squareSize}px`;
+      `${GameObject.squareSize}px`;
   }
 
   setSpriteClassName() {
@@ -26,7 +25,12 @@ export default class Piece extends GameObject {
   }
 
   removeSprite() {
-    this.container.removeChild(this.sprite);
+    GameObject.container.removeChild(this.sprite);
+  }
+
+  updatePiece(pieceName) {
+    this.pieceName = pieceName;
+    this.setSpriteClassName();
   }
 
   updatePosition(position) {
@@ -43,10 +47,11 @@ export default class Piece extends GameObject {
 
   getOffset() {
     const [x, y] = this.position;
+    const { squareSize, shadowShift, skippedRows } = GameObject;
 
     return {
       left: x * squareSize,
-      bottom: (y + GameObject.skippedRows) * squareSize + shadowShift
+      bottom: (y + skippedRows) * squareSize + shadowShift
     }
   }
 }

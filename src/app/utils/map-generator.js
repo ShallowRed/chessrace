@@ -1,4 +1,4 @@
-import { columns, boardRows } from "app/config";
+import { columns } from "app/config";
 
 const { floor, round, random } = Math;
 
@@ -7,12 +7,15 @@ export function generateMapBlueprint() {
   const ennemies = ["bishop", "pawn", "knight", "rook",
     "queen"
   ];
+
+  const rows = 30;
+
   // return new Array(boardRows)
   //   .fill(new Array(columns)
   //     .fill(1)
   //   )
 
-  return new Array(boardRows)
+  return new Array(rows)
     .fill(new Array(columns)
       .fill()
     )
