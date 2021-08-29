@@ -23,6 +23,8 @@ export function translateY(element, { distance, duration }) {
 }
 
 export function filterMap(array, { filter, map }) {
+  console.log("-----------------------------------------");
+  console.log(array);
 
   return array.map((value, index) => {
       return filter({ value, index }) && ({ value, index });

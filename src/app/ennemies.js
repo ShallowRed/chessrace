@@ -15,6 +15,12 @@ export default {
     });
   },
 
+  setEachPosition() {
+    this.list.forEach(ennemy =>
+      ennemy.setAbsolutePosition()
+    );
+  },
+
   remove(ennemy) {
 
     ennemy.removeSprite();

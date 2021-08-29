@@ -11,7 +11,6 @@ export const
   startPos = [4, 2],
   startPiece = "queen",
 
-
   piecesColors = (() => {
     return round(random()) ? ["white", "black"] : ["black",
       "white"

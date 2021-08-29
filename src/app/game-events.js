@@ -163,3 +163,17 @@ export function REMOVE_ENNEMY(ennemy) {
   this.ennemies.remove(ennemy);
   this.model.removeEnnemy(ennemy.position);
 }
+
+export function RESIZE() {
+  GameObject.setSquareSize();
+  this.board.setDimensions();
+
+  this.board.nRenders--;
+  this.board.render();
+
+  this.player.moveSprite({ duration: 0 });
+  this.ennemies.setEachPosition();
+  events.emit("SET_EACH_PIECE", piece =>
+    piece.setSpriteDimensions()
+  );
+}

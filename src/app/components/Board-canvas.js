@@ -17,16 +17,7 @@ export default class BoardCanvas extends GameObject {
       canvas: document.createElement('canvas')
     });
 
-    const { squareSize, shadowShift, container } = GameObject;
-
-    this.canvas.style.top = `-${squareSize}px`;
-
-    this.canvas.width = columns * squareSize + shadowShift;
-    this.canvas.height = rows * squareSize + shadowShift;
-
-    container.style.width = `${this.canvas.width}px`;
-
-    container.style.height = `${this.canvas.height - squareSize}px`;
+    this.setDimensions();
 
     this.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.getClickedSquare(evt));
@@ -41,7 +32,22 @@ export default class BoardCanvas extends GameObject {
     // this.laser.domEl.style.bottom = `${(squareSize * 1.1) + shadowShift}px`;
   }
 
-  render(squares) {
+  setDimensions() {
+
+    const { squareSize, shadowShift, container } = GameObject;
+
+    this.canvas.style.top = `-${squareSize}px`;
+
+    this.canvas.width = columns * squareSize + shadowShift;
+    this.canvas.height = rows * squareSize + shadowShift;
+
+    container.style.width = `${this.canvas.width}px`;
+    container.style.height = `${this.canvas.height - squareSize}px`;
+  }
+
+  render(squares = this.regularSquares) {
+
+    this.regularSquares = squares;
 
     translateY(this.canvas, {
       distance: -GameObject.squareSize * this.nRenders,

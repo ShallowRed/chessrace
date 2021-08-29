@@ -1,4 +1,5 @@
 import * as GameEvents from 'app/game-events';
+import GameObject from 'app/components/Game-object';
 import Ennemies from 'app/ennemies';
 import BoardModel from 'app/board-model';
 import BoardCanvas from 'app/components/Board-canvas';
@@ -8,10 +9,16 @@ import events from 'app/utils/event-emitter';
 export default {
 
   init(blueprint) {
+    // GameObject.setSquareSize();
+
     this.ennemies = Ennemies;
     this.player = new Player();
     this.model = new BoardModel(blueprint);
     this.board = new BoardCanvas();
+
+    window.addEventListener("resize", () => {
+      events.emit("RESIZE")
+    });
   },
 
   bindEvents() {
@@ -27,7 +34,7 @@ export default {
     this.model.reset();
     this.board.reset();
     this.player.reset();
-     
+
     this.player.moveSprite({ duration: 0 });
   },
 
@@ -43,5 +50,7 @@ export default {
     if (newEnnemyPieces.length) {
       this.ennemies.addEach(newEnnemyPieces);
     }
+
+    console.log(this.player);
   }
 }
