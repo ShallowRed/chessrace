@@ -1,4 +1,4 @@
-const { abs, sign, max } = Math;
+const { abs, sign, max, round, random } = Math;
 
 export function getSquaresOnTrajectory([x, y], [tx, ty]) {
 
@@ -23,12 +23,19 @@ export function translateY(element, { distance, duration }) {
 }
 
 export function filterMap(array, { filter, map }) {
-  console.log("-----------------------------------------");
-  console.log(array);
 
   return array.map((value, index) => {
       return filter({ value, index }) && ({ value, index });
     })
     .filter(({ index }) => typeof index === "number")
     .map(map)
+}
+
+export function getRandomPiecesColor() {
+
+  const colors = ["white", "black"];
+
+  const randomBool = round(random());
+
+  return [colors[randomBool], colors[1 - randomBool]]
 }

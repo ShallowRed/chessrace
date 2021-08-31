@@ -5,11 +5,6 @@ import 'styles/alpha.css';
 import 'app/utils/animation-polyfill';
 
 import Game from 'app/Game';
-import { generateMapBlueprint } from 'app/utils/map-generator';
+import { generateLevelBlueprint } from 'app/utils/level-generator';
 
-const blueprint = generateMapBlueprint();
-
-Game.init(blueprint);
-Game.bindEvents();
-Game.reset();
-Game.render();
+Game.init(generateLevelBlueprint({ columns: 8, rows: 30}));

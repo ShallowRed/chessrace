@@ -1,18 +1,17 @@
 import events from 'app/utils/event-emitter';
 import Piece from 'app/components/Piece';
-import { piecesColors } from 'app/config';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position) {
+  constructor(pieceName, position, color) {
 
     super({
-      color: piecesColors[1],
+      position,
+      pieceName,
+      color,
       className: "ennemy"
     });
 
-    this.updatePiece(pieceName);
-    this.updatePosition(position);
     this.setAbsolutePosition();
 
     this.onClick(() =>

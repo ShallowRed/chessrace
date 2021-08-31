@@ -1,28 +1,44 @@
 import GameObject from 'app/components/Game-object';
-import { rows } from "app/config";
 import { getSquaresOnTrajectory, filterMap } from 'app/utils/utils';
 
-export default class BoardModel {
+export default class LevelModel {
 
-  constructor(blueprint) {
-    this.blueprint = blueprint;
+  pieces = ["bishop", "king", "knight", "pawn", "queen", "rook"];
+
+  constructor(blueprint, visibleRows) {
+    this.visibleRows = visibleRows;
+    this.rows = blueprint.rows;
+    this.blueprint = this.parseBlueprint(blueprint);
+    this.reset();
   }
 
   reset() {
-    this.values = this.blueprint.map(row => ([...row]));
 
-    GameObject.skippedRows = 0;
-    this.lastRowRendered = 0
-    this.lastRowToRender = rows;
-
+    this.values = this.blueprint.map(rows => [...rows]);
     this.regularSquares = [];
+
+    this.lastRowRendered = 0
+    this.lastRowToRender = this.visibleRows;
+  }
+
+  parseBlueprint({ levelString, columns }) {
+
+    const columnsRegExp = `.{1,${columns}}`;
+
+    return levelString
+      .match(new RegExp(columnsRegExp, 'g'))
+      .map(rowString =>
+        rowString.split("")
+        .map(numberString => parseInt(numberString))
+      )
   }
 
   parse() {
 
     const newEnnemyPieces = [];
 
-    for (let i = this.lastRowRendered; i < this.lastRowToRender; i++) {
+    for (let i = this.lastRowRendered; i < this.lastRowToRender && i < this
+      .rows; i++) {
 
       const parsedRow = this.parseRow(i);
 
@@ -49,14 +65,13 @@ export default class BoardModel {
 
     const row = this.values[rowIndex];
 
-    const isNotHole = ({ value }) => !!value;
+    const isNotHole = ({ value }) => value > 0;
+    const isPiece = ({ value }) => value > 1;
 
     const getSquareCoord = ({ index }) => [index, rowIndex];
 
-    const isPiece = ({ value }) => typeof value === "string";
-
     const getPiecePositionAndName = ({ index }) => ({
-      pieceName: row[index],
+      pieceName: this.pieces[row[index] - 2],
       position: [index, rowIndex - GameObject.skippedRows]
     });
 
@@ -89,7 +104,7 @@ export default class BoardModel {
   }
 
   isEnnemy(squareCoord) {
-    return typeof this.get(squareCoord) === "string";
+    return this.get(squareCoord) > 1;
   }
 
   getFirstObstacleOnTrajectory(currentPosition, targetSquare) {

@@ -1,18 +1,24 @@
 import Piece from 'app/components/Piece';
-import { startPiece, startPos, piecesColors } from "app/config";
 
 export default class Player extends Piece {
 
-  constructor() {
+  constructor(startPiece, startPos, color) {
+
     super({
-      color: piecesColors[0],
+      pieceName: startPiece.slice(),
+      position: [...startPos],
+      color,
       className: "player"
     });
+
+    this.startPos = startPos;
+    this.startPiece = startPiece;
+    this.moveSprite({ duration: 0 });
   }
 
   reset() {
-    this.updatePiece(startPiece.slice());
-    this.updatePosition([...startPos]);
+    this.updatePiece(this.startPiece.slice());
+    this.updatePosition([...this.startPos]);
   }
 
   moveSprite({ duration }) {

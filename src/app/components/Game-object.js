@@ -1,7 +1,5 @@
-import { columns, rows } from "app/config";
-
 const gameObjectsContainer = document.querySelector("main>div");
-const { ceil, min, round } = Math;
+const { min, round } = Math;
 
 export default class GameObject {
 
@@ -9,7 +7,7 @@ export default class GameObject {
 
   static skippedRows = 0;
 
-  static setSquareSize() {
+  static setSquareSize(columns, rows) {
 
     this.squareSize = min(
       round(window.innerWidth / (columns + 1)),
@@ -33,5 +31,3 @@ export default class GameObject {
     this.domEl.addEventListener("click", callback);
   }
 }
-
-GameObject.setSquareSize();

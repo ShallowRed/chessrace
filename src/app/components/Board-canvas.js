@@ -1,21 +1,24 @@
 import GameObject from 'app/components/Game-object';
 import events from 'app/utils/event-emitter';
 import { translateY } from "app/utils/utils";
-import { columns, rows } from "app/config";
 
-const { floor } = Math;
+const { floor, round } = Math;
 
 export default class BoardCanvas extends GameObject {
 
   ctx = this.canvas.getContext('2d');
   darkColor = "#ae835a";
   lightColor = "#f5dbc2";
+  nRenders = 0;
 
-  constructor() {
+  constructor(columns, rows) {
 
     super({
       canvas: document.createElement('canvas')
     });
+
+    this.columns = columns;
+    this.rows = rows;
 
     this.setDimensions();
 
@@ -38,8 +41,8 @@ export default class BoardCanvas extends GameObject {
 
     this.canvas.style.top = `-${squareSize}px`;
 
-    this.canvas.width = columns * squareSize + shadowShift;
-    this.canvas.height = rows * squareSize + shadowShift;
+    this.canvas.width = this.columns * squareSize + shadowShift;
+    this.canvas.height = this.rows * squareSize + shadowShift;
 
     container.style.width = `${this.canvas.width}px`;
     container.style.height = `${this.canvas.height - squareSize}px`;
@@ -63,6 +66,29 @@ export default class BoardCanvas extends GameObject {
     this.nRenders++;
   }
 
+  renderEnd(row) {
+
+    this.ctx.fillStyle =
+    this.ctx.strokeStyle = "#333";
+
+    const squareSize = floor(GameObject.squareSize / 5);
+    const nSquare = floor((this.canvas.width - GameObject.shadowShift) /
+      squareSize);
+
+    for (let j = 0; j < 5; j++) {
+      for (let i = 0; i < nSquare; i += 2) {
+        this.ctx.fillRect(
+          (i + j % 2) * squareSize,
+          GameObject.squareSize * (this.rows - row - 1 + this.nRenders) -
+          (j + 1) * squareSize - 5,
+          squareSize,
+          squareSize
+        );
+      }
+    }
+
+  }
+
   reset() {
     this.nRenders = 0;
     translateY(this.canvas, { duration: 0, distance: 0 });
@@ -76,19 +102,21 @@ export default class BoardCanvas extends GameObject {
 
   fillSquares(squares) {
     squares.forEach(square => {
-      this.fillSquare(square);
+      this.fillSquare(
+        square,
+        GameObject.squareSize,
+        this.getSquareColor(square)
+      );
     });
   }
 
-  fillSquare([x, y]) {
+  fillSquare([x, y], squareSize, color) {
 
-    this.ctx.fillStyle = this.getSquareColor([x, y]);
-
-    const { squareSize } = GameObject;
+    this.ctx.fillStyle = color;
 
     this.ctx.fillRect(
       squareSize * x,
-      squareSize * (rows - y - 1 + this.nRenders),
+      squareSize * (this.rows - y - 1 + this.nRenders),
       squareSize,
       squareSize
     );

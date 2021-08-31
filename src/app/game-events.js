@@ -1,7 +1,6 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { translationDuration, spriteSpeed } from "app/config";
 import { translateY } from "app/utils/utils";
 import GameObject from 'app/components/Game-object';
 
@@ -27,23 +26,35 @@ export function GAME_OVER() {
   );
 }
 
+export function GAME_WON() {
+
+  this.on = false;
+  this.reset();
+  this.render();
+
+  setTimeout(() =>
+    alert("Game won"),
+    100
+  );
+}
+
 export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
 
   translateY(GameObject.container, {
     distance: GameObject.squareSize * this.board.nRenders,
-    duration: translationDuration
+    duration: this.translationDuration
   });
 
   // translateY(this.board.laser.domEl, {
   //   distance: - GameObject.squareSize * this.board.nRenders,
-  //   duration: translationDuration
+  //   duration: this.translationDuration
   // });
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
-    translationDuration
+    this.translationDuration
   );
 }
 
@@ -62,6 +73,10 @@ export function NEXT_SCROLL_STEP() {
     events.emit("GAME_OVER");
   }
 
+  if (this.player.position[1] >= this.model.rows - GameObject.skippedRows) {
+    events.emit("GAME_WON");
+  }
+
   window.requestAnimationFrame(() =>
     events.emit("SCROLL_ONE_SQUARE_DOWN")
   );
@@ -74,13 +89,13 @@ export function SQUARE_CLICKED(square) {
   events.emit("MOVE_ATTEMPT", square)
     .then(() => {
       this.player.updatePosition(square);
-      this.player.moveSprite({ duration: spriteSpeed });
+      this.player.moveSprite({ duration: this.spriteSpeed });
     })
 }
 
 export function ENNEMY_CLICKED(ennemy) {
 
-  const { player } = this;
+  const { player, spriteSpeed } = this;
 
   if (!isValidTake(player, ennemy.position)) return;
 
@@ -101,11 +116,9 @@ export function ENNEMY_CLICKED(ennemy) {
 
 export function MOVE_ATTEMPT(square) {
 
-  const hasObstacleOnTrajectory = (() => {
-
-    if (
-      !["bishop", "rook", "queen"].includes(this.player.pieceName)
-    ) return;
+  if (
+    ["bishop", "rook", "queen"].includes(this.player.pieceName)
+  ) {
 
     const firstObstacle =
       this.model.getFirstObstacleOnTrajectory(this.player.position, square);
@@ -117,20 +130,16 @@ export function MOVE_ATTEMPT(square) {
         events.emit("FALL_IN_HOLE", firstObstacle.position);
       }
 
-      return true;
+      return;
     }
-  })();
+  }
 
   if (this.model.isHole(square)) {
-
-    if (hasObstacleOnTrajectory) return;
 
     events.emit("FALL_IN_HOLE", square);
 
     return;
   }
-
-  if (hasObstacleOnTrajectory) return;
 
   if (!this.on) {
 
@@ -147,7 +156,7 @@ export function SET_EACH_PIECE(callback) {
 export function FALL_IN_HOLE(square) {
 
   this.player.updatePosition(square);
-  this.player.moveSprite({ duration: spriteSpeed });
+  this.player.moveSprite({ duration: this.spriteSpeed });
 
   animationTimeout(() => {
     this.player.fall(this.on);
@@ -165,7 +174,7 @@ export function REMOVE_ENNEMY(ennemy) {
 }
 
 export function RESIZE() {
-  GameObject.setSquareSize();
+  GameObject.setSquareSize(this.columns, this.rows);
   this.board.setDimensions();
 
   this.board.nRenders--;
