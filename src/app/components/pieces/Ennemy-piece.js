@@ -1,9 +1,9 @@
 import events from 'app/utils/event-emitter';
-import Piece from 'app/components/Piece';
+import Piece from 'app/components/pieces/Piece';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position, color) {
+  constructor(pieceName, position, color, skippedRows) {
 
     super({
       position,
@@ -12,16 +12,16 @@ export default class EnnemyPiece extends Piece {
       className: "ennemy"
     });
 
-    this.setAbsolutePosition();
+    this.setAbsolutePosition(skippedRows);
 
     this.onClick(() =>
       events.emit("ENNEMY_CLICKED", this)
     );
   }
 
-  setAbsolutePosition() {
+  setAbsolutePosition(skippedRows) {
 
-    const { left, bottom } = this.getOffset();
+    const { left, bottom } = this.getOffset(skippedRows);
 
     this.sprite.style.left = `${left}px`;
     this.sprite.style.bottom = `${bottom}px`;
@@ -30,7 +30,11 @@ export default class EnnemyPiece extends Piece {
   decrementPositionY() {
     super.decrementPositionY();
     if (this.isBeyondLimit()) {
-      events.emit("REMOVE_ENNEMY", this);
+      this.fall();
+      setTimeout(
+
+        () => events.emit("REMOVE_ENNEMY", this), 1000
+      )
     }
   }
 }

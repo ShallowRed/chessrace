@@ -8,7 +8,7 @@ export default class Piece extends GameObject {
       sprite: document.createElement('div')
     });
 
-    Object.assign(this, { pieceName, position, color, className });
+    this.assign({ pieceName, position, color, className });
     this.setSpriteDimensions();
     this.setSpriteClassName();
   }
@@ -46,13 +46,18 @@ export default class Piece extends GameObject {
     // return this.position[1] < 2;
   }
 
-  getOffset() {
+  getOffset(skippedRows) {
     const [x, y] = this.position;
-    const { squareSize, shadowShift, skippedRows } = GameObject;
+    const { squareSize, shadowShift } = GameObject;
 
     return {
-      left: x * squareSize,
-      bottom: (y + skippedRows) * squareSize + shadowShift
+      left: x * squareSize + shadowShift,
+      bottom: (y + skippedRows) * squareSize + shadowShift + squareSize
     }
+  }
+
+  fall() {
+    this.sprite.style.transitionDuration = '1s';
+    this.sprite.style.transform += `translate(15px, 15px) scale(0) rotate(180deg) `;
   }
 }

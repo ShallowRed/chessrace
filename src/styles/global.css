@@ -2,6 +2,7 @@ main {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  /* transform: skew(-14deg, 6deg) scaleY(1) translate(-50%, -50%); */
   overflow: hidden;
 }
 
@@ -13,7 +14,6 @@ canvas,
 
 canvas,
 main>div,
-.laser,
 .piece:not(.player) {
   transition-timing-function: linear;
 }
@@ -26,6 +26,7 @@ canvas,
 }
 
 .piece {
+  z-index: 980;
   left: 0;
   bottom: 0;
   background-size: 90%;
@@ -35,14 +36,6 @@ canvas,
 }
 
 .player {
-  z-index: 700;
+  z-index: 990;
   transition-timing-function: ease-out;
-}
-
-.laser {
-  z-index: 710;
-  position: absolute;
-  /* left: 50%; */
-  /* transform: translate(-50%, 0); */
-  border-top: solid 2px red;
 }

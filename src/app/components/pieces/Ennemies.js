@@ -1,4 +1,4 @@
-import EnnemyPiece from 'app/components/Ennemy-piece';
+import EnnemyPiece from 'app/components/pieces/Ennemy-piece';
 
 export default class Ennemies {
 
@@ -8,22 +8,22 @@ export default class Ennemies {
     this.color = color;
   }
 
-  add({ pieceName, position }) {
+  add({ pieceName, position }, skippedRows) {
 
-    const ennemy = new EnnemyPiece(pieceName, position, this.color);
+    const ennemy = new EnnemyPiece(pieceName, position, this.color, skippedRows);
 
     this.list.push(ennemy);
   }
 
-  addEach(ennemies) {
+  addEach(ennemies, skippedRows) {
     ennemies.forEach(ennemy => {
-      this.add(ennemy)
+      this.add(ennemy, skippedRows)
     });
   }
 
-  setEachPosition() {
+  setEachPosition(skippedRows) {
     this.list.forEach(ennemy =>
-      ennemy.setAbsolutePosition()
+      ennemy.setAbsolutePosition(skippedRows)
     );
   }
 
@@ -34,7 +34,7 @@ export default class Ennemies {
     this.list.splice(this.list.indexOf(ennemy), 1);
   }
 
-  reset() {
+  empty() {
 
     if (this.list) {
       this.list.forEach(ennemy =>

@@ -1,11 +1,11 @@
 import * as GameEvents from 'app/game-events';
 import GameObject from 'app/components/Game-object';
-import Ennemies from 'app/components/Ennemies';
+import Ennemies from 'app/components/pieces/Ennemies';
 import LevelModel from 'app/level-model';
-import BoardCanvas from 'app/components/Board-canvas';
-import Player from 'app/components/Player-piece';
+import Board from 'app/components/board/Board';
+import Player from 'app/components/pieces/Player-piece';
 import events from 'app/utils/event-emitter';
-import { getRandomPiecesColor } from 'app/utils/utils';
+import { getBoundMethods, getRandomPiecesColor } from 'app/utils/utils';
 
 export default {
 
@@ -20,63 +20,57 @@ export default {
   piecesColors: getRandomPiecesColor(),
 
   init(levelBlueprint) {
-    this.parseBlueprint(levelBlueprint);
-    this.createGameObjects();
-    this.render();
-    this.bindEvents();
-    this.listenWindowResizing();
-  },
 
-  parseBlueprint(levelBlueprint) {
     this.columns = levelBlueprint.columns;
-    this.model = new LevelModel(levelBlueprint, this.rows);
-  },
 
-  createGameObjects() {
+    const { rows, columns, piecesColors, startPos, startPiece } = this;
 
-    const [playerColor, ennemyColor] = this.piecesColors;
+    GameObject.setSquareSize(columns, rows);
 
-    GameObject.setSquareSize(this.columns, this.rows);
-    this.board = new BoardCanvas(this.columns, this.rows);
-    this.ennemies = new Ennemies(ennemyColor);
-    this.player = new Player(this.startPiece, this.startPos, playerColor);
-  },
+    this.model = new LevelModel(levelBlueprint, rows);
 
-  bindEvents() {
-    for (const message in GameEvents) {
-      if (typeof GameEvents[message] !== "function") return;
-      events.on(message, GameEvents[message].bind(this));
-    }
+    this.board = new Board(columns, rows);
+    this.ennemies = new Ennemies(piecesColors[1]);
+    this.player = new Player(startPiece, startPos, piecesColors[0]);
+
+    this.render();
+
+    getBoundMethods.call(this, GameEvents, events.on);
   },
 
   render() {
 
-    const { regularSquares, newEnnemyPieces } = this.model.parse();
-    const { lastRowRendered, rows } = this.model;
+    const { board, model, ennemies } = this;
 
-    this.board.render(regularSquares);
-
-    if (newEnnemyPieces.length) {
-      this.ennemies.addEach(newEnnemyPieces);
+    if (board.nRenders) {
+      board.clear();
     }
 
-    if (lastRowRendered === rows) {
-      this.board.renderEnd(lastRowRendered);
-    };
+    model.parse();
+    board.render(model);
+
+    if (model.newEnnemyPieces.length) {
+      ennemies.addEach(model.newEnnemyPieces, model.skippedRows);
+    }
+
+    if (board.nRenders > 1) {
+      model.skippedRows++;
+    }
   },
 
   reset() {
-    GameObject.skippedRows = 0;
-    this.model.reset();
-    this.board.reset();
-    this.ennemies.reset();
-    this.player.reset();
-    this.player.moveSprite({ duration: 0 });
-  },
+    const { board, model, ennemies, player } = this;
 
-  listenWindowResizing() {
-    window.addEventListener("resize", () => {
-      events.emit("RESIZE")
-    });
-  }
+    GameObject.resetTranslation();
+    board.reset();
+    model.reset();
+    ennemies.empty();
+    player.init();
+
+    this.render();
+  },
 }
+
+window.addEventListener("resize", () => {
+  events.emit("RESIZE")
+});

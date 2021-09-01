@@ -4,7 +4,7 @@ export default new class EventEmitter {
     this.listeners = {};
   }
 
-  on(message, listener) {
+  on = (message, listener) => {
 
     if (!this.listeners[message]) {
       this.listeners[message] = [];

@@ -1,7 +1,7 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
+import { translateY } from 'app/utils/utils';
 import { animationTimeout } from 'app/utils/animation-timeout';
-import { translateY } from "app/utils/utils";
 import GameObject from 'app/components/Game-object';
 
 export function START_GAME() {
@@ -18,7 +18,6 @@ export function GAME_OVER() {
 
   this.on = false;
   this.reset();
-  this.render();
 
   setTimeout(() =>
     alert("Game Over"),
@@ -29,12 +28,12 @@ export function GAME_OVER() {
 export function GAME_WON() {
 
   this.on = false;
-  this.reset();
-  this.render();
 
-  setTimeout(() =>
-    alert("Game won"),
-    100
+  setTimeout(() => {
+      this.reset();
+      alert("Game won");
+    },
+    500
   );
 }
 
@@ -42,15 +41,13 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
 
-  translateY(GameObject.container, {
-    distance: GameObject.squareSize * this.board.nRenders,
+  GameObject.translateOneSquareDown(this.board.nRenders, this
+    .translationDuration);
+
+  translateY(this.board.testcanvas, {
+    distance: -this.board.nRenders * GameObject.squareSize,
     duration: this.translationDuration
   });
-
-  // translateY(this.board.laser.domEl, {
-  //   distance: - GameObject.squareSize * this.board.nRenders,
-  //   duration: this.translationDuration
-  // });
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
@@ -62,18 +59,26 @@ export function NEXT_SCROLL_STEP() {
 
   if (!this.on) return;
 
+  this.board.translateOneSquareUp();
+
   this.render();
-  GameObject.skippedRows++;
 
   events.emit("SET_EACH_PIECE", piece =>
     piece.decrementPositionY()
   );
 
   if (this.player.isBeyondLimit()) {
-    events.emit("GAME_OVER");
+
+    this.player.fall(this.on);
+
+    animationTimeout(() => {
+      events.emit("GAME_OVER");
+    }, 1.3);
+
+    return;
   }
 
-  if (this.player.position[1] >= this.model.rows - GameObject.skippedRows) {
+  if (this.player.position[1] >= this.model.rows - this.model.skippedRows) {
     events.emit("GAME_WON");
   }
 
@@ -84,18 +89,23 @@ export function NEXT_SCROLL_STEP() {
 
 export function SQUARE_CLICKED(square) {
 
-  if (!isValidMove(this.player, square)) return;
+  if (
+    !isValidMove(this.player, square) ||
+    square[0] >= this.columns ||
+    square[1] < 0
+  ) return;
 
   events.emit("MOVE_ATTEMPT", square)
     .then(() => {
       this.player.updatePosition(square);
-      this.player.moveSprite({ duration: this.spriteSpeed });
+      this.player.moveSprite({ duration: this.spriteSpeed }, this.model
+        .skippedRows);
     })
 }
 
 export function ENNEMY_CLICKED(ennemy) {
 
-  const { player, spriteSpeed } = this;
+  const { player, spriteSpeed, model } = this;
 
   if (!isValidTake(player, ennemy.position)) return;
 
@@ -109,7 +119,7 @@ export function ENNEMY_CLICKED(ennemy) {
     setTimeout(() => {
       player.updatePiece(ennemy.pieceName);
       player.updatePosition(ennemy.position);
-      player.moveSprite({ duration: spriteSpeed });
+      player.moveSprite({ duration: spriteSpeed }, model.skippedRows);
     })
   }
 }
@@ -156,7 +166,8 @@ export function SET_EACH_PIECE(callback) {
 export function FALL_IN_HOLE(square) {
 
   this.player.updatePosition(square);
-  this.player.moveSprite({ duration: this.spriteSpeed });
+  this.player.moveSprite({ duration: this.spriteSpeed }, this.model
+    .skippedRows);
 
   animationTimeout(() => {
     this.player.fall(this.on);
@@ -174,14 +185,13 @@ export function REMOVE_ENNEMY(ennemy) {
 }
 
 export function RESIZE() {
+
   GameObject.setSquareSize(this.columns, this.rows);
   this.board.setDimensions();
-
   this.board.nRenders--;
-  this.board.render();
-
-  this.player.moveSprite({ duration: 0 });
-  this.ennemies.setEachPosition();
+  this.board.render(this.model);
+  this.player.moveSprite({ duration: 0 }, this.model.skippedRows);
+  this.ennemies.setEachPosition(this.model.skippedRows);
   events.emit("SET_EACH_PIECE", piece =>
     piece.setSpriteDimensions()
   );

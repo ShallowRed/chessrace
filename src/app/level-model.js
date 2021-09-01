@@ -1,8 +1,8 @@
-import GameObject from 'app/components/Game-object';
 import { getSquaresOnTrajectory, filterMap } from 'app/utils/utils';
 
 export default class LevelModel {
 
+  skippedRows = 0;
   pieces = ["bishop", "king", "knight", "pawn", "queen", "rook"];
 
   constructor(blueprint, visibleRows) {
@@ -13,12 +13,12 @@ export default class LevelModel {
   }
 
   reset() {
-
+    this.skippedRows = 0;
+    this.firstParse = true;
     this.values = this.blueprint.map(rows => [...rows]);
-    this.regularSquares = [];
-
-    this.lastRowRendered = 0
-    this.lastRowToRender = this.visibleRows;
+    this.deepRegularSquares = [];
+    this.lastRowRendered = 0;
+    this.lastRowToRender = this.visibleRows + 1;
   }
 
   parseBlueprint({ levelString, columns }) {
@@ -35,30 +35,29 @@ export default class LevelModel {
 
   parse() {
 
-    const newEnnemyPieces = [];
+    this.newEnnemyPieces = [];
 
-    for (let i = this.lastRowRendered; i < this.lastRowToRender && i < this
-      .rows; i++) {
+    const isVisibleRow = row =>
+      row < this.lastRowToRender &&
+      row < this.rows;
 
-      const parsedRow = this.parseRow(i);
+    for (let row = this.lastRowRendered; isVisibleRow(row); row++) {
 
-      this.regularSquares.push(parsedRow.regularSquares);
-      newEnnemyPieces.push(...parsedRow.pieces);
+      const parsedRow = this.parseRow(row);
 
-      this.lastRowRendered = i + 1;
+      this.deepRegularSquares.push(parsedRow.regularSquares);
+      this.newEnnemyPieces.push(...parsedRow.pieces);
+
+      this.lastRowRendered = row + 1;
     }
 
-    this.lastRowToRender = this.lastRowRendered + 1;
+    this.lastRowToRender = this.lastRowRendered + 2;
 
-    if (GameObject.skippedRows) {
-
-      this.regularSquares.splice(0, 1);
+    if (this.skippedRows) {
+      this.deepRegularSquares.splice(0, 1);
     }
 
-    return {
-      regularSquares: this.regularSquares.flat(),
-      newEnnemyPieces
-    };
+    this.regularSquares = this.deepRegularSquares.flat();
   }
 
   parseRow(rowIndex) {
@@ -72,7 +71,7 @@ export default class LevelModel {
 
     const getPiecePositionAndName = ({ index }) => ({
       pieceName: this.pieces[row[index] - 2],
-      position: [index, rowIndex - GameObject.skippedRows]
+      position: [index, rowIndex - this.skippedRows]
     });
 
     return {
@@ -87,12 +86,12 @@ export default class LevelModel {
     }
   }
 
-  get([x, y]) {
-    return this.values[y + GameObject.skippedRows]?.[x];
+  get([col, row]) {
+    return this.values[row + this.skippedRows]?.[col];
   }
 
-  set([x, y], value) {
-    this.values[y + GameObject.skippedRows][x] = value;
+  set([col, row], value) {
+    this.values[row + this.skippedRows][col] = value;
   }
 
   removeEnnemy(squareCoords) {
