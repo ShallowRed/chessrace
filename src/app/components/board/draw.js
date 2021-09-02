@@ -4,28 +4,28 @@ export function square({ left, top, size }) {
   this.ctx.fillRect(left, top, size, size);
 }
 
-export function bottomFace({ left, top, size }) {
-  const { depth } = this;
+export function bottomFace(ctx, { left, top, size }) {
+  const { depth } = GameObject;
 
-  this.ctx.beginPath();
-  this.ctx.moveTo(left, top);
-  this.ctx.lineTo(left + size, top);
-  this.ctx.lineTo(left + size + depth, top + depth);
-  this.ctx.lineTo(left + depth, top + depth);
-  this.ctx.closePath();
-  this.ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(left, top);
+  ctx.lineTo(left + size, top);
+  ctx.lineTo(left + size + depth, top + depth);
+  ctx.lineTo(left + depth, top + depth);
+  ctx.closePath();
+  ctx.fill();
 }
 
-export function rightFace({ left, top, size }) {
-  const { depth } = this;
+export function rightFace(ctx, { left, top, size }) {
+  const { depth } = GameObject;
 
-  this.ctx.beginPath();
-  this.ctx.moveTo(left, top);
-  this.ctx.lineTo(left + depth, top + depth);
-  this.ctx.lineTo(left + depth, top + size + depth);
-  this.ctx.lineTo(left, top + size);
-  this.ctx.closePath();
-  this.ctx.fill();
+  ctx.beginPath();
+  ctx.moveTo(left, top);
+  ctx.lineTo(left + depth, top + depth);
+  ctx.lineTo(left + depth, top + size + depth);
+  ctx.lineTo(left, top + size);
+  ctx.closePath();
+  ctx.fill();
 }
 
 export function horizontalLine(y, color, width = 4) {
@@ -40,20 +40,17 @@ export function horizontalLine(y, color, width = 4) {
 export const setShadow = {
 
   on() {
-
     const { shadowShift } = GameObject;
-    this.testctx.fillStyle = "white";
     this.ctx.fillStyle = "white";
-    this.testctx.shadowColor = "#999";
+    this.ctx2.fillStyle = "white";
     this.ctx.shadowColor = "#999";
-    this.testctx.shadowBlur = shadowShift / 3;
-    this.ctx.shadowBlur = shadowShift / 3;
-    // this.ctx.shadowOffsetX = shadowShift / 5;
-    // this.ctx.shadowOffsetY = shadowShift / 5;
+    this.ctx2.shadowColor = "#999";
+    this.ctx.shadowBlur = shadowShift / 2;
+    this.ctx2.shadowBlur = shadowShift / 2;
   },
 
   off() {
-    this.testctx.shadowColor = "transparent";
     this.ctx.shadowColor = "transparent";
+    this.ctx2.shadowColor = "transparent";
   }
 }

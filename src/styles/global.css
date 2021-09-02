@@ -1,7 +1,7 @@
 main {
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -45%);
   /* transform: skew(-14deg, 6deg) scaleY(1) translate(-50%, -50%); */
   overflow: hidden;
 }
@@ -14,7 +14,8 @@ canvas,
 
 canvas,
 main>div,
-.piece:not(.player) {
+.piece:not(.player),
+* {
   transition-timing-function: linear;
 }
 

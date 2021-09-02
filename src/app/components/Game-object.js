@@ -8,19 +8,24 @@ export default class GameObject {
 
   static skippedRows = 0;
 
-  static setSquareSize(columns, rows) {
+  static setsize(columns, rows) {
 
-    this.squareSize = min(
+    this.size = min(
       round(0.9 * window.innerWidth / (columns + 1)),
       round(0.9 * window.innerHeight / (rows))
     );
 
-    this.shadowShift = round(this.squareSize / 2);
+    this.shadowShift = Math.round(this.size / 2);
+
+    this.depth = Math.round(this.size / 6);
+
+    this.left = this.shadowShift - this.depth;
+
   }
 
   static translateOneSquareDown(nRenders, duration) {
     translateY(this.container, {
-      distance: this.squareSize * nRenders,
+      distance: this.size * nRenders,
       duration
     });
   }

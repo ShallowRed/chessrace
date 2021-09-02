@@ -1,6 +1,5 @@
 import events from 'app/utils/event-emitter';
 import { isValidMove, isValidTake } from 'app/utils/pieces';
-import { translateY } from 'app/utils/utils';
 import { animationTimeout } from 'app/utils/animation-timeout';
 import GameObject from 'app/components/Game-object';
 
@@ -13,6 +12,18 @@ export function START_GAME() {
     10
   );
 }
+
+export function KEYDOWN(code) {
+  if (code === 'Space') {
+    this.on = !this.on;
+  }
+  if (code === 'KeyN') {
+    this.board.canvas2.style.display =
+      this.board.canvas2.style.display === "none" ?
+      "block" : "none";
+  }
+}
+
 
 export function GAME_OVER() {
 
@@ -44,10 +55,7 @@ export function SCROLL_ONE_SQUARE_DOWN() {
   GameObject.translateOneSquareDown(this.board.nRenders, this
     .translationDuration);
 
-  translateY(this.board.testcanvas, {
-    distance: -this.board.nRenders * GameObject.squareSize,
-    duration: this.translationDuration
-  });
+  this.board.translateOneSquareDown(this.translationDuration);
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
@@ -92,6 +100,7 @@ export function SQUARE_CLICKED(square) {
   if (
     !isValidMove(this.player, square) ||
     square[0] >= this.columns ||
+    square[0] < 0 ||
     square[1] < 0
   ) return;
 
@@ -186,7 +195,7 @@ export function REMOVE_ENNEMY(ennemy) {
 
 export function RESIZE() {
 
-  GameObject.setSquareSize(this.columns, this.rows);
+  GameObject.setsize(this.columns, this.rows);
   this.board.setDimensions();
   this.board.nRenders--;
   this.board.render(this.model);

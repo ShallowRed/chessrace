@@ -16,7 +16,7 @@ export default class Piece extends GameObject {
   setSpriteDimensions() {
     this.sprite.style.width =
       this.sprite.style.height =
-      `${GameObject.squareSize}px`;
+      `${GameObject.size}px`;
   }
 
   setSpriteClassName() {
@@ -43,16 +43,15 @@ export default class Piece extends GameObject {
 
   isBeyondLimit() {
     return this.position[1] < 0;
-    // return this.position[1] < 2;
   }
 
   getOffset(skippedRows) {
     const [x, y] = this.position;
-    const { squareSize, shadowShift } = GameObject;
+    const { size, left, shadowShift } = GameObject;
 
     return {
-      left: x * squareSize + shadowShift,
-      bottom: (y + skippedRows) * squareSize + shadowShift + squareSize
+      left: x * size + left,
+      bottom: (y + skippedRows + 1) * size + shadowShift
     }
   }
 

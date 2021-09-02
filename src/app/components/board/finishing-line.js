@@ -1,9 +1,9 @@
 import GameObject from 'app/components/Game-object';
-const { floor, round, ceil } = Math;
+const { floor, ceil } = Math;
 
 export function render(endRow) {
 
-  const { squareSize, shadowShift } = GameObject;
+  const { size, shadowShift } = GameObject;
 
   const bandSquares = this.finishingLine.squares.get();
   const boardLimit = this.squares.getTop(endRow) - 5;
@@ -11,7 +11,7 @@ export function render(endRow) {
   const width = this.canvas.width - shadowShift;
   const height = bandSquares.size * bandSquares.rows;
   const left = 0;
-  const top = boardLimit - squareSize - 2 + (squareSize -height) / 2;
+  const top = boardLimit - size - 2 + (size -height) / 2;
 
   this.ctx.fillRect(left, top, width, height);
   this.ctx.fillStyle = this.arrivalColors.light;
@@ -22,14 +22,14 @@ export function render(endRow) {
   this.ctx.globalCompositeOperation = "source-over";
 
   this.ctx.fillStyle = this.arrivalColors.bottom;
-  this.draw.bottomFace({
+  this.draw.bottomFace(this.ctx, {
     left,
     top: top + height,
     size: width
   });
 
   this.ctx.fillStyle = this.arrivalColors.right;
-  this.draw.rightFace({
+  this.draw.rightFace(this.ctx, {
     left: this.canvas.width - shadowShift,
     top,
     size: height
@@ -45,7 +45,7 @@ export const squares = {
     const size = ceil(width / cols);
 
     cols = ceil(width / size);
-    const rows = floor(GameObject.squareSize / size);
+    const rows = floor(GameObject.size / size);
 
     return { rows, cols, size };
   },
