@@ -1,14 +1,13 @@
-import { translateY } from "app/utils/utils";
-const gameObjectsContainer = document.querySelector("main>div");
+import { translateY, setStyle } from "app/utils/utils";
 const { min, round } = Math;
 
 export default class GameObject {
 
-  static container = gameObjectsContainer;
+  static container = document.querySelector("main>div");
 
   static skippedRows = 0;
 
-  static setsize(columns, rows) {
+  static setSize(columns, rows) {
 
     this.size = min(
       round(0.9 * window.innerWidth / (columns + 1)),
@@ -19,35 +18,62 @@ export default class GameObject {
 
     this.depth = Math.round(this.size / 6);
 
-    this.left = this.shadowShift - this.depth;
-
+    this.leftOffset = this.shadowShift - this.depth;
   }
 
-  static translateOneSquareDown(nRenders, duration) {
+  static translateY({ rows = 0, duration = 0 } = {}) {
+
     translateY(this.container, {
-      distance: this.size * nRenders,
+      distance: rows * GameObject.size,
       duration
     });
   }
 
-  static resetTranslation() {
-    translateY(this.container);
+  translateY = ({ rows = 0, duration = 0 } = {}, element = this.domEl) => {
+
+    translateY(element, {
+      distance: rows * GameObject.size,
+      duration
+    });
   }
 
-  constructor(domElement, key) {
+  constructor({ dom, isInContainer, className },
+    parent = GameObject.container
+  ) {
 
-    [
-      [key, domElement]
-    ] = Object.entries(domElement);
+    if (dom instanceof HTMLElement) {
 
-    this.domEl = this[key] = domElement;
-    GameObject.container.append(domElement);
+      this.domEl = dom;
+
+    } else if (typeof dom === "object") {
+
+      const [
+        [key, domEl]
+      ] = Object.entries(dom);
+
+      this.domEl = this[key] = domEl;
+    }
+
+    if (className) {
+      this.domEl.className = className;
+    }
+
+    if (isInContainer) {
+
+      this.container = new GameObject({
+        dom: document.createElement('div'),
+        className: `${className}-container`
+      });
+
+      parent = this.container.domEl;
+    }
+
+    parent.append(this.domEl);
   }
 
-  assign(props) {
-    Object.assign(this, props);
+  setStyle = (config, value, element = this.domEl) => {
+    setStyle.call(this, config, value, element);
   }
-
 
   onClick(callback) {
     this.domEl.addEventListener("click", callback);

@@ -7,4 +7,4 @@ import 'app/utils/animation-polyfill';
 import Game from 'app/Game';
 import { generateLevelBlueprint } from 'app/utils/level-generator';
 
-Game.init(generateLevelBlueprint({ columns: 6, rows: 30 }));
+Game.init(generateLevelBlueprint({ columns: 8, rows: 30 }));

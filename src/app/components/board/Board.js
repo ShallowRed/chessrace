@@ -1,11 +1,12 @@
 import GameObject from 'app/components/Game-object';
+import Canvas from 'app/components/board/canvas';
 import * as FinishingLine from 'app/components/Board/finishing-line';
 import * as Squares from 'app/components/Board/squares';
 import * as Draw from 'app/components/Board/draw';
 import events from 'app/utils/event-emitter';
-import { bindObjectsMethods, translateY } from "app/utils/utils";
+import { bindObjectsMethods } from "app/utils/utils";
 
-export default class Board extends GameObject {
+export default class Board {
 
   nRenders = 0;
 
@@ -29,44 +30,104 @@ export default class Board extends GameObject {
     bottom: "#999",
   };
 
-  ctx = this.canvas.getContext('2d');
+  canvas = {};
+  ctx = {};
+
+  methodsToBind = {
+    draw: Draw,
+    squares: Squares,
+    finishingLine: FinishingLine
+  };
 
   constructor(columns, rows) {
 
-    super({
-      canvas: document.createElement('canvas')
-    });
+    Object.assign(this, { columns, rows });
 
-    this.assign({ columns, rows });
+    bindObjectsMethods.call(this, this.methodsToBind);
 
-    bindObjectsMethods.call(this, {
-      draw: Draw,
-      squares: Squares,
-      finishingLine: FinishingLine
-    });
+    ["main", "boardBottom", "trick"].forEach(this.createCanvas);
 
-    this.canvas2 = document.createElement("canvas");
-    GameObject.container.append(this.canvas2);
-    this.ctx2 = this.canvas2.getContext('2d');
-    this.canvas2.style.zIndex = 900;
-    this.canvas2.style.pointerEvents = "none";
-
-    this.canvas3container = document.createElement("div");
-    GameObject.container.append(this.canvas3container);
-    this.canvas3container.style.overflow = "hidden";
-    this.canvas3container.style.position = "absolute";
-
-    this.canvas3 = document.createElement("canvas");
-    this.ctx3 = this.canvas3.getContext('2d');
-    this.canvas3.style.zIndex = 890;
-    this.canvas3.style.pointerEvents = "none";
-    this.canvas3container.append(this.canvas3);
+    this.canvas.main.onClick(this.emitSquareClickedEvent);
 
     this.setDimensions();
+  }
 
-    this.onClick(evt => {
-      events.emit("SQUARE_CLICKED", this.squares.getClicked(evt));
+  createCanvas = (className) => {
+
+    this.canvas[className] = new Canvas({
+      className,
+      isInContainer: className === "trick"
     });
+
+    this.ctx[className] = this.canvas[className].ctx;
+  }
+
+  emitSquareClickedEvent = evt => {
+    events.emit("SQUARE_CLICKED", this.squares.getClicked(evt));
+  }
+
+  setDimensions() {
+
+    const { canvas, columns, rows } = this;
+    const { size, shadowShift, depth, container } = GameObject;
+
+    const width = columns * size + shadowShift * 2;
+    const height = rows * size + shadowShift;
+
+    container.style.width = `${width}px`;
+    container.style.height = `${height}px`;
+
+    canvas.main.setStyle({
+      width,
+      height: height + depth,
+      bottom: size + depth * 2
+    });
+
+    this.canvas.boardBottom.setStyle({
+      width,
+      height: size + shadowShift,
+      bottom: 1 // dirty fix
+    });
+
+    this.canvas.trick.container.setStyle({
+      width,
+      height: depth,
+      bottom: size + shadowShift - depth
+    });
+
+    this.canvas.trick.setStyle({
+      width,
+      height: depth + size,
+      bottom: 0
+    });
+
+  }
+
+  render({ regularSquares, lastRowRendered, rows }) {
+
+    this.squares.list = regularSquares;
+
+    if (lastRowRendered === rows) {
+      this.finishingLine.render(this.ctx.main, lastRowRendered - 1)
+    }
+
+    this.ctx.boardBottom.fillStyle = "white";
+    this.ctx.boardBottom.fillRect(0,
+      GameObject.depth, this.canvas.boardBottom.width,
+      this.canvas.boardBottom.height);
+
+    // this.draw.setShadow.on(this.ctx.main);
+    // this.draw.setShadow.on(this.ctx.boardBottom);
+    // this.squares.renderShadow(this.ctx.main);
+    // this.squares.renderBoardBottom(this.ctx.boardBottom);
+    // this.draw.setShadow.off(this.ctx.main);
+    // this.draw.setShadow.off(this.ctx.boardBottom);
+
+    this.squares.render(this.ctx.main);
+    this.squares.renderTrick(this.ctx.trick);
+    this.squares.renderBoardBottom(this.ctx.boardBottom);
+
+    this.nRenders++;
   }
 
   reset() {
@@ -75,100 +136,50 @@ export default class Board extends GameObject {
     this.clear();
   }
 
-  setDimensions() {
-
-      const { canvas, columns, rows } = this;
-      const { size, shadowShift, depth, container } = GameObject;
-
-      canvas.style.top = `-${size + shadowShift}px`;
-      canvas.style.left = 0;
-
-      canvas.width = columns * size + shadowShift * 2;
-      canvas.height = rows * size + shadowShift * 2;
-
-      container.style.width = `${canvas.width}px`;
-      container.style.height = `${canvas.height - shadowShift}px`;
-
-      this.canvas2.style.top = `${(this.rows - 1) * size - 1}px`; // dirty fix
-      this.canvas2.style.left = 0;
-      this.canvas2.width = canvas.width;
-      this.canvas2.height = shadowShift + size;
-
-      this.canvas3container.style.top = `${(this.rows - 1) * size}px`;
-      this.canvas3container.style.left = `${-1}px`;  // dirty fix
-      this.canvas3container.style.width = `${canvas.width}px`;
-      this.canvas3container.style.height = `${depth}px`;
-
-      this.canvas3.style.bottom = 0;
-      this.canvas3.style.left = 0;
-      this.canvas3.width = canvas.width;
-      this.canvas3.height = depth + size;
-  }
-
   clear() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.ctx2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
-    this.ctx3.clearRect(0, 0, this.canvas3.width, this.canvas3.height);
-  }
-
-  render({ regularSquares, lastRowRendered, rows }) {
-
-    this.squares.list = regularSquares;
-
-    if (lastRowRendered === rows) {
-      this.finishingLine.render(lastRowRendered - 1)
+    for (const name in this.canvas) {
+      const canvas = this.canvas[name];
+      this.ctx[name].clearRect(0, 0, canvas.width, canvas.height);
     }
-
-    this.ctx2.fillStyle = "white";
-    this.ctx2.fillRect(0, GameObject.depth, this.canvas2.width, this.canvas2.height);
-
-    // this.draw.setShadow.on();
-    // this.squares.renderShadow();
-    // this.squares.renderFirstRowBottom();
-    // this.draw.setShadow.off();
-    this.squares.render();
-    this.squares.renderTrick();
-    this.squares.renderFirstRowBottom();
-
-    this.nRenders++;
   }
 
   translateOneSquareDown(duration) {
 
-    const { size } = GameObject;
-
-    translateY(this.canvas2, {
-      distance: -size * this.nRenders,
+    GameObject.translateY({
+      rows: this.nRenders,
       duration
     });
 
-    translateY(this.canvas3container, {
-      distance: -size * this.nRenders,
+    this.canvas.boardBottom.translateY({
+      rows: -this.nRenders,
       duration
     });
 
-    translateY(this.canvas3, {
-      distance: size,
+    this.canvas.trick.container.translateY({
+      rows: -this.nRenders,
+      duration
+    });
+
+    this.canvas.trick.translateY({
+      rows: 1,
       duration
     });
   }
 
   translateOneSquareUp() {
 
-    const { size } = GameObject;
-
-    translateY(this.canvas, {
-      distance: -size * this.nRenders
+    this.canvas.main.translateY({
+      rows: -this.nRenders
     });
 
-    translateY(this.canvas3);
-
+    this.canvas.trick.translateY();
   }
 
   resetTranslation() {
-    translateY(this.canvas);
-    translateY(this.canvas2);
-    translateY(this.canvas3);
-    translateY(this.canvas3container);
+    GameObject.translateY();
+    this.canvas.main.translateY();
+    this.canvas.boardBottom.translateY();
+    this.canvas.trick.translateY();
+    this.canvas.trick.container.translateY();
   }
 }

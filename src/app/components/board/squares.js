@@ -1,9 +1,9 @@
 import GameObject from 'app/components/Game-object';
 const { floor } = Math;
 
-export function render() {
+export function render(ctx) {
 
-  const { squares, ctx, draw } = this;
+  const { squares, draw } = this;
 
   const closestToTopLeftCorner = ([xa, ya], [xb, yb]) => {
     return xa - xb - ya + yb;
@@ -20,17 +20,17 @@ export function render() {
       const left = squares.getLeft(col);
 
       ctx.fillStyle = squares.getColor([col, row], "right");
-      draw.rightFace(this.ctx, { left: left + size, top, size });
+      draw.rightFace(ctx, { left: left + size, top, size });
 
       ctx.fillStyle = squares.getColor([col, row], "bottom");
-      draw.bottomFace(this.ctx, { left, top: top + size, size });
+      draw.bottomFace(ctx, { left, top: top + size, size });
 
       ctx.fillStyle = squares.getColor([col, row], "face");
-      draw.square({ left, top, size });
+      draw.square(ctx, { left, top, size });
     });
 }
 
-export function renderShadow() {
+export function renderShadow(ctx) {
 
   const { squares, draw } = this;
   const { size, depth } = GameObject;
@@ -40,25 +40,25 @@ export function renderShadow() {
     const left = squares.getLeft(col) + depth;
     const top = squares.getTop(row) + depth;
 
-    draw.square({ left, top, size });
+    draw.square(ctx, { left, top, size });
   });
 }
 
-export function renderFirstRowBottom() {
+export function renderBoardBottom(ctx) {
 
-  const { squares, ctx2, draw } = this;
+  const { squares, draw } = this;
   const { size } = GameObject;
 
   [...squares.list]
   .filter(([, row]) => row === this.nRenders)
     .forEach(([col, row]) => {
 
-      ctx2.fillStyle = squares.getColor([col, row], "bottom");
+      ctx.fillStyle = squares.getColor([col, row], "bottom");
 
       const left = squares.getLeft(col);
       const top = 0;
 
-      draw.bottomFace(ctx2, { left, top, size }, true);
+      draw.bottomFace(ctx, { left, top, size }, true);
     });
 }
 
@@ -70,9 +70,9 @@ export function includes(coord) {
 }
 
 
-export function renderTrick() {
+export function renderTrick(ctx) {
 
-  const { squares, ctx3 } = this;
+  const { squares } = this;
   const { depth, size } = GameObject;
 
   const row = this.nRenders;
@@ -81,20 +81,20 @@ export function renderTrick() {
 
     if (this.squares.includes([col, row])) {
 
-      ctx3.fillStyle = "white";
-      ctx3.fillRect(squares.getLeft(col), depth, depth, size);
+      ctx.fillStyle = "white";
+      ctx.fillRect(squares.getLeft(col), depth, depth, size);
 
-      ctx3.fillStyle = this.squares.includes([col - 1, row + 1]) ?
+      ctx.fillStyle = this.squares.includes([col - 1, row + 1]) ?
         squares.getColor([col, row], "bottom") : "white";
 
       const left = squares.getLeft(col);
 
-      ctx3.beginPath();
-      ctx3.moveTo(left, 0);
-      ctx3.lineTo(left + depth, depth);
-      ctx3.lineTo(left, depth);
-      ctx3.closePath();
-      ctx3.fill();
+      ctx.beginPath();
+      ctx.moveTo(left, 0);
+      ctx.lineTo(left + depth, depth);
+      ctx.lineTo(left, depth);
+      ctx.closePath();
+      ctx.fill();
     }
   }
 }
@@ -108,9 +108,9 @@ export function getTop(row) {
 
 export function getLeft(col) {
 
-  const { size, left } = GameObject;
+  const { size, leftOffset } = GameObject;
 
-  return size * col + left;
+  return size * col + leftOffset;
 }
 
 export function getColor([col, row], key) {
@@ -123,11 +123,11 @@ export function getColor([col, row], key) {
 
 export function getClicked({ clientX, clientY }) {
 
-  const { size, left, shadowShift } = GameObject;
-  const coords = this.canvas.getBoundingClientRect();
+  const { size, leftOffset, shadowShift } = GameObject;
+  const offset = this.canvas.main.getBoundingClientRect();
 
   return [
-    floor((clientX - coords.left - left) / size),
-    floor(- (clientY - coords.bottom + shadowShift) / size)
+    floor((clientX - offset.left - leftOffset) / size),
+    floor(- (clientY - offset.bottom + shadowShift) / size)
   ];
 }

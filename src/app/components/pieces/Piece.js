@@ -4,19 +4,19 @@ export default class Piece extends GameObject {
 
   constructor({ pieceName, position, color, className }) {
 
-    super({
-      sprite: document.createElement('div')
-    });
+    super({ dom: { sprite: document.createElement('div') } })
 
-    this.assign({ pieceName, position, color, className });
+    Object.assign(this, { pieceName, position, color, className });
+
     this.setSpriteDimensions();
     this.setSpriteClassName();
   }
 
   setSpriteDimensions() {
-    this.sprite.style.width =
-      this.sprite.style.height =
-      `${GameObject.size}px`;
+    this.setStyle({
+      width: GameObject.size,
+      height: GameObject.size
+    });
   }
 
   setSpriteClassName() {
@@ -47,16 +47,17 @@ export default class Piece extends GameObject {
 
   getOffset(skippedRows) {
     const [x, y] = this.position;
-    const { size, left, shadowShift } = GameObject;
+    const { size, leftOffset, shadowShift } = GameObject;
 
     return {
-      left: x * size + left,
+      left: x * size + leftOffset,
       bottom: (y + skippedRows + 1) * size + shadowShift
     }
   }
 
   fall() {
-    this.sprite.style.transitionDuration = '1s';
-    this.sprite.style.transform += `translate(15px, 15px) scale(0) rotate(180deg) `;
+    this.sprite.style.transitionDuration = "1s";
+    this.sprite.style.transform +=
+      "translate(15px, 15px) scale(0) rotate(180deg)";
   }
 }

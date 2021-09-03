@@ -9,13 +9,12 @@ import { getBoundMethods, getRandomPiecesColor } from 'app/utils/utils';
 
 export default {
 
-  rows: 8,
+  rows: 12,
 
-  // startPos: [4, 2],
-  startPos: [2, 0],
+  startPos: [4, 2],
   startPiece: "queen",
 
-  translationDuration: 2,
+  translationDuration: 1.5,
   spriteSpeed: 0.3,
 
   piecesColors: getRandomPiecesColor(),
@@ -26,7 +25,7 @@ export default {
 
     const { rows, columns, piecesColors, startPos, startPiece } = this;
 
-    GameObject.setsize(columns, rows);
+    GameObject.setSize(columns, rows);
 
     this.model = new LevelModel(levelBlueprint, rows);
 
@@ -61,8 +60,6 @@ export default {
 
   reset() {
     const { board, model, ennemies, player } = this;
-
-    GameObject.resetTranslation();
     board.reset();
     model.reset();
     ennemies.empty();
@@ -75,7 +72,3 @@ export default {
 window.addEventListener("resize", () => {
   events.emit("RESIZE")
 });
-
-document.addEventListener('keydown', event => {
-  events.emit("KEYDOWN", event.code)
-})

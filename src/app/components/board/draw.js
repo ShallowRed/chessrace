@@ -1,7 +1,7 @@
 import GameObject from 'app/components/Game-object';
 
-export function square({ left, top, size }) {
-  this.ctx.fillRect(left, top, size, size);
+export function square(ctx, { left, top, size }) {
+  ctx.fillRect(left, top, size, size);
 }
 
 export function bottomFace(ctx, { left, top, size }) {
@@ -28,29 +28,25 @@ export function rightFace(ctx, { left, top, size }) {
   ctx.fill();
 }
 
-export function horizontalLine(y, color, width = 4) {
-  this.ctx.beginPath();
-  this.ctx.moveTo(0, y);
-  this.ctx.lineTo(this.canvas.width - GameObject.shadowShift, y);
-  this.ctx.strokeStyle = color;
-  this.ctx.lineWidth = width;
-  this.ctx.stroke();
+export function horizontalLine(ctx, y, color, width = 4) {
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  ctx.lineTo(width, y);
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.stroke();
 }
 
 export const setShadow = {
 
-  on() {
+  on(ctx) {
     const { shadowShift } = GameObject;
-    this.ctx.fillStyle = "white";
-    this.ctx2.fillStyle = "white";
-    this.ctx.shadowColor = "#999";
-    this.ctx2.shadowColor = "#999";
-    this.ctx.shadowBlur = shadowShift / 2;
-    this.ctx2.shadowBlur = shadowShift / 2;
+    ctx.fillStyle = "white";
+    ctx.shadowColor = "#999";
+    ctx.shadowBlur = shadowShift / 2;
   },
 
-  off() {
-    this.ctx.shadowColor = "transparent";
-    this.ctx2.shadowColor = "transparent";
+  off(ctx) {
+    ctx.shadowColor = "transparent";
   }
 }

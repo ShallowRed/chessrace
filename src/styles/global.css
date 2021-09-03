@@ -8,14 +8,12 @@ main {
 
 main,
 canvas,
-.piece {
+.piece,
+.trick-container {
   position: absolute;
 }
 
-canvas,
-main>div,
-.piece:not(.player),
-* {
+main *:not(.player) {
   transition-timing-function: linear;
 }
 
@@ -26,8 +24,33 @@ canvas,
   }
 }
 
+.trick-container {
+  left: -1px;
+}
+
+canvas {
+  left: 0;
+}
+
+canvas.boardBottom,
+canvas.trick {
+  pointer-events: none;
+}
+
+canvas.trick {
+  z-index: 300;
+}
+
+canvas.boardBottom {
+  z-index: 500;
+}
+
+.trick-container {
+  overflow: hidden;
+}
+
 .piece {
-  z-index: 980;
+  z-index: 700;
   left: 0;
   bottom: 0;
   background-size: 90%;

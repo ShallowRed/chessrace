@@ -13,18 +13,6 @@ export function START_GAME() {
   );
 }
 
-export function KEYDOWN(code) {
-  if (code === 'Space') {
-    this.on = !this.on;
-  }
-  if (code === 'KeyN') {
-    this.board.canvas2.style.display =
-      this.board.canvas2.style.display === "none" ?
-      "block" : "none";
-  }
-}
-
-
 export function GAME_OVER() {
 
   this.on = false;
@@ -51,9 +39,6 @@ export function GAME_WON() {
 export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
-
-  GameObject.translateOneSquareDown(this.board.nRenders, this
-    .translationDuration);
 
   this.board.translateOneSquareDown(this.translationDuration);
 
@@ -195,7 +180,7 @@ export function REMOVE_ENNEMY(ennemy) {
 
 export function RESIZE() {
 
-  GameObject.setsize(this.columns, this.rows);
+  GameObject.setSize(this.columns, this.rows);
   this.board.setDimensions();
   this.board.nRenders--;
   this.board.render(this.model);
