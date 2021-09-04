@@ -123,7 +123,7 @@ export function getColor([col, row], key) {
 
 export function getClicked({ clientX, clientY }) {
 
-  const { size, leftOffset, shadowShift, depth } = GameObject;
+  const { size, leftOffset, depth } = GameObject;
   const offset = this.canvas.main.getBoundingClientRect();
 
   return [

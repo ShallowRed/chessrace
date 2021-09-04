@@ -3,7 +3,7 @@ import GameObject from 'app/components/Game-object';
 
 export default class Player extends Piece {
 
-  constructor(startPiece, startPos, color) {
+  constructor(color, startPiece, startPos) {
 
     super({
       pieceName: startPiece.slice(),
@@ -38,7 +38,7 @@ export default class Player extends Piece {
   }
 
   getOffset(skippedRows = 0) {
-    
+
     const [x, y] = this.position;
 
     return {

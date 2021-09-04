@@ -1,5 +1,6 @@
 import GameObject from 'app/components/Game-object';
-const { floor, ceil, round} = Math;
+
+const { floor, round} = Math;
 
 export function render(ctx, endRow) {
 

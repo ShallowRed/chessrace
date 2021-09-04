@@ -1,4 +1,7 @@
-import * as GameEvents from 'app/game-events';
+import * as gameStateEvents from 'app/game-events/game-state';
+import * as scrollBoardEvents from 'app/game-events/scroll-board';
+import * as updatePiecesEvents from 'app/game-events/update-pieces';
+
 import GameObject from 'app/components/Game-object';
 import Ennemies from 'app/components/pieces/Ennemies';
 import LevelModel from 'app/level-model';
@@ -13,7 +16,8 @@ export default {
 
     Object.assign(this, levelConfig);
 
-    const { columns, rows, visibleRows, piecesColors, startPos, startPiece } = this;
+    const { columns, rows, visibleRows, piecesColors, startPos, startPiece } =
+    this;
 
     GameObject.setSize(columns, visibleRows);
 
@@ -21,11 +25,15 @@ export default {
 
     this.board = new Board(columns, visibleRows);
     this.ennemies = new Ennemies(piecesColors[1]);
-    this.player = new Player(startPiece, startPos, piecesColors[0]);
+    this.player = new Player(piecesColors[0], startPiece, startPos);
 
     this.render();
 
-    getBoundMethods.call(this, GameEvents, events.on);
+    getBoundMethods.call(this, gameStateEvents, events.on);
+    getBoundMethods.call(this, scrollBoardEvents, events.on);
+    getBoundMethods.call(this, updatePiecesEvents, events.on);
+
+    window.addEventListener("resize", () => this.resize());
   },
 
   render() {
@@ -49,7 +57,7 @@ export default {
   },
 
   reset() {
-    
+
     const { board, model, ennemies, player } = this;
 
     board.nRenders = 0;
@@ -64,8 +72,17 @@ export default {
 
     this.render();
   },
-}
 
-window.addEventListener("resize", () => {
-  events.emit("RESIZE")
-});
+  resize() {
+
+    GameObject.setSize(this.columns, this.rows);
+    this.board.setDimensions();
+    this.board.nRenders--;
+    this.board.render(this.model);
+    this.player.moveSprite({ duration: 0 }, this.model.skippedRows);
+    this.ennemies.setEachPosition(this.model.skippedRows);
+    events.emit("SET_EACH_PIECE", piece =>
+      piece.setSpriteDimensions()
+    );
+  }
+}

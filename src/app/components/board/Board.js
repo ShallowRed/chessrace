@@ -9,6 +9,8 @@ import { bindObjectsMethods } from "app/utils/utils";
 export default class Board {
 
   nRenders = 0;
+  canvas = {};
+  ctx = {};
 
   squareColors = {
     dark: {
@@ -29,9 +31,6 @@ export default class Board {
     right: "#BBB",
     bottom: "#999",
   };
-
-  canvas = {};
-  ctx = {};
 
   methodsToBind = {
     draw: Draw,
@@ -84,55 +83,60 @@ export default class Board {
       bottom: size + depth * 2 + 1
     });
 
-    this.canvas.boardBottom.setStyle({
+    canvas.boardBottom.setStyle({
       width,
       height: size + shadowShift,
       bottom: 0
     });
 
-    this.canvas.trick.container.setStyle({
+    canvas.trick.container.setStyle({
       width,
       height: depth,
       bottom: size + shadowShift - depth
     });
 
-    this.canvas.trick.setStyle({
+    canvas.trick.setStyle({
       width,
       height: depth + size,
-      bottom: 0 
+      bottom: 0
     });
   }
 
   render({ regularSquares, lastRowRendered, rows }) {
 
-    this.squares.list = regularSquares;
+    const { squares, ctx, canvas } = this;
+
+    squares.list = regularSquares;
 
     if (lastRowRendered === rows) {
-      this.finishingLine.render(this.ctx.main, lastRowRendered - 1)
+      this.finishingLine.render(ctx.main, lastRowRendered - 1)
     }
 
-    this.ctx.boardBottom.fillStyle = "white";
-    this.ctx.boardBottom.fillRect(0,
-      GameObject.depth, this.canvas.boardBottom.width,
-      this.canvas.boardBottom.height);
+    ctx.boardBottom.fillStyle = "white";
+    ctx.boardBottom.fillRect(0,
+      GameObject.depth, canvas.boardBottom.width,
+      canvas.boardBottom.height);
 
-    // this.draw.setShadow.on(this.ctx.main);
-    // this.draw.setShadow.on(this.ctx.boardBottom);
-    // this.squares.renderShadow(this.ctx.main);
-    // this.squares.renderBoardBottom(this.ctx.boardBottom);
-    // this.draw.setShadow.off(this.ctx.main);
-    // this.draw.setShadow.off(this.ctx.boardBottom);
-    this.squares.render(this.ctx.main);
-    this.squares.renderTrick(this.ctx.trick);
-    this.squares.renderBoardBottom(this.ctx.boardBottom);
+    // this.draw.setShadow.on(ctx.main);
+    // this.draw.setShadow.on(ctx.boardBottom);
+    // squares.renderShadow(ctx.main);
+    // squares.renderBoardBottom(ctx.boardBottom);
+    // this.draw.setShadow.off(ctx.main);
+    // this.draw.setShadow.off(ctx.boardBottom);
+    squares.render(ctx.main);
+    squares.renderTrick(ctx.trick);
+    squares.renderBoardBottom(ctx.boardBottom);
 
     this.nRenders++;
   }
 
   clear() {
+
+    const { ctx, canvas } = this;
+
     for (const name in this.canvas) {
-      const canvas = this.canvas[name];
-      this.ctx[name].clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx[name].clearRect(0, 0, canvas[name].width, canvas[name].height);
     }
   }
 }
