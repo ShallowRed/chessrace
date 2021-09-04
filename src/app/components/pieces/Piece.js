@@ -2,9 +2,13 @@ import GameObject from 'app/components/Game-object';
 
 export default class Piece extends GameObject {
 
-  constructor({ pieceName, position, color, className }) {
+  constructor({ pieceName, position, color, className, isInContainer}) {
 
-    super({ dom: { sprite: document.createElement('div') } })
+    super({
+      dom: { sprite: document.createElement('div') },
+      className,
+      isInContainer
+    })
 
     Object.assign(this, { pieceName, position, color, className });
 
@@ -25,7 +29,7 @@ export default class Piece extends GameObject {
   }
 
   removeSprite() {
-    GameObject.container.removeChild(this.sprite);
+    GameObject.container.removeChild(this.container.domEl);
   }
 
   updatePiece(pieceName) {
@@ -43,16 +47,6 @@ export default class Piece extends GameObject {
 
   isBeyondLimit() {
     return this.position[1] < 0;
-  }
-
-  getOffset(skippedRows) {
-    const [x, y] = this.position;
-    const { size, leftOffset, shadowShift } = GameObject;
-
-    return {
-      left: x * size + leftOffset,
-      bottom: (y + skippedRows + 1) * size + shadowShift
-    }
   }
 
   fall() {

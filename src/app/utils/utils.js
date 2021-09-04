@@ -17,11 +17,6 @@ export function getSquaresOnTrajectory([x, y], [tx, ty]) {
     .map(getSquareOnTrajectory)
 }
 
-export function translateY(element, { distance = 0, duration = 0 } = {}) {
-  element.style.transitionDuration = `${duration}s`;
-  element.style.transform = `translateY(${distance}px)`;
-}
-
 export function filterMap(array, { filter, map }) {
 
   return array.map((value, index) => {

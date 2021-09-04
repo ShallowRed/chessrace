@@ -1,24 +1,27 @@
 import GameObject from 'app/components/Game-object';
-const { floor, ceil } = Math;
+const { floor, ceil, round} = Math;
 
 export function render(ctx, endRow) {
 
-  const { size, shadowShift } = GameObject;
+  const { size, shadowShift, leftOffset} = GameObject;
 
-  const bandSquares = this.finishingLine.squares.get();
-  const boardLimit = this.squares.getTop(endRow) - 5;
+  const targetWidth = this.canvas.main.width - shadowShift * 2;
 
-  const width = this.canvas.main.width - shadowShift;
+  const bandSquares = this.finishingLine.squares.get(targetWidth);
+  const boardLimit = this.squares.getTop(endRow) - round(size / 15);
+
+  const width = bandSquares.size * bandSquares.cols;
+  const shift = round((targetWidth - width)/ 2);
+
   const height = bandSquares.size * bandSquares.rows;
-  const left = 0;
-  const top = boardLimit - size - 2 + (size -height) / 2;
+  const left = leftOffset + shift;
+  const top = boardLimit - size  + round((size - height) / 2);
 
-  ctx.fillRect(left, top, width, height);
   ctx.fillStyle = this.arrivalColors.light;
   ctx.fillRect(left, top, width, height);
 
   ctx.globalCompositeOperation = "source-atop";
-  this.finishingLine.squares.render(ctx, bandSquares, top);
+  this.finishingLine.squares.render(ctx, bandSquares, top, shift);
   ctx.globalCompositeOperation = "source-over";
 
   ctx.fillStyle = this.arrivalColors.bottom;
@@ -30,7 +33,7 @@ export function render(ctx, endRow) {
 
   ctx.fillStyle = this.arrivalColors.right;
   this.draw.rightFace(ctx, {
-    left: width,
+    left: width + left,
     top,
     size: height
   });
@@ -39,18 +42,17 @@ export function render(ctx, endRow) {
 
 export const squares = {
 
-  get() {
-    const width = this.canvas.main.width - GameObject.shadowShift;
+  get(width) {
     let cols = 50;
-    const size = ceil(width / cols);
+    const size = floor(width / cols);
 
-    cols = ceil(width / size);
+    cols = floor(width / size);
     const rows = floor(GameObject.size / size);
 
     return { rows, cols, size };
   },
 
-  render(ctx, bandSquares, boardLimit) {
+  render(ctx, bandSquares, boardLimit, shift) {
 
     ctx.fillStyle = this.arrivalColors.dark;
 
@@ -58,7 +60,7 @@ export const squares = {
       for (let col = 0; col < bandSquares.cols; col += 2) {
 
         this.draw.square(ctx, {
-          left: (col + row % 2) * bandSquares.size,
+          left: shift * 2 + (2 + col + row % 2) * bandSquares.size,
           top: boardLimit + row * bandSquares.size,
           size: bandSquares.size
         });

@@ -1,4 +1,5 @@
 import Piece from 'app/components/pieces/Piece';
+import GameObject from 'app/components/Game-object';
 
 export default class Player extends Piece {
 
@@ -8,7 +9,13 @@ export default class Player extends Piece {
       pieceName: startPiece.slice(),
       position: [...startPos],
       color,
-      className: "player"
+      className: "player",
+      isInContainer: true
+    });
+
+    this.container.setStyle({
+      left: GameObject.leftOffset,
+      bottom: GameObject.shadowShift + GameObject.size,
     });
 
     this.startPos = startPos;
@@ -22,11 +29,21 @@ export default class Player extends Piece {
     this.moveSprite({ duration: 0 });
   }
 
-  moveSprite({ duration }, skippedRows = 0) {
+  moveSprite({ duration }, skippedRows) {
 
-    const { left, bottom } = this.getOffset(skippedRows);
+    const { left, top } = this.getOffset(skippedRows);
 
     this.sprite.style.transitionDuration = `${duration}s`;
-    this.sprite.style.transform = `translate(${left}px, -${bottom}px)`;
+    this.sprite.style.transform = `translate(${left}px, ${top}px)`;
+  }
+
+  getOffset(skippedRows = 0) {
+    
+    const [x, y] = this.position;
+
+    return {
+      left: x * GameObject.size,
+      top:  -(y + skippedRows) * GameObject.size
+    }
   }
 }

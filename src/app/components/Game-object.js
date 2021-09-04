@@ -1,17 +1,17 @@
-import { translateY, setStyle } from "app/utils/utils";
+import { setStyle } from "app/utils/utils";
 const { min, round } = Math;
 
 export default class GameObject {
 
-  static container = document.querySelector("main>div");
+  static container = document.querySelector("main");
 
   static skippedRows = 0;
 
   static setSize(columns, rows) {
 
     this.size = min(
-      round(0.9 * window.innerWidth / (columns + 1)),
-      round(0.9 * window.innerHeight / (rows))
+      round(1.05 * window.innerWidth / (columns + 1)),
+      round(0.95 * window.innerHeight / (rows))
     );
 
     this.shadowShift = Math.round(this.size / 2);
@@ -21,23 +21,12 @@ export default class GameObject {
     this.leftOffset = this.shadowShift - this.depth;
   }
 
-  static translateY({ rows = 0, duration = 0 } = {}) {
-
-    translateY(this.container, {
-      distance: rows * GameObject.size,
-      duration
-    });
-  }
-
   translateY = ({ rows = 0, duration = 0 } = {}, element = this.domEl) => {
-
-    translateY(element, {
-      distance: rows * GameObject.size,
-      duration
-    });
+    element.style.transitionDuration = `${duration}s`;
+    element.style.transform = `translateY(${rows * GameObject.size}px)`;
   }
 
-  constructor({ dom, isInContainer, className },
+  constructor({ dom, className, isInContainer },
     parent = GameObject.container
   ) {
 

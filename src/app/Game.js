@@ -5,31 +5,21 @@ import LevelModel from 'app/level-model';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
 import events from 'app/utils/event-emitter';
-import { getBoundMethods, getRandomPiecesColor } from 'app/utils/utils';
+import { getBoundMethods } from 'app/utils/utils';
 
 export default {
 
-  rows: 12,
+  init(levelConfig, levelBlueprint) {
 
-  startPos: [4, 2],
-  startPiece: "queen",
+    Object.assign(this, levelConfig);
 
-  translationDuration: 1.5,
-  spriteSpeed: 0.3,
+    const { columns, rows, visibleRows, piecesColors, startPos, startPiece } = this;
 
-  piecesColors: getRandomPiecesColor(),
+    GameObject.setSize(columns, visibleRows);
 
-  init(levelBlueprint) {
+    this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
 
-    this.columns = levelBlueprint.columns;
-
-    const { rows, columns, piecesColors, startPos, startPiece } = this;
-
-    GameObject.setSize(columns, rows);
-
-    this.model = new LevelModel(levelBlueprint, rows);
-
-    this.board = new Board(columns, rows);
+    this.board = new Board(columns, visibleRows);
     this.ennemies = new Ennemies(piecesColors[1]);
     this.player = new Player(startPiece, startPos, piecesColors[0]);
 
@@ -59,8 +49,15 @@ export default {
   },
 
   reset() {
+    
     const { board, model, ennemies, player } = this;
-    board.reset();
+
+    board.nRenders = 0;
+
+    events.emit("TRANSLATE_BOARD");
+    events.emit("TRANSLATE_PIECES");
+
+    board.clear();
     model.reset();
     ennemies.empty();
     player.init();

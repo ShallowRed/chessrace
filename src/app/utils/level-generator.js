@@ -19,9 +19,7 @@ export function generateLevelBlueprint({ columns, rows }) {
       floor(random() * 7))
   );
 
-  const levelString = randomDeepArray
+  return randomDeepArray
     .flat()
     .join('');
-
-  return { rows, columns, levelString }
 }

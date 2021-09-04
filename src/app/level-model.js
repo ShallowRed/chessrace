@@ -5,10 +5,9 @@ export default class LevelModel {
   skippedRows = 0;
   pieces = ["bishop", "king", "knight", "pawn", "queen", "rook"];
 
-  constructor(blueprint, visibleRows) {
-    this.visibleRows = visibleRows;
-    this.rows = blueprint.rows;
-    this.blueprint = this.parseBlueprint(blueprint);
+  constructor(levelBlueprint, columns, rows, visibleRows) {
+    Object.assign(this, { columns, rows, visibleRows });
+    this.blueprint = this.parseBlueprint(levelBlueprint);
     this.reset();
   }
 
@@ -21,11 +20,11 @@ export default class LevelModel {
     this.lastRowToRender = this.visibleRows + 1;
   }
 
-  parseBlueprint({ levelString, columns }) {
+  parseBlueprint(levelBlueprint) {
 
-    const columnsRegExp = `.{1,${columns}}`;
+    const columnsRegExp = `.{1,${this.columns}}`;
 
-    return levelString
+    return levelBlueprint
       .match(new RegExp(columnsRegExp, 'g'))
       .map(rowString =>
         rowString.split("")

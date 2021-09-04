@@ -1,15 +1,15 @@
 main {
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -45%);
+  transform: translateX(-49%);
+  /* top: 50%; */
+  /* transform: translate(-50%, -45%); */
   /* transform: skew(-14deg, 6deg) scaleY(1) translate(-50%, -50%); */
   overflow: hidden;
 }
 
 main,
 canvas,
-.piece,
-.trick-container {
+main>* {
   position: absolute;
 }
 
@@ -50,7 +50,6 @@ canvas.boardBottom {
 }
 
 .piece {
-  z-index: 700;
   left: 0;
   bottom: 0;
   background-size: 90%;
@@ -60,6 +59,13 @@ canvas.boardBottom {
 }
 
 .player {
-  z-index: 990;
   transition-timing-function: ease-out;
+}
+
+.ennemy-container {
+  z-index: 700;
+}
+
+.player-container {
+  z-index: 990;
 }

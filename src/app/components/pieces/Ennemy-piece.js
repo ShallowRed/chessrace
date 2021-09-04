@@ -1,5 +1,6 @@
 import events from 'app/utils/event-emitter';
 import Piece from 'app/components/pieces/Piece';
+import GameObject from 'app/components/Game-object';
 
 export default class EnnemyPiece extends Piece {
 
@@ -9,7 +10,8 @@ export default class EnnemyPiece extends Piece {
       position,
       pieceName,
       color,
-      className: "ennemy"
+      className: "ennemy",
+      isInContainer: true
     });
 
     this.setAbsolutePosition(skippedRows);
@@ -23,8 +25,18 @@ export default class EnnemyPiece extends Piece {
 
     const { left, bottom } = this.getOffset(skippedRows);
 
-    this.sprite.style.left = `${left}px`;
-    this.sprite.style.bottom = `${bottom}px`;
+    this.container.domEl.style.left = `${left}px`;
+    this.container.domEl.style.bottom = `${bottom}px`;
+  }
+
+  getOffset(skippedRows) {
+    const [x, y] = this.position;
+    const { size, leftOffset, shadowShift } = GameObject;
+
+    return {
+      left: x * size + leftOffset,
+      bottom: (y + skippedRows + 1) * size + shadowShift
+    }
   }
 
   decrementPositionY() {

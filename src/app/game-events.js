@@ -27,9 +27,9 @@ export function GAME_OVER() {
 export function GAME_WON() {
 
   this.on = false;
+  this.reset();
 
   setTimeout(() => {
-      this.reset();
       alert("Game won");
     },
     500
@@ -40,11 +40,14 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
 
-  this.board.translateOneSquareDown(this.translationDuration);
+  const duration = this.translationDuration;
+
+  events.emit("TRANSLATE_BOARD", { rows: 1 });
+  events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
-    this.translationDuration
+    duration
   );
 }
 
@@ -52,7 +55,7 @@ export function NEXT_SCROLL_STEP() {
 
   if (!this.on) return;
 
-  this.board.translateOneSquareUp();
+  events.emit("TRANSLATE_BOARD");
 
   this.render();
 
@@ -78,6 +81,23 @@ export function NEXT_SCROLL_STEP() {
   window.requestAnimationFrame(() =>
     events.emit("SCROLL_ONE_SQUARE_DOWN")
   );
+}
+
+export function TRANSLATE_BOARD({ rows = 0 } = {}) {
+
+  const duration = rows ? this.translationDuration : 0;
+
+  this.board.canvas.main.translateY({ rows, duration });
+  this.board.canvas.trick.translateY({ rows, duration });
+}
+
+export function TRANSLATE_PIECES({ rows = 0 } = {}) {
+
+  const duration = rows ? this.translationDuration : 0;
+
+  [this.player, ...this.ennemies.list].forEach(piece => {
+    piece.container.translateY({ rows, duration });
+  });
 }
 
 export function SQUARE_CLICKED(square) {

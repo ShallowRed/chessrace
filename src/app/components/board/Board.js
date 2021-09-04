@@ -76,17 +76,18 @@ export default class Board {
 
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
+    container.style.top = `${depth}px`;
 
     canvas.main.setStyle({
       width,
       height: height + depth,
-      bottom: size + depth * 2
+      bottom: size + depth * 2 + 1
     });
 
     this.canvas.boardBottom.setStyle({
       width,
       height: size + shadowShift,
-      bottom: 1 // dirty fix
+      bottom: 0
     });
 
     this.canvas.trick.container.setStyle({
@@ -98,9 +99,8 @@ export default class Board {
     this.canvas.trick.setStyle({
       width,
       height: depth + size,
-      bottom: 0
+      bottom: 0 
     });
-
   }
 
   render({ regularSquares, lastRowRendered, rows }) {
@@ -122,7 +122,6 @@ export default class Board {
     // this.squares.renderBoardBottom(this.ctx.boardBottom);
     // this.draw.setShadow.off(this.ctx.main);
     // this.draw.setShadow.off(this.ctx.boardBottom);
-
     this.squares.render(this.ctx.main);
     this.squares.renderTrick(this.ctx.trick);
     this.squares.renderBoardBottom(this.ctx.boardBottom);
@@ -130,56 +129,10 @@ export default class Board {
     this.nRenders++;
   }
 
-  reset() {
-    this.nRenders = 0;
-    this.resetTranslation();
-    this.clear();
-  }
-
   clear() {
     for (const name in this.canvas) {
       const canvas = this.canvas[name];
       this.ctx[name].clearRect(0, 0, canvas.width, canvas.height);
     }
-  }
-
-  translateOneSquareDown(duration) {
-
-    GameObject.translateY({
-      rows: this.nRenders,
-      duration
-    });
-
-    this.canvas.boardBottom.translateY({
-      rows: -this.nRenders,
-      duration
-    });
-
-    this.canvas.trick.container.translateY({
-      rows: -this.nRenders,
-      duration
-    });
-
-    this.canvas.trick.translateY({
-      rows: 1,
-      duration
-    });
-  }
-
-  translateOneSquareUp() {
-
-    this.canvas.main.translateY({
-      rows: -this.nRenders
-    });
-
-    this.canvas.trick.translateY();
-  }
-
-  resetTranslation() {
-    GameObject.translateY();
-    this.canvas.main.translateY();
-    this.canvas.boardBottom.translateY();
-    this.canvas.trick.translateY();
-    this.canvas.trick.container.translateY();
   }
 }
