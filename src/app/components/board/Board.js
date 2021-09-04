@@ -3,8 +3,8 @@ import Canvas from 'app/components/board/canvas';
 import * as FinishingLine from 'app/components/Board/finishing-line';
 import * as Squares from 'app/components/Board/squares';
 import * as Draw from 'app/components/Board/draw';
-import events from 'app/utils/event-emitter';
-import { bindObjectsMethods } from "app/utils/utils";
+import events from 'app/models/events';
+import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Board {
 
@@ -55,7 +55,7 @@ export default class Board {
 
     this.canvas[className] = new Canvas({
       className,
-      isInContainer: className === "trick"
+      inContainer: className === "trick"
     });
 
     this.ctx[className] = this.canvas[className].ctx;

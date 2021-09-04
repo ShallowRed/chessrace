@@ -1,4 +1,4 @@
-import events from 'app/utils/event-emitter';
+import events from 'app/models/events';
 import Piece from 'app/components/pieces/Piece';
 import GameObject from 'app/components/Game-object';
 
@@ -10,8 +10,7 @@ export default class EnnemyPiece extends Piece {
       position,
       pieceName,
       color,
-      className: "ennemy",
-      isInContainer: true
+      className: "ennemy"
     });
 
     this.setAbsolutePosition(skippedRows);
@@ -25,8 +24,7 @@ export default class EnnemyPiece extends Piece {
 
     const { left, bottom } = this.getOffset(skippedRows);
 
-    this.container.domEl.style.left = `${left}px`;
-    this.container.domEl.style.bottom = `${bottom}px`;
+    this.container.setStyle({ left, bottom });
   }
 
   getOffset(skippedRows) {
@@ -40,13 +38,12 @@ export default class EnnemyPiece extends Piece {
   }
 
   decrementPositionY() {
-    super.decrementPositionY();
-    if (this.isBeyondLimit()) {
-      this.fall();
-      setTimeout(
 
-        () => events.emit("REMOVE_ENNEMY", this), 1000
-      )
+    super.decrementPositionY();
+
+    if (this.isBeyondLimit()) {
+
+      events.emit("ENNEMY_FALL", this)
     }
   }
 }

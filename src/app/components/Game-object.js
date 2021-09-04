@@ -1,4 +1,4 @@
-import { setStyle } from "app/utils/utils";
+import { setStyle } from "app/utils/set-style";
 const { min, round } = Math;
 
 export default class GameObject {
@@ -26,7 +26,7 @@ export default class GameObject {
     element.style.transform = `translateY(${rows * GameObject.size}px)`;
   }
 
-  constructor({ dom, className, isInContainer },
+  constructor({ dom, className, inContainer },
     parent = GameObject.container
   ) {
 
@@ -47,7 +47,7 @@ export default class GameObject {
       this.domEl.className = className;
     }
 
-    if (isInContainer) {
+    if (inContainer) {
 
       this.container = new GameObject({
         dom: document.createElement('div'),

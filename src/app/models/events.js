@@ -1,17 +1,22 @@
-export default new class EventEmitter {
+export default new class Events {
+
 
   constructor() {
+
     this.listeners = {};
   }
 
-  on = (message, listener) => {
+
+  listen = (message, listener) => {
 
     if (!this.listeners[message]) {
+
       this.listeners[message] = [];
     }
 
     this.listeners[message].push(listener);
   }
+
 
   emit(message, ...args) {
 
@@ -20,6 +25,7 @@ export default new class EventEmitter {
     const results = [];
 
     if (messages) {
+
       messages.forEach(listener => {
 
         results.push(listener(...args));
@@ -28,10 +34,9 @@ export default new class EventEmitter {
 
     return new Promise(function(resolve) {
 
-      if (
-        results.length === results.filter(Boolean)
-        .length
-      ) {
+      const validResults = results.filter(Boolean);
+
+      if (results.length === validResults.length) {
         resolve(results);
       }
     });

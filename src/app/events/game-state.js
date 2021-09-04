@@ -1,6 +1,6 @@
-import events from 'app/utils/event-emitter';
+import events from 'app/models/events';
 
-export function START_GAME() {
+export function GAME_ON() {
 
   this.on = true;
 

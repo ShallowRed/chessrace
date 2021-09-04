@@ -12,6 +12,7 @@ export function generateLevelBlueprint({ columns, rows }) {
   //     i < 1 ? 1 : round(random())
   //   )
   // );
+  
   const randomDeepArray = emptyDeepArray.map((rows, i) =>
     rows.map(() =>
       i < 4 || round(random()) ?

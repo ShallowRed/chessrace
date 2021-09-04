@@ -6,19 +6,24 @@ import 'app/utils/animation-polyfill';
 
 import Game from 'app/Game';
 import { generateLevelBlueprint } from 'app/utils/level-generator';
-import { getRandomPiecesColor } from 'app/utils/utils';
+import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
 const levelConfig = {
-  
+
   columns: 8,
-  rows: 16,
+  rows: 9,
   visibleRows: 12,
 
-  startPos: [4, 2],
-  startPiece: "queen",
+  playerStart: {
+    position: [4, 2],
+    pieceName: "queen"
+  },
 
-  translationDuration: 1.5,
-  spriteSpeed: 0.3,
+  duration: {
+    move: 0.3,
+    translation: 1.5,
+    fall: 1
+  },
 
   piecesColors: getRandomPiecesColor(),
 }

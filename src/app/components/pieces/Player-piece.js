@@ -3,14 +3,13 @@ import GameObject from 'app/components/Game-object';
 
 export default class Player extends Piece {
 
-  constructor(color, startPiece, startPos) {
+  constructor(color, playerStart) {
 
     super({
-      pieceName: startPiece.slice(),
-      position: [...startPos],
+      pieceName: playerStart.pieceName.slice(),
+      position: [...playerStart.position],
       color,
-      className: "player",
-      isInContainer: true
+      className: "player"
     });
 
     this.container.setStyle({
@@ -18,14 +17,12 @@ export default class Player extends Piece {
       bottom: GameObject.shadowShift + GameObject.size,
     });
 
-    this.startPos = startPos;
-    this.startPiece = startPiece;
     this.moveSprite({ duration: 0 });
   }
 
-  init() {
-    this.updatePiece(this.startPiece.slice());
-    this.updatePosition([...this.startPos]);
+  init(playerStart) {
+    this.updatePiece(playerStart.pieceName.slice());
+    this.updatePosition([...playerStart.position]);
     this.moveSprite({ duration: 0 });
   }
 
@@ -43,7 +40,7 @@ export default class Player extends Piece {
 
     return {
       left: x * GameObject.size,
-      top:  -(y + skippedRows) * GameObject.size
+      top: -(y + skippedRows) * GameObject.size
     }
   }
 }

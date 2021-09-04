@@ -1,6 +1,29 @@
 const { abs } = Math;
 
-export const Pieces = {
+export function isValidMove({ position, pieceName }, targetPosition) {
+
+  return Pieces[pieceName].isValidMove(position, targetPosition);
+}
+
+export function isValidTake({ position, pieceName }, ennemyPosition) {
+
+  const isValidAction = pieceName === "pawn" ?
+    "isValidTake" :
+    "isValidMove";
+
+  return Pieces[pieceName][isValidAction](position, ennemyPosition);
+}
+
+export function isLongRange(pieceName) {
+  return ["bishop", "rook", "queen"].includes(pieceName);
+}
+
+export function getSortedPiecesNames(pieceName) {
+  return Object.keys(Pieces)
+    .sort();
+}
+
+const Pieces = {
 
   pawn: {
     isValidMove: ([x, y], [tx, ty]) => (
@@ -47,25 +70,9 @@ export const Pieces = {
   },
 
   queen: {
-    isValidMove: (...args) => (
-      Pieces.bishop.isValidMove(...args) ||
-      Pieces.rook.isValidMove(...args)
+    isValidMove: (...coords) => (
+      Pieces.bishop.isValidMove(...coords) ||
+      Pieces.rook.isValidMove(...coords)
     )
   }
-}
-
-export function isValidMove({ pieceName, position }, square) {
-
-  return Pieces[pieceName].isValidMove(position, square);
-}
-
-export function isValidTake({ pieceName, position }, square) {
-
-  return (
-    pieceName === "pawn" &&
-    Pieces.pawn.isValidTake(position, square)
-  ) || (
-    pieceName !== "pawn" &&
-    isValidMove({ pieceName, position }, square)
-  )
 }

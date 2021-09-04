@@ -1,9 +1,11 @@
-import { getSquaresOnTrajectory, filterMap } from 'app/utils/utils';
+import { getSortedPiecesNames } from 'app/models/pieces';
+import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
+import { filterMap } from 'app/utils/filter-and-map-array';
 
-export default class LevelModel {
+export default class Level {
 
   skippedRows = 0;
-  pieces = ["bishop", "king", "knight", "pawn", "queen", "rook"];
+  pieces = getSortedPiecesNames();
 
   constructor(levelBlueprint, columns, rows, visibleRows) {
     Object.assign(this, { columns, rows, visibleRows });

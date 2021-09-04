@@ -2,13 +2,13 @@ import GameObject from 'app/components/Game-object';
 
 export default class Canvas extends GameObject {
 
-  constructor({ className, isInContainer }) {
+  constructor({ className, inContainer }) {
 
     super({
       dom: {
         canvas: document.createElement('canvas')
       },
-      isInContainer,
+      inContainer,
       className
     });
 

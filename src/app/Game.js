@@ -1,37 +1,45 @@
-import * as gameStateEvents from 'app/game-events/game-state';
-import * as scrollBoardEvents from 'app/game-events/scroll-board';
-import * as updatePiecesEvents from 'app/game-events/update-pieces';
+import * as gameStateEvents from 'app/events/game-state';
+import * as scrollBoardEvents from 'app/events/scroll-board';
+import * as updatePiecesEvents from 'app/events/update-pieces';
+import * as userInputsEvents from 'app/events/user-inputs';
+import * as validateMovesEvents from 'app/events/validate-moves';
+
+import events from 'app/models/events';
+import Level from 'app/models/level';
 
 import GameObject from 'app/components/Game-object';
 import Ennemies from 'app/components/pieces/Ennemies';
-import LevelModel from 'app/level-model';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
-import events from 'app/utils/event-emitter';
-import { getBoundMethods } from 'app/utils/utils';
+
+import { getEachBoundMethods } from 'app/utils/bind-methods';
 
 export default {
+
+  events: [
+    gameStateEvents,
+    scrollBoardEvents,
+    updatePiecesEvents,
+    userInputsEvents,
+    validateMovesEvents
+  ],
 
   init(levelConfig, levelBlueprint) {
 
     Object.assign(this, levelConfig);
 
-    const { columns, rows, visibleRows, piecesColors, startPos, startPiece } =
-    this;
+    const { columns, rows, visibleRows } = this;
 
     GameObject.setSize(columns, visibleRows);
 
-    this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
+    this.model = new Level(levelBlueprint, columns, rows, visibleRows);
 
     this.board = new Board(columns, visibleRows);
-    this.ennemies = new Ennemies(piecesColors[1]);
-    this.player = new Player(piecesColors[0], startPiece, startPos);
+    this.ennemies = new Ennemies(this.piecesColors[1]);
+    this.player = new Player(this.piecesColors[0], this.playerStart);
 
     this.render();
-
-    getBoundMethods.call(this, gameStateEvents, events.on);
-    getBoundMethods.call(this, scrollBoardEvents, events.on);
-    getBoundMethods.call(this, updatePiecesEvents, events.on);
+    getEachBoundMethods.call(this, this.events, events.listen);
 
     window.addEventListener("resize", () => this.resize());
   },
@@ -68,8 +76,7 @@ export default {
     board.clear();
     model.reset();
     ennemies.empty();
-    player.init();
-
+    player.init(this.playerStart);
     this.render();
   },
 
