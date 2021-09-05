@@ -2,11 +2,13 @@ import GameObject from 'app/components/Game-object';
 
 const { floor, round} = Math;
 
-export function render(ctx, endRow) {
+export function render(endRow) {
 
-  const { size, shadowShift, leftOffset} = GameObject;
+  const ctx = this.ctx.main;
 
-  const targetWidth = this.canvas.main.width - shadowShift * 2;
+  const { size, offset} = GameObject;
+
+  const targetWidth = this.canvas.main.width - offset.shadow * 2;
 
   const bandSquares = this.finishingLine.squares.get(targetWidth);
   const boardLimit = this.squares.getTop(endRow) - round(size / 15);
@@ -15,24 +17,24 @@ export function render(ctx, endRow) {
   const shift = round((targetWidth - width)/ 2);
 
   const height = bandSquares.size * bandSquares.rows;
-  const left = leftOffset + shift;
+  const left = offset.left + shift;
   const top = boardLimit - size  + round((size - height) / 2);
 
-  ctx.fillStyle = this.arrivalColors.light;
+  ctx.fillStyle = this.colors.finishingLine.light;
   ctx.fillRect(left, top, width, height);
 
   ctx.globalCompositeOperation = "source-atop";
   this.finishingLine.squares.render(ctx, bandSquares, top, shift);
   ctx.globalCompositeOperation = "source-over";
 
-  ctx.fillStyle = this.arrivalColors.bottom;
+  ctx.fillStyle = this.colors.finishingLine.bottom;
   this.draw.bottomFace(ctx, {
     left,
     top: top + height,
     size: width
   });
 
-  ctx.fillStyle = this.arrivalColors.right;
+  ctx.fillStyle = this.colors.finishingLine.right;
   this.draw.rightFace(ctx, {
     left: width + left,
     top,
@@ -55,7 +57,7 @@ export const squares = {
 
   render(ctx, bandSquares, boardLimit, shift) {
 
-    ctx.fillStyle = this.arrivalColors.dark;
+    ctx.fillStyle = this.colors.finishingLine.dark;
 
     for (let row = 0; row < bandSquares.rows; row++) {
       for (let col = 0; col < bandSquares.cols; col += 2) {

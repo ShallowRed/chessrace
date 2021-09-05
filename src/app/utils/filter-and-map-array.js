@@ -1,12 +1,9 @@
 export function filterMap(array, { filter, map }) {
 
-  const getFilteredValuesAndIndex = (value, index) =>
-    filter({ value, index }) && ({ value, index })
+  const valuesAndIndexMatchingFilter = (value, index) =>
+    filter({ value, index }) && ({ value, index });
 
-  const isValidIndex = ({ index }) =>
-    typeof index === "number"
-
-  return array.map(getFilteredValuesAndIndex)
-    .filter(isValidIndex)
+  return array.map(valuesAndIndexMatchingFilter)
+    .filter(Boolean)
     .map(map)
 }

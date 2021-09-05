@@ -9,15 +9,18 @@ export function MOVE_PLAYER(position) {
 
   this.player.updatePosition(position);
 
-  this.player.moveSprite({ duration: this.duration.move }, this.model
+  this.player.moveSprite({ duration: this.durations.move }, this.model
     .skippedRows);
 }
 
 export function EAT_PIECE(ennemy) {
 
-  events.emit("REMOVE_ENNEMY", ennemy);
   events.emit("MOVE_PLAYER", ennemy.position);
   this.player.updatePiece(ennemy.pieceName);
+
+  animationTimeout(() => {
+    events.emit("REMOVE_ENNEMY", ennemy);
+  }, this.durations.move)
 }
 
 export function REMOVE_ENNEMY(ennemy) {
@@ -25,7 +28,7 @@ export function REMOVE_ENNEMY(ennemy) {
   if (!this.on) return;
 
   this.ennemies.remove(ennemy);
-  this.model.removeEnnemy(ennemy.position);
+  this.model.square.removeEnnemy(ennemy.position);
 }
 
 export function PLAYER_FALL_IN_HOLE(hole) {
@@ -34,22 +37,22 @@ export function PLAYER_FALL_IN_HOLE(hole) {
 
   animationTimeout(() => {
 
-    this.player.fall(this.duration.fall);
+    this.player.fall(this.durations.fall);
 
     animationTimeout(() => {
       events.emit("GAME_OVER");
-    }, this.duration.fall);
+    }, this.durations.fall);
 
-  }, this.duration.move);
+  }, this.durations.move);
 }
 
 export function ENNEMY_FALL(ennemy) {
 
-  ennemy.fall(this.duration.fall);
+  ennemy.fall(this.durations.fall);
 
   animationTimeout(() => {
     events.emit("REMOVE_ENNEMY", ennemy);
-  }, this.duration.fall);
+  }, this.durations.fall);
 }
 
 export function SET_EACH_PIECE(callback) {

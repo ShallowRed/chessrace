@@ -1,13 +1,14 @@
 import events from 'app/models/events';
 import { isValidMove, isValidTake, isLongRange } from 'app/models/pieces';
+import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
-export function CHECK_MOVE(square) {
+export function IS_VALID_MOVE(square) {
 
   const isInBoard = ([col, row]) =>
     col >= 0 &&
     row >= 0 &&
     col < this.columns &&
-    row + this.model.skippedRows <= this.rows;
+    row <= this.rows - this.model.skippedRows;
 
   if (
     isValidMove(this.player, square) &&
@@ -15,40 +16,28 @@ export function CHECK_MOVE(square) {
   ) return true;
 }
 
-export function CHECK_TAKE(square) {
+export function IS_VALID_TAKE(square) {
 
   return isValidTake(this.player, square);
 }
 
-export function CHECK_TRAJECTORY(targetSquare) {
-
-  const hasNoObstacles = checkObstacles(this.player, targetSquare, this.model);
-
-  if (!hasNoObstacles) return;
-
-  if (this.model.isHole(targetSquare)) {
-
-    events.emit("PLAYER_FALL_IN_HOLE", targetSquare);
-
-  } else return true;
-}
-
-function checkObstacles({ pieceName, position }, targetSquare, model) {
-
-  if (!isLongRange(pieceName)) return true;
+export function IS_VALID_TRAJECTORY(targetSquare) {
 
   const firstObstacle =
-    model.getFirstObstacleOnTrajectory(position, targetSquare);
+    isLongRange(this.player.pieceName) &&
+    getSquaresOnTrajectory(this.player.position, targetSquare)
+    .find(this.model.square.isObstacle);
 
-  if (firstObstacle) {
+  const getHole = square =>
+    this.model.square.isHole(square) && square
 
-    if (firstObstacle.isHole) {
+  const hole = firstObstacle && getHole(firstObstacle) ||
+    getHole(targetSquare);
 
-      events.emit("PLAYER_FALL_IN_HOLE", firstObstacle.position);
-    }
-
-    return;
+  if (hole) {
+    
+    events.emit("PLAYER_FALL_IN_HOLE", hole);
   }
 
-  return true;
+  return !firstObstacle && !hole;
 }

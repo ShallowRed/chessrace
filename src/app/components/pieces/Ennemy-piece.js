@@ -1,6 +1,5 @@
 import events from 'app/models/events';
 import Piece from 'app/components/pieces/Piece';
-import GameObject from 'app/components/Game-object';
 
 export default class EnnemyPiece extends Piece {
 
@@ -27,21 +26,11 @@ export default class EnnemyPiece extends Piece {
     this.container.setStyle({ left, bottom });
   }
 
-  getOffset(skippedRows) {
-    const [x, y] = this.position;
-    const { size, leftOffset, shadowShift } = GameObject;
-
-    return {
-      left: x * size + leftOffset,
-      bottom: (y + skippedRows + 1) * size + shadowShift
-    }
-  }
-
   decrementPositionY() {
 
     super.decrementPositionY();
 
-    if (this.isBeyondLimit()) {
+    if (this.position[1] < 0) {
 
       events.emit("ENNEMY_FALL", this)
     }

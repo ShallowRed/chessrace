@@ -19,7 +19,7 @@ export function getEachBoundMethods(objects, callback) {
 
     getBoundMethods.call(this, obj, callback);
   });
-};
+}
 
 export function bindObjectsMethods(objects) {
 
@@ -29,7 +29,7 @@ export function bindObjectsMethods(objects) {
   }
 }
 
-function bindObjectMethods(obj, key) {
+export function bindObjectMethods(obj, key) {
 
   this[key] = {};
 

@@ -46,8 +46,16 @@ export default class Piece extends GameObject {
     this.position[1]--;
   }
 
-  isBeyondLimit() {
-    return this.position[1] < 0;
+  getOffset(skippedRows = 0) {
+
+    const [x, y] = this.position;
+
+    const { size, offset } = GameObject;
+
+    return {
+      left: x * size + offset.left,
+      bottom: (y + skippedRows) * size + offset.bottom
+    }
   }
 
   fall(duration) {

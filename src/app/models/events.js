@@ -32,13 +32,23 @@ export default new class Events {
       });
     }
 
-    return new Promise(function(resolve) {
+    const validResults = results.filter(Boolean);
 
-      const validResults = results.filter(Boolean);
+    return results.length === validResults.length;
 
-      if (results.length === validResults.length) {
-        resolve(results);
-      }
-    });
+    // return new Promise(function(resolve) {
+    //
+    //   const validResults = results.filter(Boolean);
+    //
+    //   if (results.length === validResults.length) {
+    //     resolve(results);
+    //   }
+    // });
   }
+
+  ask(...args) {
+
+    return this.emit(...args);
+  }
+
 }();

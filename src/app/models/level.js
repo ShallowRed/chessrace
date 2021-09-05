@@ -1,15 +1,26 @@
 import { getSortedPiecesNames } from 'app/models/pieces';
-import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 import { filterMap } from 'app/utils/filter-and-map-array';
+import { parseBlueprint } from 'app/utils/parse-blueprint';
+import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Level {
 
   skippedRows = 0;
   pieces = getSortedPiecesNames();
 
+  methodsToBind = {
+    row: LevelRow,
+    square: LevelSquare
+  }
+
   constructor(levelBlueprint, columns, rows, visibleRows) {
+
     Object.assign(this, { columns, rows, visibleRows });
-    this.blueprint = this.parseBlueprint(levelBlueprint);
+
+    this.blueprint = parseBlueprint(levelBlueprint, this.columns);
+
+    bindObjectsMethods.call(this, this.methodsToBind);
+
     this.reset();
   }
 
@@ -22,34 +33,18 @@ export default class Level {
     this.lastRowToRender = this.visibleRows + 1;
   }
 
-  parseBlueprint(levelBlueprint) {
-
-    const columnsRegExp = `.{1,${this.columns}}`;
-
-    return levelBlueprint
-      .match(new RegExp(columnsRegExp, 'g'))
-      .map(rowString =>
-        rowString.split("")
-        .map(numberString => parseInt(numberString))
-      )
-  }
-
   parse() {
 
     this.newEnnemyPieces = [];
 
-    const isVisibleRow = row =>
-      row < this.lastRowToRender &&
-      row < this.rows;
+    for (let rowIndex = this.lastRowRendered; this.row.isVisible(rowIndex); rowIndex++) {
 
-    for (let row = this.lastRowRendered; isVisibleRow(row); row++) {
-
-      const parsedRow = this.parseRow(row);
+      const parsedRow = this.row.parse(this.values[rowIndex], rowIndex);
 
       this.deepRegularSquares.push(parsedRow.regularSquares);
       this.newEnnemyPieces.push(...parsedRow.pieces);
 
-      this.lastRowRendered = row + 1;
+      this.lastRowRendered = rowIndex + 1;
     }
 
     this.lastRowToRender = this.lastRowRendered + 2;
@@ -60,65 +55,79 @@ export default class Level {
 
     this.regularSquares = this.deepRegularSquares.flat();
   }
+}
 
-  parseRow(rowIndex) {
+const LevelRow = {
 
-    const row = this.values[rowIndex];
+  isVisible(rowIndex) {
 
-    const isNotHole = ({ value }) => value > 0;
-    const isPiece = ({ value }) => value > 1;
+    return rowIndex < this.lastRowToRender &&
+      rowIndex < this.rows;
+  },
 
-    const getSquareCoord = ({ index }) => [index, rowIndex];
-
-    const getPiecePositionAndName = ({ index }) => ({
-      pieceName: this.pieces[row[index] - 2],
-      position: [index, rowIndex - this.skippedRows]
-    });
+  parse(row, rowIndex) {
 
     return {
+
       regularSquares: filterMap(row, {
-        filter: isNotHole,
-        map: getSquareCoord
+        filter: this.row.isNotHole,
+        map: this.row.getSquareCoord(rowIndex)
       }),
+
       pieces: filterMap(row, {
-        filter: isPiece,
-        map: getPiecePositionAndName
+        filter: this.row.isPiece,
+        map: this.row.getPiecePositionAndName(row, rowIndex)
       })
     }
+  },
+
+  isNotHole({ value }) {
+    return value > 0;
+  },
+
+  isPiece({ value }) {
+    return value > 1;
+  },
+
+  getSquareCoord(rowIndex) {
+    return ({ index }) => [index, rowIndex];
+  },
+
+  getPiecePositionAndName(row, rowIndex) {
+    return ({ index }) => ({
+      pieceName: this.row.getPieceName(row, index),
+      position: [index, rowIndex - this.skippedRows]
+    });
+  },
+
+  getPieceName(row, index) {
+    return this.pieces[row[index] - 2];
   }
+}
+
+const LevelSquare = {
 
   get([col, row]) {
     return this.values[row + this.skippedRows]?.[col];
-  }
+  },
 
   set([col, row], value) {
     this.values[row + this.skippedRows][col] = value;
-  }
+  },
 
   removeEnnemy(squareCoords) {
-    this.set(squareCoords, 1)
-  }
+    this.square.set(squareCoords, 1)
+  },
 
   isHole(squareCoord) {
-    return this.get(squareCoord) === 0;
-  }
+    return this.square.get(squareCoord) === 0;
+  },
 
   isEnnemy(squareCoord) {
-    return this.get(squareCoord) > 1;
-  }
+    return this.square.get(squareCoord) > 1;
+  },
 
-  getFirstObstacleOnTrajectory(currentPosition, targetSquare) {
-
-    const isObstacle = square =>
-      this.isHole(square) || this.isEnnemy(square)
-
-    const firstObstacle =
-      getSquaresOnTrajectory(currentPosition, targetSquare)
-      .find(isObstacle);
-
-    if (firstObstacle) return {
-      position: firstObstacle,
-      isHole: this.isHole(firstObstacle)
-    }
+  isObstacle(square) {
+    return this.square.isHole(square) || this.square.isEnnemy(square)
   }
 }

@@ -1,7 +1,7 @@
-import * as gameStateEvents from 'app/events/game-state';
+import * as gameStateEvents from 'app/events/set-game-state';
 import * as scrollBoardEvents from 'app/events/scroll-board';
 import * as updatePiecesEvents from 'app/events/update-pieces';
-import * as userInputsEvents from 'app/events/user-inputs';
+import * as userInputsEvents from 'app/events/validate-user-inputs';
 import * as validateMovesEvents from 'app/events/validate-moves';
 
 import events from 'app/models/events';
@@ -39,6 +39,7 @@ export default {
     this.player = new Player(this.piecesColors[0], this.playerStart);
 
     this.render();
+
     getEachBoundMethods.call(this, this.events, events.listen);
 
     window.addEventListener("resize", () => this.resize());
@@ -81,13 +82,17 @@ export default {
   },
 
   resize() {
+    
+    GameObject.setSize(this.columns, this.visibleRows);
 
-    GameObject.setSize(this.columns, this.rows);
     this.board.setDimensions();
     this.board.nRenders--;
     this.board.render(this.model);
+
     this.player.moveSprite({ duration: 0 }, this.model.skippedRows);
+
     this.ennemies.setEachPosition(this.model.skippedRows);
+
     events.emit("SET_EACH_PIECE", piece =>
       piece.setSpriteDimensions()
     );

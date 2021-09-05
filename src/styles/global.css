@@ -1,16 +1,18 @@
 main {
   left: 50%;
   transform: translateX(-49%);
-  /* top: 50%; */
-  /* transform: translate(-50%, -45%); */
-  /* transform: skew(-14deg, 6deg) scaleY(1) translate(-50%, -50%); */
-  overflow: hidden;
+  /* transform: skew(-14deg, 6deg) scaleY(1) translate(-49%, 7%); */
 }
 
 main,
-canvas,
-main>* {
+main>div,
+canvas {
   position: absolute;
+}
+
+main,
+.trick-container {
+  overflow: hidden;
 }
 
 main *:not(.player) {
@@ -24,29 +26,16 @@ canvas,
   }
 }
 
-.trick-container {
-  left: -1px;
-}
-
 canvas {
   left: 0;
 }
 
-canvas.boardBottom,
-canvas.trick {
+canvas:not(.main) {
   pointer-events: none;
 }
 
-canvas.trick {
-  z-index: 300;
-}
-
-canvas.boardBottom {
-  z-index: 500;
-}
-
-.trick-container {
-  overflow: hidden;
+canvas.trick-container {
+  left: -1px;
 }
 
 .piece {
@@ -62,10 +51,12 @@ canvas.boardBottom {
   transition-timing-function: ease-out;
 }
 
-.ennemy-container {
-  z-index: 700;
+.player-container {
+  bottom: 0;
+  left: 0;
+  z-index: 990;
 }
 
-.player-container {
-  z-index: 990;
+.ennemy-container {
+  z-index: 700;
 }

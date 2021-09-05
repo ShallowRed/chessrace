@@ -5,14 +5,12 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   if (!this.on) return;
 
-  const duration = this.duration.translation;
-
   events.emit("TRANSLATE_BOARD", { rows: 1 });
   events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
   animationTimeout(() =>
     events.emit("NEXT_SCROLL_STEP"),
-    duration
+    this.durations.translation
   );
 }
 
@@ -28,9 +26,9 @@ export function NEXT_SCROLL_STEP() {
     piece.decrementPositionY()
   );
 
-  if (this.player.isBeyondLimit()) {
+  if (this.player.position[1] < 0) {
 
-    this.player.fall(this.duration.fall);
+    this.player.fall(this.durations.fall);
 
     animationTimeout(() => {
       events.emit("GAME_OVER");
@@ -50,7 +48,7 @@ export function NEXT_SCROLL_STEP() {
 
 export function TRANSLATE_BOARD({ rows = 0 } = {}) {
 
-  const duration = rows ? this.duration.translation : 0;
+  const duration = rows ? this.durations.translation : 0;
 
   this.board.canvas.main.translateY({ rows, duration });
   this.board.canvas.trick.translateY({ rows, duration });
@@ -58,7 +56,7 @@ export function TRANSLATE_BOARD({ rows = 0 } = {}) {
 
 export function TRANSLATE_PIECES({ rows = 0 } = {}) {
 
-  const duration = rows ? this.duration.translation : 0;
+  const duration = rows ? this.durations.translation : 0;
 
   events.emit("SET_EACH_PIECE", piece =>
     piece.container.translateY({ rows, duration })

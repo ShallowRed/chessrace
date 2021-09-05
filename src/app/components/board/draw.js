@@ -4,6 +4,10 @@ export function square(ctx, { left, top, size }) {
   ctx.fillRect(left, top, size, size);
 }
 
+export function rectangle(ctx, { left, top, width, height }) {
+  ctx.fillRect(left, top, width, height);
+}
+
 export function bottomFace(ctx, { left, top, size }) {
   const { depth } = GameObject;
 
@@ -28,25 +32,14 @@ export function rightFace(ctx, { left, top, size }) {
   ctx.fill();
 }
 
-export function horizontalLine(ctx, y, color, width = 4) {
-  ctx.beginPath();
-  ctx.moveTo(0, y);
-  ctx.lineTo(width, y);
-  ctx.strokeStyle = color;
-  ctx.lineWidth = width;
-  ctx.stroke();
-}
+export function cube(ctx, { left, top, size }, colors) {
 
-export const setShadow = {
+  ctx.fillStyle = colors.right;
+  this.draw.rightFace(ctx, { left: left + size, top, size });
 
-  on(ctx) {
-    const { shadowShift } = GameObject;
-    ctx.fillStyle = "white";
-    ctx.shadowColor = "#999";
-    ctx.shadowBlur = shadowShift / 2;
-  },
+  ctx.fillStyle = colors.bottom;
+  this.draw.bottomFace(ctx, { left, top: top + size, size });
 
-  off(ctx) {
-    ctx.shadowColor = "transparent";
-  }
+  ctx.fillStyle = colors.face;
+  this.draw.square(ctx, { left, top, size });
 }
