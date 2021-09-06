@@ -8,8 +8,7 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const analyse = process.env.NODE_ENV == "analyse";
-// const dev = process.env.NODE_ENV == "dev";
-const dev = process.env.NODE_ENV !== "production";
+const dev = process.env.NODE_ENV == "dev";
 
 console.log("Dev mode :", dev);
 
