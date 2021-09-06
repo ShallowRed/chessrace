@@ -9,28 +9,10 @@ export default class Canvas extends GameObject {
         canvas: document.createElement('canvas')
       },
       inContainer,
-      className
+      className: inContainer ? `canvas ${className}` : className
     });
 
-    const ctx = this.ctx = this.canvas.getContext('2d');
-
-    this.ctx.setShadow = {
-
-      shadowColor: "#EEE",
-
-      on() {
-        const { offset } = GameObject;
-        // ctx.shadowBlur = 1;
-        ctx.fillStyle = "white";
-        ctx.shadowColor = this.shadowColor;
-        ctx.shadowOffsetX = offset.shadow + ctx.canvas.width;
-        ctx.shadowOffsetY = offset.shadow + ctx.canvas.height;
-      },
-
-      off() {
-        ctx.shadowColor = "transparent";
-      }
-    };
+   this.ctx = this.canvas.getContext('2d');
   }
 
   getBoundingClientRect() {

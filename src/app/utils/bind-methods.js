@@ -31,7 +31,10 @@ export function bindObjectsMethods(objects) {
 
 export function bindObjectMethods(obj, key) {
 
-  this[key] = {};
+  if (!this[key]) {
+
+    this[key] = {};
+  }
 
   const bindDeepestObject = (methodName, boundMethod, depthKeys) => {
 

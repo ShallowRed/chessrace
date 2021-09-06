@@ -50,9 +50,10 @@ export function TRANSLATE_BOARD({ rows = 0 } = {}) {
 
   const duration = rows ? this.durations.translation : 0;
 
-  this.board.canvas.main.translateY({ rows, duration });
-  this.board.canvas.trick.translateY({ rows, duration });
-  this.board.canvas.trickShadow.translateY({ rows, duration });
+  this.board.canvas.shadows.translateY({ rows, duration });
+  this.board.canvas.face.translateY({ rows, duration });
+  this.board.canvas.right.translateY({ rows, duration });
+  this.board.canvas.bottom.translateY({ rows, duration });
 }
 
 export function TRANSLATE_PIECES({ rows = 0 } = {}) {

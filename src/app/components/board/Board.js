@@ -2,10 +2,7 @@ import GameObject from 'app/components/Game-object';
 import Canvas from 'app/components/board/Canvas';
 
 import * as Draw from 'app/components/Board/draw';
-import * as BoardBottom from 'app/components/Board/bottom-face';
-import * as Trick from 'app/components/Board/trick';
 import * as Squares from 'app/components/Board/squares';
-import * as Cubes from 'app/components/Board/cubes';
 import * as FinishingLine from 'app/components/Board/finishing-line';
 
 import events from 'app/models/events';
@@ -36,15 +33,14 @@ export default class Board {
       dark: "#333",
       right: "#BBB",
       bottom: "#999",
-    }
+    },
+
+    shadow: "#EEE"
   };
 
   methodsToBind = {
     draw: Draw,
     squares: Squares,
-    cubes: Cubes,
-    trick: Trick,
-    bottomFace: BoardBottom,
     finishingLine: FinishingLine
   };
 
@@ -54,9 +50,9 @@ export default class Board {
 
     bindObjectsMethods.call(this, this.methodsToBind);
 
-    ["main", "trick", "bottomFace", "trickShadow"].forEach(this.createCanvas);
+    ["shadows", "bottom", "right", "face", "bottomFace"].forEach(this.createCanvas);
 
-    this.canvas.main.onClick(evt => {
+    this.canvas.face.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
     });
 
@@ -75,67 +71,74 @@ export default class Board {
 
   setDimensions() {
 
-    const { canvas, columns, rows } = this;
+    const { canvas, ctx, columns, rows } = this;
     const { size, depth, offset, container } = GameObject;
 
-    const width = columns * size + depth + offset.shadow;
+    const width = columns * size;
     const height = (rows) * size + depth;
 
-    container.style.width = `${width}px`;
+    container.style.width = `${width + depth + offset.shadow}px`;
     container.style.height = `${height}px`;
     container.style.top = `${depth}px`;
 
-    canvas.main.container.domEl.style.overflow = "hidden";
-    canvas.trickShadow.container.domEl.style.overflow = "hidden";
-
-    // canvas.trick.container.domEl.style.overflow = "visible";
-    // canvas.bottomFace.domEl.style.display = "none";
-
-    canvas.main.container.setStyle({
+    canvas.face.container.setStyle({
       width,
-      height: height - size + offset.shadow,
-      // height: height - size + offset.shadow - size,
-      bottom: size - offset.shadow
-      // top: 0
+      height: height - size - depth,
+      bottom: size + depth
     });
 
-    canvas.main.setStyle({
+    canvas.face.setStyle({
       width,
       height: height + offset.shadow,
       bottom: 0
     });
 
+    canvas.shadows.container.setStyle({
+      width: width + depth + offset.shadow,
+      height: height - size + offset.shadow,
+      bottom: size - offset.shadow
+    });
+
+    canvas.shadows.setStyle({
+      width: width + depth + offset.shadow,
+      height: height + offset.shadow,
+      bottom: 0
+    });
+
+    canvas.right.container.setStyle({
+      width: width + depth,
+      height: height - size,
+      bottom: size
+    });
+
+    canvas.right.setStyle({
+      width: width + depth,
+      height: height + offset.shadow,
+      bottom: 0
+    });
+
+    canvas.bottom.container.setStyle({
+      width: width + depth,
+      height: height - size,
+      bottom: size
+    });
+
+    canvas.bottom.setStyle({
+      width: width + depth,
+      height: height + offset.shadow,
+      bottom: 0
+    });
+
     canvas.bottomFace.setStyle({
-      width,
-      height: depth + offset.shadow,
-      bottom: size - offset.shadow
+      width: width + depth,
+      height: depth,
+      bottom: size
     });
 
-    canvas.trick.container.setStyle({
-      width,
-      height: depth + offset.shadow,
-      bottom: size - offset.shadow
-      // bottom: offset.bottom - depth - offset.shadow - 1
-    });
-
-    canvas.trick.setStyle({
-      width,
-      height: size + depth + offset.shadow,
-      bottom: 0
-    });
-
-    canvas.trickShadow.container.setStyle({
-      width,
-      height:  offset.shadow,
-      bottom: size - offset.shadow
-      // bottom: offset.bottom - depth - offset.shadow - 1
-    });
-
-    canvas.trickShadow.setStyle({
-      width,
-      height: size + offset.shadow,
-      bottom: 0
-    });
+    ctx.shadows.fillStyle = "white";
+    ctx.shadows.shadowColor = this.colors.shadow;
+    ctx.shadows.shadowOffsetX = offset.shadow + canvas.shadows.width;
+    ctx.shadows.shadowOffsetY = offset.shadow + canvas.shadows.height;
   }
 
   render({ regularSquares, lastRowRendered, rows }) {
@@ -146,9 +149,7 @@ export default class Board {
       this.finishingLine.render(lastRowRendered - 1)
     }
 
-    this.cubes.render();
-    this.trick.render();
-    this.bottomFace.render();
+    this.squares.render();
 
     this.nRenders++;
   }

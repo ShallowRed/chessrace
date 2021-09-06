@@ -19,7 +19,7 @@ main *:not(.player) {
   transition-timing-function: linear;
 }
 
-canvas,
+canvas.face,
 .piece:not(.player) {
   &:hover {
     cursor: pointer;
@@ -30,7 +30,11 @@ canvas {
   left: 0;
 }
 
-canvas:not(.main) {
+main>.canvas {
+  overflow: hidden;
+}
+
+canvas:not(.face) {
   pointer-events: none;
 }
 

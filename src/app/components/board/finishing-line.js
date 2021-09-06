@@ -4,20 +4,20 @@ const { floor, round} = Math;
 
 export function render(endRow) {
 
-  const ctx = this.ctx.main;
+  const ctx = this.ctx.face;
 
   const { size, offset} = GameObject;
 
-  const targetWidth = this.canvas.main.width - offset.shadow * 2;
+  const targetWidth = this.canvas.face.width - offset.shadow * 2;
 
   const bandSquares = this.finishingLine.squares.get(targetWidth);
-  const boardLimit = this.squares.getTop(endRow) - round(size / 15);
+  const boardLimit = this.squares.getTop([,endRow]) - round(size / 15);
 
   const width = bandSquares.size * bandSquares.cols;
   const shift = round((targetWidth - width)/ 2);
 
   const height = bandSquares.size * bandSquares.rows;
-  const left = offset.left + shift;
+  const left = shift;
   const top = boardLimit - size  + round((size - height) / 2);
 
   ctx.fillStyle = this.colors.finishingLine.light;

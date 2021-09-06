@@ -7,18 +7,18 @@ export function generateLevelBlueprint({ columns, rows }) {
       .fill()
     );
 
-  const randomDeepArray = emptyDeepArray.map((rows, i) =>
-    rows.map((col, j) =>
-      j === 4 || i < 1 ? 1 : round(random())
-    )
-  );
-
   // const randomDeepArray = emptyDeepArray.map((rows, i) =>
-  //   rows.map(() =>
-  //     i < 4 || round(random()) ?
-  //     1 : round(random()) ? 0 :
-  //     floor(random() * 7))
+  //   rows.map((col, j) =>
+  //     j === 4 ? 1 : round(random())
+  //   )
   // );
+
+  const randomDeepArray = emptyDeepArray.map((rows, i) =>
+    rows.map(() =>
+      i < 4 || round(random()) ?
+      1 : round(random()) ? 0 :
+      floor(random() * 7))
+  );
 
   return randomDeepArray
     .flat()

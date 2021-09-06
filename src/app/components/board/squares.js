@@ -2,31 +2,74 @@ import GameObject from 'app/components/Game-object';
 
 const { floor } = Math;
 
-export function getTop(row) {
+export function render() {
 
-  const { size, offset, depth } = GameObject;
+  const { depth, size, offset } = GameObject;
 
-  const bottom = (row + 1 - this.nRenders) * size + offset.bottom;
+  this.squares.list
+    .filter(this.squares.isInVisibleRow)
+    .forEach(square => {
 
-  return this.canvas.main.height - bottom;
+      const left = this.squares.getLeft(square);
+      const top = this.squares.getTop(square);
+
+      this.draw.square(this.ctx.shadows, {
+        left: left - this.canvas.shadows.width + depth,
+        top: top - offset.shadow - this.canvas.shadows.height,
+        size,
+      });
+
+      this.ctx.face.fillStyle = this.squares.getColor(square, "face");
+      this.draw.square(this.ctx.face, { left, top });
+
+      if (!this.squares.hasRightNeighbour(square)) {
+
+        this.ctx.right.fillStyle = this.squares.getColor(square, "right");
+        this.draw.rightFace(this.ctx.right, {
+          left: left + size,
+          top: top - depth
+        });
+      }
+
+      if (
+        !this.squares.isInBottomRow(square) &&
+        !this.squares.hasTopNeighbour(square)
+      ) {
+        this.ctx.bottom.fillStyle = this.squares.getColor(square, "bottom");
+        this.draw.bottomFace(this.ctx.bottom, {
+          left,
+          top: top + size - depth
+        });
+      }
+    });
+
+  this.squares.list
+    .filter(this.squares.isInBottomRow)
+    .forEach(square => {
+
+      this.ctx.bottomFace.fillStyle =
+        this.squares.getColor(square, "bottom");
+
+      this.draw.bottomFace(this.ctx.bottomFace, {
+        left: this.squares.getLeft(square)
+      });
+    });
 }
 
-export function getLeft(col) {
-
-  const { size, offset } = GameObject;
-
-  return size * col + offset.left;
-}
-
-export function getSquare([col, row]) {
+export function getTop([, row]) {
 
   const { size } = GameObject;
 
-  return {
-    left: this.squares.getLeft(col),
-    top: this.squares.getTop(row),
-    size
-  };
+  const bottom = (row + 1 - this.nRenders) * size;
+
+  return this.canvas.face.height - bottom;
+}
+
+export function getLeft([col]) {
+
+  const { size } = GameObject;
+
+  return size * col;
 }
 
 export function getColor([col, row], key) {
@@ -45,6 +88,14 @@ export function isInBottomRow([, row]) {
   return row === this.nRenders;
 }
 
+export function hasRightNeighbour([col, row]) {
+  return this.squares.includes([col + 1, row]);
+}
+
+export function hasTopNeighbour([col, row]) {
+  return this.squares.includes([col, row - 1]);
+}
+
 export function includes(coord) {
 
   return this.squares.list
@@ -54,14 +105,10 @@ export function includes(coord) {
 
 export function getClicked({ clientX, clientY }) {
 
-  const { size, offset } = GameObject;
+  const { left, bottom } = this.canvas.face.domEl.getBoundingClientRect();
 
-  const canvasOffset = this.canvas.main.getBoundingClientRect();
-
-  const coords = [
-    clientX - canvasOffset.left - offset.left,
-    -(clientY - canvasOffset.bottom + offset.bottom)
-  ];
-
-  return coords.map(coord => floor(coord / size))
+  return [
+    clientX - left,
+    -(clientY - bottom)
+  ].map(coord => floor(coord / GameObject.size));
 }
