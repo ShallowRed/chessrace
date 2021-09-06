@@ -8,7 +8,9 @@ const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
 const ESLintPlugin = require('eslint-webpack-plugin');
 
 const analyse = process.env.NODE_ENV == "analyse";
-const dev = process.env.NODE_ENV == "dev";
+// const dev = process.env.NODE_ENV == "dev";
+const dev = process.env.NODE_ENV !== "production";
+
 console.log("Dev mode :", dev);
 
 const config = {
@@ -87,8 +89,8 @@ module.exports = {
   entry: config.input.js,
   resolve: {
     alias: {
-      styles: path.resolve(__dirname, "/src/styles/"),
-      app: path.resolve(__dirname, "/src/app/")
+      styles: path.resolve(__dirname, "src/styles/"),
+      app: path.resolve(__dirname, "src/app/")
     }
   },
   output: {

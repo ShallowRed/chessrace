@@ -4,8 +4,8 @@
   "description": "chessrace",
   "scripts": {
     "serve": "npx live-server ./dist/",
-    "dev": "SET NODE_ENV=dev && webpack --config webpack.config.js",
-    "prod": "SET NODE_ENV=production && webpack --config webpack.config.js",
+    "dev": "set NODE_ENV=dev && webpack --config webpack.config.js",
+    "prod": "set NODE_ENV=production && webpack --config webpack.config.js",
     "analyse": "export NODE_ENV=analyse && webpack --config webpack.config.js"
   },
   "browserslist": [
@@ -17,7 +17,6 @@
   "devDependencies": {
     "@babel/cli": "^7.10.5",
     "@babel/core": "^7.11.1",
-    "@babel/eslint-parser": "^7.15.4",
     "@babel/preset-env": "^7.11.0",
     "babel-loader": "^8.1.0",
     "css-loader": "^3.6.0",
@@ -29,12 +28,11 @@
     "html-webpack-plugin": "^4.3.0",
     "json-loader": "^0.5.7",
     "mini-css-extract-plugin": "^2.1.0",
-    "postcss": "^8.3.6",
     "postcss-loader": "^6.1.1",
     "postcss-normalize": "^10.0.0",
     "postcss-preset-env": "^6.7.0",
     "terser-webpack-plugin": "^2.3.7",
-    "webpack": "^5.52.0",
+    "webpack": "^5.47.1",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpack-cli": "^4.7.2"
   },

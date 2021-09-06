@@ -56,7 +56,9 @@ export function render() {
     });
 }
 
-export function getTop([, row]) {
+export function getTop(coord) {
+
+  const row = coord.length ? coord[1] : coord;
 
   const { size } = GameObject;
 
@@ -65,7 +67,9 @@ export function getTop([, row]) {
   return this.canvas.face.height - bottom;
 }
 
-export function getLeft([col]) {
+export function getLeft(coord) {
+
+  const col = coord.length ? coord[0] : coord;
 
   const { size } = GameObject;
 
@@ -80,12 +84,12 @@ export function getColor([col, row], key) {
   ][(col + row) % 2];
 }
 
-export function isInVisibleRow([, row]) {
-  return row > this.nRenders - 1
+export function isInVisibleRow(coords) {
+  return coords[1] > this.nRenders - 1
 }
 
-export function isInBottomRow([, row]) {
-  return row === this.nRenders;
+export function isInBottomRow(coords) {
+  return coords[1] === this.nRenders;
 }
 
 export function hasRightNeighbour([col, row]) {

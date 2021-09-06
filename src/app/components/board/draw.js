@@ -1,16 +1,15 @@
 import GameObject from 'app/components/Game-object';
 
-export function square(ctx, { left, top }, size = GameObject.size) {
-
+export function square(ctx, { left, top, size = GameObject.size }) {
   ctx.fillRect(left, top, size, size);
 }
 
-export function rectangle(ctx, { left, top, width, height }) {
+export function rectangle(ctx, { left = 0, top = 0, width, height }) {
 
   ctx.fillRect(left, top, width, height);
 }
 
-export function bottomFace(ctx, { left, top = 0 }, size = GameObject.size) {
+export function bottomFace(ctx, { left = 0, top = 0, size = GameObject.size }) {
 
   const { depth } = GameObject;
 
@@ -23,7 +22,7 @@ export function bottomFace(ctx, { left, top = 0 }, size = GameObject.size) {
   ctx.fill();
 }
 
-export function rightFace(ctx, { left, top }, size = GameObject.size) {
+export function rightFace(ctx, { left, top, size = GameObject.size }) {
 
   const { depth } = GameObject;
 

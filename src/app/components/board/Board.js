@@ -3,7 +3,7 @@ import Canvas from 'app/components/board/Canvas';
 
 import * as Draw from 'app/components/Board/draw';
 import * as Squares from 'app/components/Board/squares';
-import * as FinishingLine from 'app/components/Board/finishing-line';
+import * as FinishLine from 'app/components/Board/finishing-line';
 
 import events from 'app/models/events';
 import { bindObjectsMethods } from "app/utils/bind-methods";
@@ -28,7 +28,7 @@ export default class Board {
         bottom: "#9c8c7c",
       }
     },
-    finishingLine: {
+    finishLine: {
       light: "#f0f0f0",
       dark: "#333",
       right: "#BBB",
@@ -41,7 +41,7 @@ export default class Board {
   methodsToBind = {
     draw: Draw,
     squares: Squares,
-    finishingLine: FinishingLine
+    finishLine: FinishLine
   };
 
   constructor(columns, rows) {
@@ -50,7 +50,8 @@ export default class Board {
 
     bindObjectsMethods.call(this, this.methodsToBind);
 
-    ["shadows", "bottom", "right", "face", "bottomFace"].forEach(this.createCanvas);
+    ["shadows", "bottom", "right", "face", "bottomFace"].forEach(this
+      .createCanvas);
 
     this.canvas.face.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
@@ -146,7 +147,7 @@ export default class Board {
     this.squares.list = regularSquares;
 
     if (lastRowRendered === rows) {
-      this.finishingLine.render(lastRowRendered - 1)
+      this.finishLine.render(lastRowRendered - 1)
     }
 
     this.squares.render();
@@ -160,7 +161,10 @@ export default class Board {
 
     for (const name in this.canvas) {
 
-      ctx[name].clearRect(0, 0, canvas[name].width, canvas[name].height);
+      if (ctx[name]) {
+
+        ctx[name].clearRect(0, 0, canvas[name].width, canvas[name].height);
+      }
     }
   }
 }

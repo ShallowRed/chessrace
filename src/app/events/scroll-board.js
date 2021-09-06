@@ -37,10 +37,6 @@ export function NEXT_SCROLL_STEP() {
     return;
   }
 
-  if (this.player.position[1] >= this.model.rows - this.model.skippedRows) {
-    events.emit("GAME_WON");
-  }
-
   window.requestAnimationFrame(() =>
     events.emit("SCROLL_ONE_SQUARE_DOWN")
   );

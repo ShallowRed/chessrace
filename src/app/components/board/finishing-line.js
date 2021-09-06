@@ -1,73 +1,60 @@
 import GameObject from 'app/components/Game-object';
 
-const { floor, round} = Math;
+const { round, ceil } = Math;
 
 export function render(endRow) {
 
-  const ctx = this.ctx.face;
+  const { depth, size } = GameObject;
 
-  const { size, offset} = GameObject;
+  const rows = 5;
+  const squareSize = round(size / rows);
+  const borderWidth = ceil(squareSize) / 5;
 
-  const targetWidth = this.canvas.face.width - offset.shadow * 2;
+  const width = this.canvas.face.width;
+  const top = this.squares.getTop(endRow) - size;
 
-  const bandSquares = this.finishingLine.squares.get(targetWidth);
-  const boardLimit = this.squares.getTop([,endRow]) - round(size / 15);
+  this.ctx.face.fillStyle = this.colors.finishLine.light;
+  this.draw.rectangle(this.ctx.face, {
+    top,
+    width,
+    height: size
+  });
 
-  const width = bandSquares.size * bandSquares.cols;
-  const shift = round((targetWidth - width)/ 2);
+  this.ctx.face.strokeStyle = this.colors.finishLine.dark;
+  this.ctx.face.lineWidth = borderWidth;
+  this.ctx.face.strokeRect(
+     borderWidth / 2,
+     top + borderWidth / 2,
+     width - borderWidth,
+     size - borderWidth
+  );
 
-  const height = bandSquares.size * bandSquares.rows;
-  const left = shift;
-  const top = boardLimit - size  + round((size - height) / 2);
-
-  ctx.fillStyle = this.colors.finishingLine.light;
-  ctx.fillRect(left, top, width, height);
-
-  ctx.globalCompositeOperation = "source-atop";
-  this.finishingLine.squares.render(ctx, bandSquares, top, shift);
-  ctx.globalCompositeOperation = "source-over";
-
-  ctx.fillStyle = this.colors.finishingLine.bottom;
-  this.draw.bottomFace(ctx, {
-    left,
-    top: top + height,
+  this.ctx.bottom.fillStyle = this.colors.finishLine.bottom;
+  this.draw.bottomFace(this.ctx.bottom, {
+    top: top + size - depth,
     size: width
   });
 
-  ctx.fillStyle = this.colors.finishingLine.right;
-  this.draw.rightFace(ctx, {
-    left: width + left,
-    top,
-    size: height
+  this.ctx.right.fillStyle = this.colors.finishLine.right;
+  this.draw.rightFace(this.ctx.right, {
+    left: width,
+    top: top - depth,
+    size
   });
 
-}
+  this.canvas.face.ctx.globalCompositeOperation = "source-atop";
+  this.ctx.face.fillStyle = this.colors.finishLine.dark
 
-export const squares = {
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < rows * (this.columns + 1); col += 2) {
 
-  get(width) {
-    let cols = 50;
-    const size = floor(width / cols);
-
-    cols = floor(width / size);
-    const rows = floor(GameObject.size / size);
-
-    return { rows, cols, size };
-  },
-
-  render(ctx, bandSquares, boardLimit, shift) {
-
-    ctx.fillStyle = this.colors.finishingLine.dark;
-
-    for (let row = 0; row < bandSquares.rows; row++) {
-      for (let col = 0; col < bandSquares.cols; col += 2) {
-
-        this.draw.square(ctx, {
-          left: shift * 2 + (2 + col + row % 2) * bandSquares.size,
-          top: boardLimit + row * bandSquares.size,
-          size: bandSquares.size
-        });
-      }
+      this.draw.square(this.canvas.face.ctx, {
+        left: (col + row % 2) * squareSize,
+        top: top - (row+1) * squareSize + size,
+        size: squareSize
+      });
     }
   }
+
+  this.canvas.face.ctx.globalCompositeOperation = "source-over";
 }
