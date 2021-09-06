@@ -7,9 +7,12 @@ export function render() {
   const bottomSquares = this.squares.list
     .filter(this.squares.isInBottomRow);
 
-  bottomSquares.forEach(this.bottomFace.renderCubeFace);
+  this.bottomFace.clearShadows(ctx);
+  ctx.setShadow.on();
+  bottomSquares.forEach(this.bottomFace.renderShadow);
+  ctx.setShadow.off();
 
-  this.bottomFace.renderShadows(ctx, bottomSquares);
+  bottomSquares.forEach(this.bottomFace.renderCubeFace);
 }
 
 export function renderCubeFace([col, row]) {
@@ -24,15 +27,6 @@ export function renderCubeFace([col, row]) {
     top: 0,
     size
   });
-}
-
-export function renderShadows(ctx, bottomSquares) {
-
-  this.bottomFace.clearShadows(ctx);
-
-  ctx.setShadow.on();
-  bottomSquares.forEach(this.bottomFace.renderShadow);
-  ctx.setShadow.off();
 }
 
 export function clearShadows(ctx) {
@@ -54,10 +48,12 @@ export function renderShadow([col]) {
 
   const ctx = this.ctx.bottomFace;
 
-  ctx.fillRect(
-    this.squares.getLeft(col) - ctx.canvas.width,
-    -ctx.canvas.height - offset.shadow + depth,
-    size,
-    offset.shadow - depth
-  )
+  ctx.shadowColor = "red";
+
+  // this.draw.rectangleShadow(ctx, {
+  //   left: this.squares.getLeft(col) + depth,
+  //   top: depth - offset.shadow,
+  //   width: size,
+  //   height: offset.shadow
+  // })
 }

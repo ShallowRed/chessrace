@@ -1,51 +1,41 @@
-import GameObject from 'app/components/Game-object';
+// import GameObject from 'app/components/Game-object';
 
 export function render() {
 
+  const ctx = this.ctx.main;
+
   const cubes = this.squares.list
     .filter(this.squares.isInVisibleRow)
-    .sort(closestToTopLeftCorner);
-
-  this.cubes.renderShadows(this.ctx.main, cubes)
-  cubes.forEach(this.cubes.renderCube);
-}
-
-export function renderCube(coords) {
-
-  const square = this.squares.get(coords);
-  const colors = this.cubes.getColors(coords)
-
-  this.draw.cube(this.ctx.main, square, colors)
-}
-
-export function renderShadows(ctx, cubes) {
+    .sort(closestToTopLeftCorner)
+    .map(this.cubes.getCube);
 
   ctx.setShadow.on();
-  cubes.forEach(this.cubes.renderShadow);
+
+  cubes.forEach(cube =>
+    this.draw.cubeShadow(ctx, cube)
+  );
+
   ctx.setShadow.off();
+
+  cubes.forEach(cube =>
+    this.draw.cube(ctx, cube)
+  );
 }
 
-export function getColors(coords) {
-  const { getColor } = this.squares;
+export function getCube(coords) {
 
   return {
-    right: getColor(coords, "right"),
-    bottom: getColor(coords, "bottom"),
-    face: getColor(coords, "face")
+
+    face: this.squares.getSquare(coords),
+
+    colors: {
+      right: this.squares.getColor(coords, "right"),
+      bottom: this.squares.getColor(coords, "bottom"),
+      face: this.squares.getColor(coords, "face")
+    }
   }
 }
 
-export function renderShadow([col, row]) {
-
-  const { size } = GameObject;
-  const ctx = this.ctx.main;
-
-  this.draw.square(ctx, {
-    left: this.squares.getLeft(col) - ctx.canvas.width,
-    top: this.squares.getTop(row) - ctx.canvas.height,
-    size: size
-  });
-}
 
 function closestToTopLeftCorner([xa, ya], [xb, yb]) {
   return xa - xb - ya + yb;

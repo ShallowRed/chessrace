@@ -56,7 +56,9 @@ export default class Board {
 
     ["main", "trick", "bottomFace"].forEach(this.createCanvas);
 
-    this.canvas.main.onClick(this.emitSquareClickedEvent);
+    this.canvas.main.onClick(evt => {
+      events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
+    });
 
     this.setDimensions();
   }
@@ -71,47 +73,48 @@ export default class Board {
     this.ctx[className] = this.canvas[className].ctx;
   }
 
-  emitSquareClickedEvent = evt => {
-    events.emit("SQUARE_CLICKED", this.squares.getClicked(evt));
-  }
-
   setDimensions() {
 
     const { canvas, columns, rows } = this;
     const { size, depth, offset, container } = GameObject;
 
-    const width = columns * size + offset.shadow * 2;
-    const height = (rows - 1) * size + offset.bottom;
+    const width = columns * size + depth + offset.shadow;
+    const height = (rows) * size + depth;
 
     container.style.width = `${width}px`;
     container.style.height = `${height}px`;
     container.style.top = `${depth}px`;
 
-
     canvas.main.container.domEl.style.overflow = "hidden";
+
+    // canvas.trick.container.domEl.style.overflow = "visible";
+    // canvas.bottomFace.domEl.style.display = "none";
 
     canvas.main.container.setStyle({
       width,
-      height: height - size,
-      bottom: size
+      height: height - size + offset.shadow,
+      // height: height - size + offset.shadow - size,
+      bottom: size - offset.shadow
+      // top: 0
     });
 
     canvas.main.setStyle({
       width,
-      height,
+      height: height + offset.shadow,
       bottom: 0
     });
 
     canvas.bottomFace.setStyle({
       width,
-      height: offset.bottom,
-      bottom: 0
+      height: depth + offset.shadow,
+      bottom: size - offset.shadow
     });
 
     canvas.trick.container.setStyle({
       width,
       height: depth + offset.shadow,
-      bottom: offset.bottom - depth - offset.shadow - 1
+      bottom: size - offset.shadow
+      // bottom: offset.bottom - depth - offset.shadow - 1
     });
 
     canvas.trick.setStyle({

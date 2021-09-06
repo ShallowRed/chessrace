@@ -1,14 +1,47 @@
 import GameObject from 'app/components/Game-object';
 
 export function square(ctx, { left, top, size }) {
+
   ctx.fillRect(left, top, size, size);
 }
 
 export function rectangle(ctx, { left, top, width, height }) {
+
   ctx.fillRect(left, top, width, height);
 }
 
+export function squareShadow(ctx, { left, top, size }) {
+
+  this.draw.square(ctx, {
+    left: left - ctx.canvas.width,
+    top: top - ctx.canvas.height,
+    size,
+  });
+}
+
+export function cubeShadow(ctx, { face: { left, top, size } }) {
+
+  const { depth } = GameObject;
+
+  this.draw.square(ctx, {
+    left: left + depth - ctx.canvas.width,
+    top: top + depth - ctx.canvas.height,
+    size,
+  });
+}
+
+export function rectangleShadow(ctx, { left, top, width, height }) {
+
+  this.draw.rectangle(ctx, {
+    left: left - ctx.canvas.width,
+    top: top - ctx.canvas.height,
+    width,
+    height
+  });
+}
+
 export function bottomFace(ctx, { left, top, size }) {
+
   const { depth } = GameObject;
 
   ctx.beginPath();
@@ -21,6 +54,7 @@ export function bottomFace(ctx, { left, top, size }) {
 }
 
 export function rightFace(ctx, { left, top, size }) {
+
   const { depth } = GameObject;
 
   ctx.beginPath();
@@ -32,14 +66,14 @@ export function rightFace(ctx, { left, top, size }) {
   ctx.fill();
 }
 
-export function cube(ctx, { left, top, size }, colors) {
+export function cube(ctx, { face: { left, top, size }, colors }) {
 
   ctx.fillStyle = colors.right;
-  this.draw.rightFace(ctx, { left: left + size, top, size });
+  rightFace(ctx, { left: left + size, top, size });
 
   ctx.fillStyle = colors.bottom;
-  this.draw.bottomFace(ctx, { left, top: top + size, size });
+  bottomFace(ctx, { left, top: top + size, size });
 
   ctx.fillStyle = colors.face;
-  this.draw.square(ctx, { left, top, size });
+  square(ctx, { left, top, size });
 }

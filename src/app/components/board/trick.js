@@ -20,6 +20,7 @@ export function renderSquare(ctx, col, row) {
   this.trick.renderRectangle(ctx, col, left)
 
   const hasTopLeftNeighbour = this.squares.includes([col - 1, row + 1])
+  const hasTopNeighbour = this.squares.includes([col, row + 1])
 
   if (hasTopLeftNeighbour) {
 
@@ -32,7 +33,20 @@ export function renderSquare(ctx, col, row) {
     ctx.fillStyle = "white";
   }
 
-  this.trick.renderTriangle(ctx, [col, row], left);
+  this.trick.renderTriangle(ctx, left);
+
+  if (!hasTopNeighbour) {
+    const { depth, offset, size } = GameObject;
+
+    ctx.fillStyle = "green";
+
+    this.draw.rectangle(ctx, {
+      left: left + size + depth,
+      top: depth + offset.shadow * 2 - size ,
+      width: offset.shadow,
+      height: offset.shadow
+    });
+  }
 }
 
 export function renderRectangle(ctx, col, left) {
@@ -42,9 +56,9 @@ export function renderRectangle(ctx, col, left) {
   ctx.fillStyle = "white";
 
   this.draw.rectangle(ctx, {
-    left: left - 1,
+    left: left,
     top: depth,
-    width: depth + offset.shadow + 1,
+    width: offset.shadow + depth,
     height: size
   });
 }
@@ -54,24 +68,26 @@ export function renderTriangle(ctx, left) {
   const { depth } = GameObject;
 
   ctx.beginPath();
-  ctx.moveTo(left - 1, 0);
+  ctx.moveTo(left, 0);
   ctx.lineTo(left + depth, depth);
-  ctx.lineTo(left - 1, depth);
+  ctx.lineTo(left, depth);
   ctx.closePath();
   ctx.fill();
 }
 
 export function renderShadow(ctx, left) {
 
-  const { depth, offset } = GameObject;
+  const { depth, offset, size } = GameObject;
 
   ctx.setShadow.on();
 
-  this.draw.rectangle(ctx, {
-    left: left - ctx.canvas.width - offset.shadow - 1,
-    top: -ctx.canvas.height - offset.shadow + depth - 1,
-    width: offset.shadow + 1,
-    height: offset.shadow - depth
+  ctx.shadowColor = "blue";
+
+  this.draw.rectangleShadow(ctx, {
+    left: left - size + depth,
+    top: depth - offset.shadow,
+    width: size,
+    height: offset.shadow
   });
 
   ctx.setShadow.off();

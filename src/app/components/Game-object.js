@@ -11,15 +11,17 @@ export default class GameObject {
 
     this.size = min(
       round(1.05 * window.innerWidth / (columns + 1)),
-      round(0.95 * window.innerHeight / rows)
+      round(0.9 * window.innerHeight / rows)
     );
 
     this.depth = round(this.size / 6);
 
     this.offset = {};
-    this.offset.shadow = round(this.size / 2.5);
-    this.offset.left = this.offset.shadow - this.depth;
-    this.offset.bottom = this.size + this.depth * 2;
+    this.offset.shadow = 30;
+    // this.offset.shadow = round(this.size / 1.8);
+    this.offset.left = 0;
+    // this.offset.left = this.offset.shadow - this.depth;
+    this.offset.bottom = this.offset.shadow + this.depth;
   }
 
   translateY = ({ rows = 0, duration = 0 } = {}, element = this.domEl) => {

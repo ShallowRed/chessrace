@@ -1,9 +1,7 @@
-export function parseBlueprint(levelBlueprint, columns) {
+export function parseBlueprint(levelString, columns) {
 
-  const columnsRegExp = `.{1,${columns}}`;
-
-  return levelBlueprint
-    .match(new RegExp(columnsRegExp, 'g'))
+  return levelString
+    .match(new RegExp(`.{1,${columns}}`, 'g'))
     .map(rowString => rowString.split("")
       .map(numberString => parseInt(numberString))
     )

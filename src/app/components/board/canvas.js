@@ -2,8 +2,6 @@ import GameObject from 'app/components/Game-object';
 
 export default class Canvas extends GameObject {
 
-  shadowColor = "#EEE";
-
   constructor({ className, inContainer }) {
 
     super({
@@ -18,12 +16,15 @@ export default class Canvas extends GameObject {
 
     this.ctx.setShadow = {
 
+      shadowColor: "#EEE",
+
       on() {
+        const { offset } = GameObject;
         // ctx.shadowBlur = 1;
         ctx.fillStyle = "white";
         ctx.shadowColor = this.shadowColor;
-        ctx.shadowOffsetX = GameObject.offset.shadow + ctx.canvas.width;
-        ctx.shadowOffsetY = GameObject.offset.shadow + ctx.canvas.height;
+        ctx.shadowOffsetX = offset.shadow + ctx.canvas.width;
+        ctx.shadowOffsetY = offset.shadow + ctx.canvas.height;
       },
 
       off() {

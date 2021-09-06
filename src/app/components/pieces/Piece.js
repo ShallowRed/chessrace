@@ -50,11 +50,11 @@ export default class Piece extends GameObject {
 
     const [x, y] = this.position;
 
-    const { size, offset } = GameObject;
+    const { size, offset, depth } = GameObject;
 
     return {
       left: x * size + offset.left,
-      bottom: (y + skippedRows) * size + offset.bottom
+      bottom: (y + 1 + skippedRows) * size + depth
     }
   }
 

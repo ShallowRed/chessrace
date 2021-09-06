@@ -4,9 +4,9 @@ const { floor } = Math;
 
 export function getTop(row) {
 
-  const { size, offset } = GameObject;
+  const { size, offset, depth } = GameObject;
 
-  const bottom = (row - this.nRenders) * size + offset.bottom;
+  const bottom = (row + 1 - this.nRenders) * size + offset.bottom;
 
   return this.canvas.main.height - bottom;
 }
@@ -18,7 +18,7 @@ export function getLeft(col) {
   return size * col + offset.left;
 }
 
-export function get([col, row]) {
+export function getSquare([col, row]) {
 
   const { size } = GameObject;
 
@@ -60,7 +60,7 @@ export function getClicked({ clientX, clientY }) {
 
   const coords = [
     clientX - canvasOffset.left - offset.left,
-    -(clientY - canvasOffset.bottom + offset.bottom - size)
+    -(clientY - canvasOffset.bottom + offset.bottom)
   ];
 
   return coords.map(coord => floor(coord / size))
