@@ -52,6 +52,7 @@ export function TRANSLATE_BOARD({ rows = 0 } = {}) {
 
   this.board.canvas.main.translateY({ rows, duration });
   this.board.canvas.trick.translateY({ rows, duration });
+  this.board.canvas.trickShadow.translateY({ rows, duration });
 }
 
 export function TRANSLATE_PIECES({ rows = 0 } = {}) {

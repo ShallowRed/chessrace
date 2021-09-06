@@ -15,13 +15,13 @@ const levelConfig = {
   visibleRows: 12,
 
   playerStart: {
-    position: [4, 2],
+    position: [4, 0],
     pieceName: "queen"
   },
 
   durations: {
     move: 0.3,
-    translation: 5,
+    translation: 2,
     fall: 1
   },
 

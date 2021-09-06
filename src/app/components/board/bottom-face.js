@@ -48,12 +48,12 @@ export function renderShadow([col]) {
 
   const ctx = this.ctx.bottomFace;
 
-  ctx.shadowColor = "red";
+  // ctx.shadowColor = "blue";
 
-  // this.draw.rectangleShadow(ctx, {
-  //   left: this.squares.getLeft(col) + depth,
-  //   top: depth - offset.shadow,
-  //   width: size,
-  //   height: offset.shadow
-  // })
+  this.draw.rectangleShadow(ctx, {
+    left: this.squares.getLeft(col) + depth,
+    top: depth - offset.shadow,
+    width: size,
+    height: offset.shadow
+  })
 }

@@ -16,15 +16,26 @@ export function render() {
 export function renderSquare(ctx, col, row) {
 
   const left = this.squares.getLeft(col);
+  const { depth, offset, size } = GameObject;
 
   this.trick.renderRectangle(ctx, col, left)
 
   const hasTopLeftNeighbour = this.squares.includes([col - 1, row + 1])
   const hasTopNeighbour = this.squares.includes([col, row + 1])
+  const hasLeftNeighbour = this.squares.includes([col + 1, row])
 
   if (hasTopLeftNeighbour) {
 
-    this.trick.renderShadow(ctx, left);
+    ctx.setShadow.on();
+
+    this.draw.rectangleShadow(ctx, {
+      left: left - size + depth,
+      top: depth - offset.shadow,
+      width: size,
+      height: offset.shadow
+    });
+
+    ctx.setShadow.off();
 
     ctx.fillStyle = this.squares.getColor([col, row], "bottom");
 
@@ -36,13 +47,27 @@ export function renderSquare(ctx, col, row) {
   this.trick.renderTriangle(ctx, left);
 
   if (!hasTopNeighbour) {
+
+    this.ctx.trickShadow.fillStyle = "white";
+    // this.ctx.trickShadow.fillStyle = "purple";
+
+    this.draw.rectangle(this.ctx.trickShadow, {
+      left: left + depth + offset.shadow,
+      top: 0,
+      width: size,
+      height: offset.shadow
+    });
+  }
+
+  if (!hasTopNeighbour && !hasLeftNeighbour) {
     const { depth, offset, size } = GameObject;
 
-    ctx.fillStyle = "green";
+    this.ctx.trickShadow.fillStyle = "white";
+    // this.ctx.trickShadow.fillStyle = "red";
 
-    this.draw.rectangle(ctx, {
+    this.draw.rectangle(this.ctx.trickShadow, {
       left: left + size + depth,
-      top: depth + offset.shadow * 2 - size ,
+      top: 0,
       width: offset.shadow,
       height: offset.shadow
     });
@@ -73,22 +98,4 @@ export function renderTriangle(ctx, left) {
   ctx.lineTo(left, depth);
   ctx.closePath();
   ctx.fill();
-}
-
-export function renderShadow(ctx, left) {
-
-  const { depth, offset, size } = GameObject;
-
-  ctx.setShadow.on();
-
-  ctx.shadowColor = "blue";
-
-  this.draw.rectangleShadow(ctx, {
-    left: left - size + depth,
-    top: depth - offset.shadow,
-    width: size,
-    height: offset.shadow
-  });
-
-  ctx.setShadow.off();
 }

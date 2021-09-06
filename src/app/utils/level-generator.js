@@ -8,8 +8,8 @@ export function generateLevelBlueprint({ columns, rows }) {
     );
 
   const randomDeepArray = emptyDeepArray.map((rows, i) =>
-    rows.map(() =>
-      i < 1 ? 1 : round(random())
+    rows.map((col, j) =>
+      j === 4 || i < 1 ? 1 : round(random())
     )
   );
 

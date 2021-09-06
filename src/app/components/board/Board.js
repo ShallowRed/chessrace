@@ -54,7 +54,7 @@ export default class Board {
 
     bindObjectsMethods.call(this, this.methodsToBind);
 
-    ["main", "trick", "bottomFace"].forEach(this.createCanvas);
+    ["main", "trick", "bottomFace", "trickShadow"].forEach(this.createCanvas);
 
     this.canvas.main.onClick(evt => {
       events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
@@ -67,7 +67,7 @@ export default class Board {
 
     this.canvas[className] = new Canvas({
       className,
-      inContainer: className === "trick" || className === "main"
+      inContainer: className !== "bottomFace"
     });
 
     this.ctx[className] = this.canvas[className].ctx;
@@ -86,6 +86,7 @@ export default class Board {
     container.style.top = `${depth}px`;
 
     canvas.main.container.domEl.style.overflow = "hidden";
+    canvas.trickShadow.container.domEl.style.overflow = "hidden";
 
     // canvas.trick.container.domEl.style.overflow = "visible";
     // canvas.bottomFace.domEl.style.display = "none";
@@ -120,6 +121,19 @@ export default class Board {
     canvas.trick.setStyle({
       width,
       height: size + depth + offset.shadow,
+      bottom: 0
+    });
+
+    canvas.trickShadow.container.setStyle({
+      width,
+      height:  offset.shadow,
+      bottom: size - offset.shadow
+      // bottom: offset.bottom - depth - offset.shadow - 1
+    });
+
+    canvas.trickShadow.setStyle({
+      width,
+      height: size + offset.shadow,
       bottom: 0
     });
   }
