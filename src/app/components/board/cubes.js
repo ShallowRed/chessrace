@@ -16,7 +16,7 @@ export function renderCube(coords) {
   const colors = this.cubes.getColors(coords)
 
   this.draw.cube(this.ctx.main, square, colors)
-};
+}
 
 export function renderShadows(ctx, cubes) {
 

@@ -20,7 +20,7 @@ export function getLeft(col) {
 
 export function get([col, row]) {
 
-  const { size, offset } = GameObject;
+  const { size } = GameObject;
 
   return {
     left: this.squares.getLeft(col),

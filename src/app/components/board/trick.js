@@ -49,7 +49,7 @@ export function renderRectangle(ctx, col, left) {
   });
 }
 
-export function renderTriangle(ctx, [col, row], left) {
+export function renderTriangle(ctx, left) {
 
   const { depth } = GameObject;
 
