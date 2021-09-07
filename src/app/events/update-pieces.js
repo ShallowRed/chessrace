@@ -3,6 +3,8 @@ import { animationTimeout } from 'app/utils/animation-timeout';
 
 export function MOVE_PLAYER(position) {
 
+  this.player.isMoving = true;
+
   if (!this.on) {
     events.emit("GAME_ON");
   }
@@ -12,11 +14,15 @@ export function MOVE_PLAYER(position) {
   this.player.moveSprite({ duration: this.durations.move }, this.model
     .skippedRows);
 
-    if (this.player.position[1] >= this.model.rows - this.model.skippedRows) {
-      animationTimeout(() => {
-        events.emit("GAME_WON");
-      }, this.durations.move * 2)
-    }
+  animationTimeout(() => {
+    this.player.isMoving = false;
+  }, this.durations.move)
+
+  if (this.player.position[1] >= this.model.rows - this.model.skippedRows) {
+    animationTimeout(() => {
+      events.emit("GAME_WON");
+    }, this.durations.move * 2)
+  }
 }
 
 export function EAT_PIECE(ennemy) {

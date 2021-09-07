@@ -10,45 +10,48 @@ export function render(endRow) {
   const squareSize = round(size / rows);
   const borderWidth = ceil(squareSize) / 5;
 
-  const width = this.canvas.face.width;
-  const top = this.squares.getTop(endRow) - size;
+  const width = this.canvas.frontFace.width;
+  const top = this.squares.getTop(endRow);
 
-  this.ctx.face.fillStyle = this.colors.finishLine.light;
-  this.draw.rectangle(this.ctx.face, {
+  const colors = this.colors.finishLine;
+
+  this.ctx.frontFace.fillStyle = colors.light;
+  this.canvas.frontFace.draw.rectangle({
     top,
     width,
-    height: size
+    height: size,
+    color: colors.light
   });
 
-  this.ctx.face.strokeStyle = this.colors.finishLine.dark;
-  this.ctx.face.lineWidth = borderWidth;
-  this.ctx.face.strokeRect(
+  this.ctx.frontFace.strokeStyle = colors.dark;
+  this.ctx.frontFace.lineWidth = borderWidth;
+  this.ctx.frontFace.strokeRect(
      borderWidth / 2,
      top + borderWidth / 2,
      width - borderWidth,
      size - borderWidth
   );
 
-  this.ctx.bottom.fillStyle = this.colors.finishLine.bottom;
-  this.draw.bottomFace(this.ctx.bottom, {
+  this.ctx.bottomFaces.fillStyle = colors.bottomFaces;
+  this.canvas.bottomFaces.draw.bottomFace({
     top: top + size - depth,
     size: width
   });
 
-  this.ctx.right.fillStyle = this.colors.finishLine.right;
-  this.draw.rightFace(this.ctx.right, {
+  this.ctx.rightFaces.fillStyle = colors.rightFaces;
+  this.canvas.rightFaces.draw.rightFace({
     left: width,
     top: top - depth,
     size
   });
 
-  this.canvas.face.ctx.globalCompositeOperation = "source-atop";
-  this.ctx.face.fillStyle = this.colors.finishLine.dark
+  this.canvas.frontFace.ctx.globalCompositeOperation = "source-atop";
+  this.ctx.frontFace.fillStyle = colors.dark
 
   for (let row = 0; row < rows; row++) {
     for (let col = 0; col < rows * (this.columns + 1); col += 2) {
 
-      this.draw.square(this.canvas.face.ctx, {
+      this.canvas.frontFace.draw.square({
         left: (col + row % 2) * squareSize,
         top: top - (row+1) * squareSize + size,
         size: squareSize
@@ -56,5 +59,5 @@ export function render(endRow) {
     }
   }
 
-  this.canvas.face.ctx.globalCompositeOperation = "source-over";
+  this.canvas.frontFace.ctx.globalCompositeOperation = "source-over";
 }

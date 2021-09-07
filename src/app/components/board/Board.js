@@ -1,12 +1,13 @@
 import GameObject from 'app/components/Game-object';
 import Canvas from 'app/components/board/Canvas';
 
-import * as Draw from 'app/components/Board/draw';
 import * as Squares from 'app/components/Board/squares';
 import * as FinishLine from 'app/components/Board/finishing-line';
 
 import events from 'app/models/events';
 import { bindObjectsMethods } from "app/utils/bind-methods";
+
+import { test } from "app/utils/test";
 
 export default class Board {
 
@@ -18,28 +19,29 @@ export default class Board {
 
     squares: {
       dark: {
-        face: "#ae835a",
-        right: "#8b6848",
-        bottom: "#6f5339",
+        frontFace: "#ae835a",
+        rightFaces: "#8b6848",
+        bottomFaces: "#6f5339",
+        lowestBottomFace: "#6f5339",
       },
       light: {
-        face: "#f5dbc2",
-        right: "#c4af9b",
-        bottom: "#9c8c7c",
+        frontFace: "#f5dbc2",
+        rightFaces: "#c4af9b",
+        bottomFaces: "#9c8c7c",
+        lowestBottomFace: "#9c8c7c",
       }
     },
     finishLine: {
       light: "#f0f0f0",
       dark: "#333",
-      right: "#BBB",
-      bottom: "#999",
+      rightFaces: "#BBB",
+      bottomFaces: "#999",
     },
 
     shadow: "#EEE"
   };
 
   methodsToBind = {
-    draw: Draw,
     squares: Squares,
     finishLine: FinishLine
   };
@@ -50,24 +52,30 @@ export default class Board {
 
     bindObjectsMethods.call(this, this.methodsToBind);
 
-    ["shadows", "bottom", "right", "face", "bottomFace"].forEach(this
-      .createCanvas);
-
-    this.canvas.face.onClick(evt => {
-      events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
-    });
+    this.createParts();
 
     this.setDimensions();
   }
 
-  createCanvas = (className) => {
+  createParts() {
 
-    this.canvas[className] = new Canvas({
-      className,
-      inContainer: className !== "bottomFace"
+    ["shadows", "bottomFaces", "rightFaces", "frontFace", "lowestBottomFace"]
+    .forEach(this.createCanvas);
+
+    this.canvas.frontFace.onClick(evt => {
+      events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
+    });
+  }
+
+  createCanvas = key => {
+
+    this.canvas[key] = new Canvas({
+      colors: this.colors,
+      key,
+      inContainer: key !== "lowestBottomFace"
     });
 
-    this.ctx[className] = this.canvas[className].ctx;
+    this.ctx[key] = this.canvas[key].ctx;
   }
 
   setDimensions() {
@@ -82,13 +90,13 @@ export default class Board {
     container.style.height = `${height}px`;
     container.style.top = `${depth}px`;
 
-    canvas.face.container.setStyle({
+    canvas.frontFace.container.setStyle({
       width,
       height: height - size - depth,
       bottom: size + depth
     });
 
-    canvas.face.setStyle({
+    canvas.frontFace.setStyle({
       width,
       height: height + offset.shadow,
       bottom: 0
@@ -106,31 +114,31 @@ export default class Board {
       bottom: 0
     });
 
-    canvas.right.container.setStyle({
+    canvas.rightFaces.container.setStyle({
       width: width + depth,
       height: height - size,
       bottom: size
     });
 
-    canvas.right.setStyle({
+    canvas.rightFaces.setStyle({
       width: width + depth,
       height: height + offset.shadow,
       bottom: 0
     });
 
-    canvas.bottom.container.setStyle({
+    canvas.bottomFaces.container.setStyle({
       width: width + depth,
       height: height - size,
       bottom: size
     });
 
-    canvas.bottom.setStyle({
+    canvas.bottomFaces.setStyle({
       width: width + depth,
       height: height + offset.shadow,
       bottom: 0
     });
 
-    canvas.bottomFace.setStyle({
+    canvas.lowestBottomFace.setStyle({
       width: width + depth,
       height: depth,
       bottom: size
@@ -147,10 +155,15 @@ export default class Board {
     this.squares.list = regularSquares;
 
     if (lastRowRendered === rows) {
-      this.finishLine.render(lastRowRendered - 1)
+      this.finishLine.render(lastRowRendered)
     }
 
-    this.squares.render();
+    console.log("old");
+    test(this.squares.render, 1);
+    console.log("new");
+    test(this.squares.render2, 1);
+
+    // this.squares.render();
 
     this.nRenders++;
   }

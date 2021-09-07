@@ -1,36 +1,37 @@
 import GameObject from 'app/components/Game-object';
 
-export function square(ctx, { left, top, size = GameObject.size }) {
-  ctx.fillRect(left, top, size, size);
+export function square({ left, top, size = GameObject.size }) {
+
+  this.ctx.fillRect(left, top, size, size);
 }
 
-export function rectangle(ctx, { left = 0, top = 0, width, height }) {
+export function rectangle({ left = 0, top = 0, width, height }) {
 
-  ctx.fillRect(left, top, width, height);
+  this.ctx.fillRect(left, top, width, height);
 }
 
-export function bottomFace(ctx, { left = 0, top = 0, size = GameObject.size }) {
+export function bottomFace({ left = 0, top = 0, size = GameObject.size }) {
 
   const { depth } = GameObject;
 
-  ctx.beginPath();
-  ctx.moveTo(left, top);
-  ctx.lineTo(left + size, top);
-  ctx.lineTo(left + size + depth, top + depth);
-  ctx.lineTo(left + depth, top + depth);
-  ctx.closePath();
-  ctx.fill();
+  this.ctx.beginPath();
+  this.ctx.moveTo(left, top);
+  this.ctx.lineTo(left + size, top);
+  this.ctx.lineTo(left + size + depth, top + depth);
+  this.ctx.lineTo(left + depth, top + depth);
+  this.ctx.closePath();
+  this.ctx.fill();
 }
 
-export function rightFace(ctx, { left, top, size = GameObject.size }) {
+export function rightFace({ left, top, size = GameObject.size }) {
 
   const { depth } = GameObject;
 
-  ctx.beginPath();
-  ctx.moveTo(left, top);
-  ctx.lineTo(left + depth, top + depth);
-  ctx.lineTo(left + depth, top + size + depth);
-  ctx.lineTo(left, top + size);
-  ctx.closePath();
-  ctx.fill();
+  this.ctx.beginPath();
+  this.ctx.moveTo(left, top);
+  this.ctx.lineTo(left + depth, top + depth);
+  this.ctx.lineTo(left + depth, top + size + depth);
+  this.ctx.lineTo(left, top + size);
+  this.ctx.closePath();
+  this.ctx.fill();
 }

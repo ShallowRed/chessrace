@@ -21,7 +21,7 @@ const levelConfig = {
 
   durations: {
     move: 0.3,
-    translation: 1.5,
+    translation: 2,
     fall: 1
   },
 

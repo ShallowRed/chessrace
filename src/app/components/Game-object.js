@@ -20,9 +20,9 @@ export default class GameObject {
     this.offset.shadow = round(this.size / 3);
   }
 
-  translateY = ({ rows = 0, duration = 0 } = {}, element = this.domEl) => {
-    element.style.transitionDuration = `${duration}s`;
-    element.style.transform = `translateY(${rows * GameObject.size}px)`;
+  translateY = ({ rows = 0, duration = 0 } = {}) => {
+    this.domEl.style.transitionDuration = `${duration}s`;
+    this.domEl.style.transform = `translateY(${rows * GameObject.size}px)`;
   }
 
   constructor({ dom, className, inContainer },

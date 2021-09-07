@@ -42,19 +42,19 @@ export function NEXT_SCROLL_STEP() {
   );
 }
 
-export function TRANSLATE_BOARD({ rows = 0 } = {}) {
+export function TRANSLATE_BOARD({ rows } = {}) {
 
-  const duration = rows ? this.durations.translation : 0;
+  const duration = rows && this.durations.translation;
 
   this.board.canvas.shadows.translateY({ rows, duration });
-  this.board.canvas.face.translateY({ rows, duration });
-  this.board.canvas.right.translateY({ rows, duration });
-  this.board.canvas.bottom.translateY({ rows, duration });
+  this.board.canvas.frontFace.translateY({ rows, duration });
+  this.board.canvas.rightFaces.translateY({ rows, duration });
+  this.board.canvas.bottomFaces.translateY({ rows, duration });
 }
 
-export function TRANSLATE_PIECES({ rows = 0 } = {}) {
+export function TRANSLATE_PIECES({ rows } = {}) {
 
-  const duration = rows ? this.durations.translation : 0;
+  const duration = rows && this.durations.translation;
 
   events.emit("SET_EACH_PIECE", piece =>
     piece.container.translateY({ rows, duration })

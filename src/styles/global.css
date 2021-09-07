@@ -1,7 +1,6 @@
 main {
   left: 50%;
   transform: translateX(-49%);
-  /* transform: skew(-14deg, 6deg) scaleY(1) translate(-49%, 7%); */
 }
 
 main,
@@ -11,7 +10,7 @@ canvas {
 }
 
 main,
-.trick-container {
+main>.board-part {
   overflow: hidden;
 }
 
@@ -19,7 +18,7 @@ main *:not(.player) {
   transition-timing-function: linear;
 }
 
-canvas.face,
+canvas.frontFace,
 .piece:not(.player) {
   &:hover {
     cursor: pointer;
@@ -30,16 +29,8 @@ canvas {
   left: 0;
 }
 
-main>.canvas {
-  overflow: hidden;
-}
-
-canvas:not(.face) {
+canvas:not(.frontFace) {
   pointer-events: none;
-}
-
-canvas.trick-container {
-  left: -1px;
 }
 
 .piece {
@@ -58,9 +49,9 @@ canvas.trick-container {
 .player-container {
   bottom: 0;
   left: 0;
-  z-index: 990;
+  z-index: 500;
 }
 
 .ennemy-container {
-  z-index: 700;
+  z-index: 300;
 }
