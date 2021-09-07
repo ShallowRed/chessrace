@@ -3,7 +3,7 @@ import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Canvas extends GameObject {
 
-  constructor({ name, shape, filter, colors, inContainer }) {
+  constructor({ inContainer, isColored, name, shape, filter }) {
 
     super({
       dom: {
@@ -13,10 +13,8 @@ export default class Canvas extends GameObject {
       className: `board-part ${name}`
     });
 
-    this.name = name;
-    this.filter = filter;
-    this.shape = shape;
-    this.colors = colors;
+    Object.assign(this, { inContainer, isColored, name, shape, filter });
+
     this.ctx = this.canvas.getContext('2d');
 
     bindObjectsMethods.call(this, { draw: this.draw });

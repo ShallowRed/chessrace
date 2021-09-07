@@ -2,27 +2,40 @@ import GameObject from 'app/components/Game-object';
 
 const { floor } = Math;
 
-export function render() {
+export function render(squares) {
 
-  const visibleSquares = this.squares.list
-    .filter(this.squares.isVisible);
+  const visibleSquares = squares.filter(this.squares.isVisible);
 
-  visibleSquares.map(this.squares.getShadowCanvasCoords)
-    .forEach(this.canvas.shadows.draw.square);
+  this.squares.renderShadows(visibleSquares);
 
-  for (const canvas of this.coloredCanvas) {
-    for (const color of ["light", "dark"]) {
+  for (const name in this.canvas) {
 
-      canvas.ctx.fillStyle = this.colors.squares[color][canvas.name];
+    if (this.canvas[name].isColored) {
 
-      let squares = visibleSquares.filter(this.squares.isSquare[color]);
+      for (const color of ["light", "dark"]) {
 
-      canvas.filter && (squares = canvas.filter(squares));
+        const squares = visibleSquares.filter(this.squares.isSquare[color]);
 
-      squares.map(this.squares.getCanvasCoords)
-        .forEach(canvas.draw[canvas.shape])
+        this.squares.renderCanvasColor(squares, this.canvas[name], color);
+      }
     }
   }
+}
+
+export function renderShadows(squares) {
+
+  squares.map(this.squares.getShadowCanvasCoords)
+    .forEach(this.canvas.shadows.draw.square);
+}
+
+export function renderCanvasColor(squares, canvas, color) {
+
+  canvas.filter && (squares = canvas.filter(squares));
+
+  canvas.ctx.fillStyle = this.colors.squares[color][canvas.name];
+
+  squares.map(this.squares.getCanvasCoords)
+    .forEach(canvas.draw[canvas.shape])
 }
 
 export function getLeft(coords) {

@@ -53,43 +53,43 @@ export default class Board {
     this.setDimensions();
   }
 
-  canvasProps = [{
-    name: "shadows",
-    shape: "square",
-    squareColors: false,
-  }, {
-    name: "bottomFaces",
-    shape: "bottomFace",
-    filter: (squares) => {
-      return squares
+  setCanvasProps({ size, depth, offset }) {
+    return [{
+      name: "shadows",
+      shape: "square",
+      isFlat: true,
+      isColored: false,
+    }, {
+      name: "bottomFaces",
+      shape: "bottomFace",
+      filter: squares => squares
         .filter(this.squares.isNotInBottomRow)
-        .filter(this.squares.hasNoTopNeighbour)
-    }
-  }, {
-    name: "rightFaces",
-    shape: "rightFace",
-    filter: (squares) => {
-      return squares.filter(this.squares.hasNoRightNeighbour)
-    }
-  }, {
-    name: "frontFace",
-    shape: "square",
-  }, {
-    name: "lowestBottomFace",
-    shape: "bottomFace",
-    translatable: false,
-    filter: (squares) => {
-      return squares.filter(this.squares.isInBottomRow)
-    }
-  }]
+        .filter(this.squares.hasNoTopNeighbour),
+    }, {
+      name: "rightFaces",
+      shape: "rightFace",
+      filter: squares =>
+        squares.filter(this.squares.hasNoRightNeighbour),
+    }, {
+      name: "frontFace",
+      shape: "square",
+      isFlat: true,
+    }, {
+      name: "lowestBottomFace",
+      shape: "bottomFace",
+      inContainer: false,
+      filter: squares =>
+        squares.filter(this.squares.isInBottomRow),
+    }]
+  }
 
   createParts() {
 
     this.canvas = {};
     this.ctx = {};
-    this.translatableCanvas = [];
     this.coloredCanvas = [];
 
+    this.canvasProps = this.setCanvasProps(GameObject);
     this.canvasProps.forEach(this.createCanvas);
 
     this.canvas.frontFace.onClick(evt => {
@@ -101,30 +101,14 @@ export default class Board {
     name,
     filter,
     shape,
-    translatable = true,
-    squareColors =
-    true
+    inContainer = true,
+    isColored = true
   }) => {
 
-    const canvas = new Canvas({
-      colors: this.colors,
-      inContainer: translatable,
-      name,
-      filter,
-      shape,
-      squareColors
-    });
+    const canvas = new Canvas({ inContainer, isColored, name, shape, filter });
 
     this.canvas[name] = canvas;
     this.ctx[name] = this.canvas[name].ctx;
-
-    if (translatable) {
-      this.translatableCanvas.push(canvas);
-    }
-
-    if (squareColors) {
-      this.coloredCanvas.push(canvas);
-    }
   }
 
   setDimensions() {
@@ -139,62 +123,31 @@ export default class Board {
     container.style.height = `${height + depth}px`;
     container.style.top = `${depth}px`;
 
-    canvas.frontFace.container.setStyle({
-      width,
-      height: height - size,
-      bottom: depth + size
-    });
+    for (const name in this.canvas) {
 
-    canvas.rightFaces.container.setStyle({
-      width: width + depth,
-      height: height + depth - size,
-      bottom: size
-    });
+      const canvas = this.canvas[name];
 
-    canvas.bottomFaces.container.setStyle({
-      width: width + depth,
-      height: height + depth - size,
-      bottom: size
-    });
+      const offsetHeight =
+        name === "frontFace" ? 0 :
+        name === "shadows" ? depth + offset.shadow :
+        depth;
 
-    canvas.shadows.container.setStyle({
-      width: width,
-      height: height - size + depth + offset.shadow,
-      bottom: size - offset.shadow,
-      left: depth + offset.shadow
-    });
+      canvas.setStyle({
+        width: width + (!canvas.isFlat && depth),
+        height: (name === "lowestBottomFace" ? depth : 0) ||
+          height + offsetHeight,
+        bottom: name === "lowestBottomFace" ? size : 0
+      });
 
-    ////////////
+      canvas.container?.setStyle({
+        width: canvas.width,
+        height: canvas.height - size,
+        bottom: size + depth - offsetHeight,
+        left: name === "shadows" ? depth + offset.shadow : 0
+      });
+    }
 
-    canvas.frontFace.setStyle({
-      width,
-      height
-    });
-
-    canvas.shadows.setStyle({
-      width: width,
-      height: height + depth + offset.shadow
-    });
-
-    canvas.rightFaces.setStyle({
-      width: width + depth,
-      height: height + depth
-    });
-
-    canvas.bottomFaces.setStyle({
-      width: width + depth,
-      height: height + depth
-    });
-
-    ////////////
-
-    canvas.lowestBottomFace.setStyle({
-      width: width + depth,
-      height: depth,
-      bottom: size
-    });
-
-    ctx.shadows.fillStyle = this.colors.shadow;
+    this.ctx.shadows.fillStyle = this.colors.shadow;
   }
 
   render({ regularSquares, lastRowRendered, rows }) {
@@ -202,10 +155,11 @@ export default class Board {
     this.squares.list = regularSquares;
 
     if (lastRowRendered === rows) {
-      this.finishLine.render(lastRowRendered)
+      
+      this.finishLine.render(lastRowRendered);
     }
 
-    this.squares.render();
+    this.squares.render(this.squares.list);
 
     this.nRenders++;
   }
@@ -216,7 +170,8 @@ export default class Board {
 
     for (const name in this.canvas) {
 
-      ctx[name].clearRect(0, 0, canvas[name].width, canvas[name].height);
+      ctx[name].clearRect(0, 0, canvas[name].width, canvas[name]
+        .height);
     }
   }
 }
