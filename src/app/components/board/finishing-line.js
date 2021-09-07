@@ -11,7 +11,7 @@ export function render(endRow) {
   const borderWidth = ceil(squareSize) / 5;
 
   const width = this.canvas.frontFace.width;
-  const top = this.squares.getTop(endRow);
+  const top = this.squares.getTop([,endRow]);
 
   const colors = this.colors.finishLine;
 

@@ -3,28 +3,24 @@ import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Canvas extends GameObject {
 
-  constructor({ key, colors, inContainer }) {
+  constructor({ name, shape, filter, colors, inContainer }) {
 
     super({
       dom: {
         canvas: document.createElement('canvas')
       },
       inContainer,
-      className: `board-part ${key}`
+      className: `board-part ${name}`
     });
 
-    this.key = key;
+    this.name = name;
+    this.filter = filter;
+    this.shape = shape;
     this.colors = colors;
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.setColor = (key) => {
-      this.ctx.fillStyle = this.colors.squares[key][this.key];
-    }
 
-    // bindObjectsMethods.call(this, { draw: Draw });
     bindObjectsMethods.call(this, { draw: this.draw });
   }
-
-
 
   draw = {
 
@@ -42,11 +38,13 @@ export default class Canvas extends GameObject {
 
       const { depth } = GameObject;
 
+      if (this.name === "lowestBottomFace") top = -size;
+
       this.ctx.beginPath();
-      this.ctx.moveTo(left, top);
-      this.ctx.lineTo(left + size, top);
-      this.ctx.lineTo(left + size + depth, top + depth);
-      this.ctx.lineTo(left + depth, top + depth);
+      this.ctx.moveTo(left, top + size);
+      this.ctx.lineTo(left + size, top + size);
+      this.ctx.lineTo(left + size + depth, top + size + depth);
+      this.ctx.lineTo(left + depth, top + size + depth);
       this.ctx.closePath();
       this.ctx.fill();
     },
@@ -56,10 +54,10 @@ export default class Canvas extends GameObject {
       const { depth } = GameObject;
 
       this.ctx.beginPath();
-      this.ctx.moveTo(left, top);
-      this.ctx.lineTo(left + depth, top + depth);
-      this.ctx.lineTo(left + depth, top + size + depth);
-      this.ctx.lineTo(left, top + size);
+      this.ctx.moveTo(left + size, top);
+      this.ctx.lineTo(left + size + depth, top + depth);
+      this.ctx.lineTo(left + size + depth, top + size + depth);
+      this.ctx.lineTo(left + size, top + size);
       this.ctx.closePath();
       this.ctx.fill();
     }

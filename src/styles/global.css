@@ -29,7 +29,11 @@ canvas {
   left: 0;
 }
 
-canvas:not(.frontFace) {
+.board-part>canvas {
+  bottom: 0;
+}
+
+.board-part:not(.frontFace):not(.frontFace-container) {
   pointer-events: none;
 }
 

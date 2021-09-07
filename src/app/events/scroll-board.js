@@ -46,10 +46,10 @@ export function TRANSLATE_BOARD({ rows } = {}) {
 
   const duration = rows && this.durations.translation;
 
-  this.board.canvas.shadows.translateY({ rows, duration });
-  this.board.canvas.frontFace.translateY({ rows, duration });
-  this.board.canvas.rightFaces.translateY({ rows, duration });
-  this.board.canvas.bottomFaces.translateY({ rows, duration });
+  for (const canvas of this.board.translatableCanvas) {
+
+    canvas.translateY({ rows, duration });
+  }
 }
 
 export function TRANSLATE_PIECES({ rows } = {}) {
