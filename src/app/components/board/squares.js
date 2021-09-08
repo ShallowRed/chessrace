@@ -2,40 +2,30 @@ import GameObject from 'app/components/Game-object';
 
 const { floor } = Math;
 
-export function render(squares) {
+export function render(regularSquares) {
 
-  const visibleSquares = squares.filter(this.squares.isVisible);
+  const { getShadowCoordsInCanvas, getCoordsInCanvas, isSquare } = this.squares;
 
-  this.squares.renderShadows(visibleSquares);
+  this.squares.list = regularSquares;
 
-  for (const name in this.canvas) {
+  regularSquares.map(getShadowCoordsInCanvas)
+    .forEach(this.canvas.shadows.draw.square);
 
-    if (this.canvas[name].isColored) {
+  for (const color of ["light", "dark"]) {
 
-      for (const color of ["light", "dark"]) {
+    const sameColorSquares = regularSquares.filter(isSquare[color]);
 
-        const squares = visibleSquares.filter(this.squares.isSquare[color]);
+    for (const [name, canvas] of this.coloredCanvas) {
 
-        this.squares.renderCanvasColor(squares, this.canvas[name], color);
-      }
+      canvas.ctx.fillStyle = this.colors.squares[color][name];
+
+      const squares = canvas.filter?.(sameColorSquares) ||
+        sameColorSquares;
+
+      squares.map(getCoordsInCanvas)
+        .forEach(canvas.draw[canvas.shape])
     }
   }
-}
-
-export function renderShadows(squares) {
-
-  squares.map(this.squares.getShadowCanvasCoords)
-    .forEach(this.canvas.shadows.draw.square);
-}
-
-export function renderCanvasColor(squares, canvas, color) {
-
-  canvas.filter && (squares = canvas.filter(squares));
-
-  canvas.ctx.fillStyle = this.colors.squares[color][canvas.name];
-
-  squares.map(this.squares.getCanvasCoords)
-    .forEach(canvas.draw[canvas.shape])
 }
 
 export function getLeft(coords) {
@@ -53,7 +43,7 @@ export function getTop(coords) {
   return this.canvas.frontFace.height - this.squares.getBottom(coords);
 }
 
-export function getCanvasCoords(coords) {
+export function getCoordsInCanvas(coords) {
 
   return {
     left: this.squares.getLeft(coords),
@@ -61,7 +51,7 @@ export function getCanvasCoords(coords) {
   }
 }
 
-export function getShadowCanvasCoords(coords) {
+export function getShadowCoordsInCanvas(coords) {
 
   const { offset, depth } = GameObject
 

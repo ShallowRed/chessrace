@@ -4,17 +4,17 @@ import * as Shapes from 'app/components/board/shapes';
 
 export default class Canvas extends GameObject {
 
-  constructor({ inContainer, isColored, name, shape, filter }) {
+  constructor(props) {
 
     super({
       dom: {
         canvas: document.createElement('canvas')
       },
-      inContainer,
-      className: `board-part ${name}`
+      className: `board-part ${props.name}`,
+      inContainer: props.inContainer
     });
 
-    Object.assign(this, { inContainer, isColored, name, shape, filter });
+    Object.assign(this, props);
 
     this.ctx = this.canvas.getContext('2d');
 

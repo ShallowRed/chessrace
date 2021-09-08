@@ -7,11 +7,11 @@ export default class GameObject {
 
   static skippedRows = 0;
 
-  static setSize(columns, rows) {
+  static setDimensions(columns, rows) {
 
     this.size = min(
-      round(1.05 * window.innerWidth / (columns + 1)),
-      round(0.9 * window.innerHeight / rows)
+      round(window.innerWidth / (columns + 1)),
+      round(window.innerHeight / (rows + 2))
     );
 
     this.depth = round(this.size / 6);

@@ -46,11 +46,9 @@ export function TRANSLATE_BOARD({ rows } = {}) {
 
   const duration = rows && this.durations.translation;
 
-  for (const name in this.board.canvas) {
+  for (const [name, canvas] of this.board.dynamicCanvas) {
 
-    const canvas = this.board.canvas[name];
-
-    canvas.inContainer && canvas.translateY({ rows, duration });
+    canvas.translateY({ rows, duration });
   }
 }
 

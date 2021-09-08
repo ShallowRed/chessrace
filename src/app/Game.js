@@ -30,7 +30,7 @@ export default {
 
     const { columns, rows, visibleRows } = this;
 
-    GameObject.setSize(columns, visibleRows);
+    GameObject.setDimensions(columns, visibleRows);
 
     this.model = new Level(levelBlueprint, columns, rows, visibleRows);
 
@@ -53,7 +53,7 @@ export default {
       board.clear();
     }
 
-    model.parse();
+    model.parse(board.nRenders);
     board.render(model);
 
     if (model.newEnnemyPieces.length) {
@@ -82,10 +82,10 @@ export default {
   },
 
   resize() {
-    
-    GameObject.setSize(this.columns, this.visibleRows);
 
-    this.board.setDimensions();
+    GameObject.setDimensions(this.columns, this.visibleRows);
+
+    this.board.dimensions.set();
     this.board.nRenders--;
     this.board.render(this.model);
 

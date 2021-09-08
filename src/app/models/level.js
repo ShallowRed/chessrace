@@ -29,27 +29,28 @@ export default class Level {
     this.firstParse = true;
     this.values = this.blueprint.map(rows => [...rows]);
     this.deepRegularSquares = [];
-    this.lastRowRendered = 0;
+    this.lastRowRendered = -1;
     this.lastRowToRender = this.visibleRows + 1;
   }
 
-  parse() {
+  parse(nRenders) {
 
     this.newEnnemyPieces = [];
 
-    for (let rowIndex = this.lastRowRendered; this.row.isVisible(rowIndex); rowIndex++) {
+    for (let rowIndex = this.lastRowRendered + 1; this.row.isVisible(
+      rowIndex); rowIndex++) {
 
       const parsedRow = this.row.parse(this.values[rowIndex], rowIndex);
-
+      
       this.deepRegularSquares.push(parsedRow.regularSquares);
       this.newEnnemyPieces.push(...parsedRow.pieces);
 
-      this.lastRowRendered = rowIndex + 1;
+      this.lastRowRendered = rowIndex;
     }
 
-    this.lastRowToRender = this.lastRowRendered + 2;
+    this.lastRowToRender = this.lastRowRendered + 1;
 
-    if (this.skippedRows) {
+    if (nRenders) {
       this.deepRegularSquares.splice(0, 1);
     }
 
@@ -61,7 +62,7 @@ const LevelRow = {
 
   isVisible(rowIndex) {
 
-    return rowIndex < this.lastRowToRender &&
+    return rowIndex <= this.lastRowToRender &&
       rowIndex < this.rows;
   },
 
