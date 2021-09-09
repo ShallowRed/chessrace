@@ -1,9 +1,8 @@
-import GameObject from 'app/components/Game-object';
 import boardColors from 'app/components/board/board-colors';
 
 import * as Squares from 'app/components/Board/squares';
 import * as FinishLine from 'app/components/Board/finishing-line';
-import * as Dimensions from 'app/components/Board/dimensions';
+import * as Dimensions from 'app/components/Board/board-dimensions';
 import * as BoardParts from 'app/components/Board/board-parts';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
@@ -32,9 +31,9 @@ export default class Board {
 
   render({ regularSquares, lastRowRendered, rows }) {
 
-    if (lastRowRendered === rows) {
+    if (lastRowRendered === rows - 1) {
 
-      this.finishLine.render(lastRowRendered);
+      this.finishLine.render(rows);
     }
 
     this.squares.render(regularSquares);

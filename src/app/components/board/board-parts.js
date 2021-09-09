@@ -6,56 +6,58 @@ export function create() {
   this.canvas = {};
   this.ctx = {};
 
-  this.boardParts.canvas.getProps()
-    .forEach(this.boardParts.canvas.create);
+  const config = this.boardParts.getConfig();
 
-  this.dynamicCanvas = Object.entries(this.canvas)
-    .filter(([, canvas]) => canvas.inContainer);
+  for (const name in config) {
 
-  this.coloredCanvas = Object.entries(this.canvas)
-    .filter(([, canvas]) => canvas.isColored);
+    const canvas = new Canvas({ name, ...config[name] });
+    
+    this.canvas[name] = canvas;
+    this.ctx[name] = canvas.ctx;
+  }
+
+  this.dynamicCanvas = Object.values(this.canvas)
+    .filter(({ name }) => config[name].inContainer !== false);
+
+  this.coloredCanvas = Object.values(this.canvas)
+    .filter(({ name }) => config[name].isColored !== false);
 
   this.canvas.frontFace.onClick(evt => {
-    events.emit("SQUARE_CLICKED", this.squares.getClicked(evt))
+    events.emit("SQUARE_CLICKED", this.squares.getClicked(evt));
   });
 }
 
-export const canvas = {
+export function getConfig() {
 
-  create({ inContainer = true, isColored = true, ...props }) {
-
-    const canvas = new Canvas({ inContainer, isColored, ...props });
-
-    this.canvas[canvas.name] = canvas;
-    this.ctx[canvas.name] = canvas.ctx;
-  },
-
-  getProps() {
-
-    return [{
-      name: "shadows",
+  return {
+    frontFace: {
       shape: "square",
+      zIndex: 50,
+    },
+    shadows: {
+      shape: "square",
+      zIndex: 10,
       isColored: false,
-    }, {
-      name: "bottomFaces",
+    },
+    bottomFaces: {
       shape: "bottomFace",
+      zIndex: 20,
       filter: squares => squares
         .filter(this.squares.isNotInBottomRow)
         .filter(this.squares.hasNoTopNeighbour),
-    }, {
-      name: "rightFaces",
+    },
+    rightFaces: {
       shape: "rightFace",
+      zIndex: 30,
       filter: squares =>
         squares.filter(this.squares.hasNoRightNeighbour),
-    }, {
-      name: "frontFace",
-      shape: "square"
-    }, {
-      name: "lowestBottomFace",
+    },
+    lowestBottomFace: {
       shape: "lowestBottomFace",
+      zIndex: 50,
       inContainer: false,
       filter: squares =>
         squares.filter(this.squares.isInBottomRow),
-    }]
+    }
   }
 }

@@ -15,9 +15,9 @@ export function render(regularSquares) {
 
     const sameColorSquares = regularSquares.filter(isSquare[color]);
 
-    for (const [name, canvas] of this.coloredCanvas) {
+    for (const canvas of this.coloredCanvas) {
 
-      canvas.ctx.fillStyle = this.colors.squares[color][name];
+      canvas.ctx.fillStyle = this.colors.squares[color][canvas.name];
 
       const squares = canvas.filter?.(sameColorSquares) ||
         sameColorSquares;

@@ -27,13 +27,11 @@ export function bottomFace({ left = 0, top = 0, size = GameObject.size }) {
 
   const { depth } = GameObject;
 
-  if (this.name === "lowestBottomFace") top = -size;
-
   this.ctx.beginPath();
-  this.ctx.moveTo(left, top + size);
-  this.ctx.lineTo(left + size, top + size);
-  this.ctx.lineTo(left + size + depth, top + size + depth);
-  this.ctx.lineTo(left + depth, top + size + depth);
+  this.ctx.moveTo(left, top + GameObject.size);
+  this.ctx.lineTo(left + size, top + GameObject.size);
+  this.ctx.lineTo(left + size + depth, top + GameObject.size + depth);
+  this.ctx.lineTo(left + depth, top + GameObject.size + depth);
   this.ctx.closePath();
   this.ctx.fill();
 }

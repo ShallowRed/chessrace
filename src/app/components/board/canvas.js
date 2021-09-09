@@ -1,23 +1,27 @@
 import GameObject from 'app/components/Game-object';
+import * as drawShapes from 'app/components/board/draw-shapes';
+
 import { bindObjectsMethods } from "app/utils/bind-methods";
-import * as Shapes from 'app/components/board/shapes';
 
 export default class Canvas extends GameObject {
 
-  constructor(props) {
+  constructor({ inContainer = true, ...props }) {
 
     super({
       dom: {
         canvas: document.createElement('canvas')
       },
       className: `board-part ${props.name}`,
-      inContainer: props.inContainer
+      inContainer
     });
 
     Object.assign(this, props);
 
     this.ctx = this.canvas.getContext('2d');
 
-    bindObjectsMethods.call(this, { draw: Shapes });
+    (this?.container || this)
+    .domEl.style.zIndex = props?.zIndex || 0;
+
+    bindObjectsMethods.call(this, { draw: drawShapes });
   }
 }

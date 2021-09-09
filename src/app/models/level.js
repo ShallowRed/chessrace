@@ -37,15 +37,14 @@ export default class Level {
 
     this.newEnnemyPieces = [];
 
-    for (let rowIndex = this.lastRowRendered + 1; this.row.isVisible(
-      rowIndex); rowIndex++) {
+    for (let i = this.lastRowRendered + 1; this.row.isVisible(i); i++) {
 
-      const parsedRow = this.row.parse(this.values[rowIndex], rowIndex);
-      
+      const parsedRow = this.row.parse(this.values[i], i);
+
       this.deepRegularSquares.push(parsedRow.regularSquares);
       this.newEnnemyPieces.push(...parsedRow.pieces);
 
-      this.lastRowRendered = rowIndex;
+      this.lastRowRendered = i;
     }
 
     this.lastRowToRender = this.lastRowRendered + 1;

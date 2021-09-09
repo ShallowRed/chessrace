@@ -8,7 +8,7 @@ export function IS_VALID_MOVE(square) {
     col >= 0 &&
     row >= 0 &&
     col < this.columns &&
-    row <= this.rows - this.model.skippedRows;
+    row <= this.rows - this.model.skippedRows + 1;
 
   if (
     isValidMove(this.player, square) &&
@@ -35,7 +35,7 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
     getHole(targetSquare);
 
   if (hole) {
-    
+
     events.emit("PLAYER_FALL_IN_HOLE", hole);
   }
 
