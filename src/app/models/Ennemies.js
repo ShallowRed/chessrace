@@ -8,22 +8,22 @@ export default class Ennemies {
     this.color = color;
   }
 
-  add({ pieceName, position }, skippedRows) {
+  add({ pieceName, position }) {
 
-    const ennemy = new EnnemyPiece(pieceName, position, this.color, skippedRows);
+    const ennemy = new EnnemyPiece(pieceName, position, this.color);
 
     this.list.push(ennemy);
   }
 
-  addEach(ennemies, skippedRows) {
+  addEach(ennemies) {
     ennemies.forEach(ennemy => {
-      this.add(ennemy, skippedRows)
+      this.add(ennemy)
     });
   }
 
-  setEachPosition(skippedRows) {
+  setEachPosition() {
     this.list.forEach(ennemy =>
-      ennemy.setAbsolutePosition(skippedRows)
+      ennemy.setAbsolutePosition()
     );
   }
 

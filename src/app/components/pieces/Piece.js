@@ -42,11 +42,7 @@ export default class Piece extends GameObject {
     this.position = position;
   }
 
-  decrementPositionY() {
-    this.position[1]--;
-  }
-
-  getOffset(skippedRows = 0) {
+  getOffset() {
 
     const [x, y] = this.position;
 
@@ -54,7 +50,7 @@ export default class Piece extends GameObject {
 
     return {
       left: x * size,
-      bottom: (y + 1 + skippedRows) * size + depth
+      bottom: (y + 1) * size + depth
     }
   }
 

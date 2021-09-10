@@ -8,7 +8,7 @@ export function IS_VALID_MOVE(square) {
     col >= 0 &&
     row >= 0 &&
     col < this.columns &&
-    row <= this.rows - this.model.skippedRows + 1;
+    row <= this.rows;
 
   if (
     isValidMove(this.player, square) &&
@@ -34,10 +34,7 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
   const hole = firstObstacle && getHole(firstObstacle) ||
     getHole(targetSquare);
 
-  if (hole) {
-
-    events.emit("PLAYER_FALL_IN_HOLE", hole);
-  }
+  hole && events.emit("PLAYER_MOVE_IN_HOLE", hole);
 
   return !firstObstacle && !hole;
 }

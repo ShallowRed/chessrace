@@ -3,7 +3,7 @@ import Piece from 'app/components/pieces/Piece';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position, color, skippedRows) {
+  constructor(pieceName, position, color) {
 
     super({
       position,
@@ -12,27 +12,17 @@ export default class EnnemyPiece extends Piece {
       className: "ennemy"
     });
 
-    this.setAbsolutePosition(skippedRows);
+    this.setAbsolutePosition();
 
     this.onClick(() =>
       events.emit("ENNEMY_CLICKED", this)
     );
   }
 
-  setAbsolutePosition(skippedRows) {
+  setAbsolutePosition() {
 
-    const { left, bottom } = this.getOffset(skippedRows);
+    const { left, bottom } = this.getOffset();
 
     this.container.setStyle({ left, bottom });
-  }
-
-  decrementPositionY() {
-
-    super.decrementPositionY();
-
-    if (this.position[1] < 0) {
-
-      events.emit("ENNEMY_FALL", this)
-    }
   }
 }

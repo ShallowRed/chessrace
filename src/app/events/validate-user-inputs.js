@@ -1,6 +1,8 @@
 import events from 'app/models/events';
 
-export function SQUARE_CLICKED(square) {
+export function SQUARE_CLICKED(boardSquare) {
+
+  const square = [boardSquare[0], boardSquare[1] + this.skippedRows]
 
   if (this.player.isMoving) return;
 

@@ -22,25 +22,10 @@ export function NEXT_SCROLL_STEP() {
 
   this.render();
 
-  console.log("decrementY from", this.player.position[1], "to", this.player.position[1]);
-  events.emit("SET_EACH_PIECE", piece =>
-    piece.decrementPositionY()
-  );
-
-  if (this.player.position[1] < 0) {
-
-    this.player.fall(this.durations.fall);
-
-    animationTimeout(() => {
-      events.emit("GAME_OVER");
-    }, 1.3);
-
-    return;
-  }
-
-  window.requestAnimationFrame(() =>
-    events.emit("SCROLL_ONE_SQUARE_DOWN")
-  );
+  events.ask("CHECK_BOARD_LIMITS") &&
+    window.requestAnimationFrame(() =>
+      events.emit("SCROLL_ONE_SQUARE_DOWN")
+    );
 }
 
 export function TRANSLATE_BOARD({ rows } = {}) {

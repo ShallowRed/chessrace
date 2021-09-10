@@ -1,8 +1,8 @@
 import boardColors from 'app/components/board/board-colors';
 
-import * as Squares from 'app/components/Board/squares';
-import * as FinishLine from 'app/components/Board/finishing-line';
 import * as BoardParts from 'app/components/Board/board-parts';
+import * as BoardSquares from 'app/components/Board/board-squares';
+import * as FinishLine from 'app/components/Board/finishing-line';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
@@ -15,19 +15,19 @@ export default class Board {
     Object.assign(this, { columns, rows });
 
     bindObjectsMethods.call(this, {
-      boardParts: BoardParts,
-      squares: Squares,
+      parts: BoardParts,
+      squares: BoardSquares,
       finishLine: FinishLine,
     });
 
-    this.boardParts.create();
+    this.parts.create();
   }
 
   setDimensions() {
 
-    const dimensions = this.boardParts.getDimensions(this.columns, this.rows);
+    const dimensions = this.parts.getDimensions(this.columns, this.rows);
 
-    this.boardParts.setDimensions(dimensions);
+    this.parts.setDimensions(dimensions);
     this.ctx.shadows.fillStyle = boardColors.shadow;
   }
 

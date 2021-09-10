@@ -5,8 +5,6 @@ export default class GameObject {
 
   static container = document.querySelector("main");
 
-  static skippedRows = 0;
-
   static setDimensions(columns, rows) {
 
     this.size = min(

@@ -8,7 +8,7 @@ export function create() {
   this.canvas = {};
   this.ctx = {};
 
-  const config = this.boardParts.getConfig();
+  const config = this.parts.getConfig();
 
   for (const name in config) {
 

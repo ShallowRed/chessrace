@@ -16,6 +16,8 @@ import { getEachBoundMethods } from 'app/utils/bind-methods';
 
 export default {
 
+  skippedRows: 0,
+
   events: [
     gameStateEvents,
     scrollBoardEvents,
@@ -61,11 +63,11 @@ export default {
     board.render(model);
 
     if (model.newEnnemyPieces.length) {
-      ennemies.addEach(model.newEnnemyPieces, model.skippedRows);
+      ennemies.addEach(model.newEnnemyPieces);
     }
 
     if (board.nRenders > 1) {
-      model.skippedRows++;
+      this.skippedRows++;
     }
   },
 
@@ -73,6 +75,7 @@ export default {
 
     const { board, model, ennemies, player } = this;
 
+    this.skippedRows = 0;
     board.nRenders = 0;
 
     events.emit("TRANSLATE_BOARD");
@@ -92,9 +95,9 @@ export default {
     this.board.nRenders--;
     this.board.render(this.model);
 
-    this.player.moveSprite({ duration: 0 }, this.model.skippedRows);
+    this.player.moveSprite({ duration: 0 });
 
-    this.ennemies.setEachPosition(this.model.skippedRows);
+    this.ennemies.setEachPosition();
 
     events.emit("SET_EACH_PIECE", piece =>
       piece.setSpriteDimensions()

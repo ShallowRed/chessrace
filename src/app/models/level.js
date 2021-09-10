@@ -5,7 +5,6 @@ import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Level {
 
-  skippedRows = 0;
   pieces = getSortedPiecesNames();
 
   methodsToBind = {
@@ -25,7 +24,6 @@ export default class Level {
   }
 
   reset() {
-    this.skippedRows = 0;
     this.firstParse = true;
     this.values = this.blueprint.map(rows => [...rows]);
     this.deepRegularSquares = [];
@@ -96,7 +94,7 @@ const LevelRow = {
   getPiecePositionAndName(row, rowIndex) {
     return ({ index }) => ({
       pieceName: this.row.getPieceName(row, index),
-      position: [index, rowIndex - this.skippedRows]
+      position: [index, rowIndex]
     });
   },
 
@@ -108,11 +106,11 @@ const LevelRow = {
 const LevelSquare = {
 
   get([col, row]) {
-    return this.values[row + this.skippedRows]?.[col];
+    return this.values[row]?.[col];
   },
 
   set([col, row], value) {
-    this.values[row + this.skippedRows][col] = value;
+    this.values[row][col] = value;
   },
 
   removeEnnemy(squareCoords) {

@@ -20,9 +20,9 @@ export default class Player extends Piece {
     this.moveSprite({ duration: 0 });
   }
 
-  moveSprite({ duration }, skippedRows) {
+  moveSprite({ duration }) {
 
-    const { left, bottom } = this.getOffset(skippedRows);
+    const { left, bottom } = this.getOffset();
 
     this.sprite.style.transitionDuration = `${duration}s`;
     this.sprite.style.transform = `translate(${left}px, -${bottom}px)`;
