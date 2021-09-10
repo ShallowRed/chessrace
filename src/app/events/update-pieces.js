@@ -10,6 +10,7 @@ export function MOVE_PLAYER(position) {
   }
 
   this.player.updatePosition(position);
+  console.log("move piece from", this.player.position[1], "to", this.player.position[1]);
 
   this.player.moveSprite({ duration: this.durations.move }, this.model
     .skippedRows);

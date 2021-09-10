@@ -8,7 +8,7 @@ import events from 'app/models/events';
 import Level from 'app/models/level';
 
 import GameObject from 'app/components/Game-object';
-import Ennemies from 'app/components/pieces/Ennemies';
+import Ennemies from 'app/models/Ennemies';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
 
@@ -30,12 +30,11 @@ export default {
 
     const { columns, rows, visibleRows } = this;
 
-    GameObject.setDimensions(columns, visibleRows);
-
     this.model = new Level(levelBlueprint, columns, rows, visibleRows);
+    this.ennemies = new Ennemies(this.piecesColors[1]);
 
     this.board = new Board(columns, visibleRows);
-    this.ennemies = new Ennemies(this.piecesColors[1]);
+    this.setDimensions();
     this.player = new Player(this.piecesColors[0], this.playerStart);
 
     this.render();
@@ -43,6 +42,11 @@ export default {
     getEachBoundMethods.call(this, this.events, events.listen);
 
     window.addEventListener("resize", () => this.resize());
+  },
+
+  setDimensions() {
+    GameObject.setDimensions(this.columns, this.visibleRows);
+    this.board.setDimensions();
   },
 
   render() {
@@ -83,9 +87,8 @@ export default {
 
   resize() {
 
-    GameObject.setDimensions(this.columns, this.visibleRows);
+    this.setDimensions();
 
-    this.board.dimensions.set();
     this.board.nRenders--;
     this.board.render(this.model);
 

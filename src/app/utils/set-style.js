@@ -1,18 +1,14 @@
-export function setStyle(config, value, element) {
+export function setStyle(element, styles) {
 
-  if (typeof config === "object") {
+  for (const [key, value] of Object.entries(styles)) {
 
-    for (const key in config) {
+    if (element[key]) {
 
-      this.setStyle(key, config[key], element);
+      this[key] = element[key] = value;
+
+    } else {
+
+      element.style[key] = `${value}px`;
     }
-
-  } else if (element[config]) {
-
-    this[config] = element[config] = value;
-
-  } else {
-
-    element.style[config] = `${value}px`;
   }
 }

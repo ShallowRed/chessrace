@@ -22,6 +22,6 @@ export default class Canvas extends GameObject {
     (this?.container || this)
     .domEl.style.zIndex = props?.zIndex || 0;
 
-    bindObjectsMethods.call(this, { draw: drawShapes });
+    bindObjectsMethods.call(this.ctx, { draw: drawShapes });
   }
 }

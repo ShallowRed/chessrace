@@ -22,6 +22,7 @@ export function NEXT_SCROLL_STEP() {
 
   this.render();
 
+  console.log("decrementY from", this.player.position[1], "to", this.player.position[1]);
   events.emit("SET_EACH_PIECE", piece =>
     piece.decrementPositionY()
   );

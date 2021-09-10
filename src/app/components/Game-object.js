@@ -59,8 +59,8 @@ export default class GameObject {
     parent.append(this.domEl);
   }
 
-  setStyle = (config, value, element = this.domEl) => {
-    setStyle.call(this, config, value, element);
+  setStyle = config => {
+    setStyle.call(this, this.domEl, config);
   }
 
   onClick(callback) {

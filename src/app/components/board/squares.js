@@ -1,4 +1,5 @@
 import GameObject from 'app/components/Game-object';
+import boardColors from 'app/components/board/board-colors';
 
 const { floor } = Math;
 
@@ -9,7 +10,7 @@ export function render(regularSquares) {
   this.squares.list = regularSquares;
 
   regularSquares.map(getShadowCoordsInCanvas)
-    .forEach(this.canvas.shadows.draw.square);
+    .forEach(this.ctx.shadows.draw.square);
 
   for (const color of ["light", "dark"]) {
 
@@ -17,13 +18,13 @@ export function render(regularSquares) {
 
     for (const canvas of this.coloredCanvas) {
 
-      canvas.ctx.fillStyle = this.colors.squares[color][canvas.name];
+      canvas.ctx.fillStyle = boardColors.squares[color][canvas.name];
 
       const squares = canvas.filter?.(sameColorSquares) ||
         sameColorSquares;
 
       squares.map(getCoordsInCanvas)
-        .forEach(canvas.draw[canvas.shape])
+        .forEach(canvas.ctx.draw[canvas.shape])
     }
   }
 }
