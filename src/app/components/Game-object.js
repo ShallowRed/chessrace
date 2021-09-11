@@ -16,6 +16,16 @@ export default class GameObject {
 
     this.offset = {};
     this.offset.shadow = round(this.size / 3);
+
+    this.playableZone = {
+      width: columns * this.size,
+      height: rows * this.size,
+    }
+
+    setStyle(this.container, {
+      width: this.playableZone.width + this.depth + this.offset.shadow,
+      height: this.playableZone.height + this.depth + this.size,
+    });
   }
 
   translateY = ({ rows = 0, duration = 0 } = {}) => {

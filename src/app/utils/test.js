@@ -1,4 +1,10 @@
-export function test(key, callback, n) {
+export function test(key, callback, n = 1) {
+
+  if (typeof key === "function") {
+    n = 0 + callback;
+    callback = key;
+    key = "";
+  } else key += " : ";
 
   const start = Date.now();
 
@@ -6,5 +12,5 @@ export function test(key, callback, n) {
     callback();
   }
 
-  console.log(`${key} : ${Date.now() - start}ms`);
+  console.log(`${key}${Date.now() - start}ms`, `/ ${n}`);
 }

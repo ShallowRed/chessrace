@@ -22,7 +22,6 @@ export function getEachBoundMethods(objects, callback) {
 }
 
 export function bindObjectsMethods(objects) {
-
   for (const key in objects) {
 
     bindObjectMethods.call(this, objects[key], key);

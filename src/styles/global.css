@@ -18,11 +18,16 @@ main *:not(.player) {
   transition-timing-function: linear;
 }
 
-canvas.frontFace,
+canvas.frontFaces,
 .piece:not(.player) {
   &:hover {
     cursor: pointer;
   }
+}
+
+main>.board-part:not(canvas) {
+  top: 0;
+  width: inherit;
 }
 
 canvas {
@@ -33,7 +38,7 @@ canvas {
   bottom: 0;
 }
 
-.board-part:not(.frontFace):not(.frontFace-container) {
+.board-part:not(.frontFaces):not(.frontFaces-container) {
   pointer-events: none;
 }
 
