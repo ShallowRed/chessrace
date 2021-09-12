@@ -2,9 +2,9 @@ import events from 'app/models/events';
 
 export function SQUARE_CLICKED(boardSquare) {
 
-  const square = [boardSquare[0], boardSquare[1] + this.skippedRows]
-
   if (this.player.isMoving) return;
+
+  const square = [boardSquare[0], boardSquare[1] + this.board.nRenders - 1]
 
   events.ask("IS_VALID_MOVE", square) &&
     events.ask("IS_VALID_TRAJECTORY", square) &&

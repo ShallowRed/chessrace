@@ -1,30 +1,15 @@
-import * as gameStateEvents from 'app/events/set-game-state';
-import * as scrollBoardEvents from 'app/events/scroll-board';
-import * as updatePiecesEvents from 'app/events/update-pieces';
-import * as userInputsEvents from 'app/events/validate-user-inputs';
-import * as validateMovesEvents from 'app/events/validate-moves';
-
 import events from 'app/models/events';
-import Level from 'app/models/level';
+import GameEvents from 'app/events/';
+import LevelModel from 'app/models/level';
 
 import GameObject from 'app/components/Game-object';
 import Ennemies from 'app/models/Ennemies';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
 
-import { getEachBoundMethods } from 'app/utils/bind-methods';
+import { getBoundMethods } from 'app/utils/bind-methods';
 
 export default {
-
-  skippedRows: 0,
-
-  events: [
-    gameStateEvents,
-    scrollBoardEvents,
-    updatePiecesEvents,
-    userInputsEvents,
-    validateMovesEvents
-  ],
 
   init(levelConfig, levelBlueprint) {
 
@@ -32,7 +17,7 @@ export default {
 
     const { columns, rows, visibleRows } = this;
 
-    this.model = new Level(levelBlueprint, columns, rows, visibleRows);
+    this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
     this.ennemies = new Ennemies(this.piecesColors[1]);
 
     this.board = new Board(columns, visibleRows);
@@ -41,7 +26,7 @@ export default {
 
     this.render();
 
-    getEachBoundMethods.call(this, this.events, events.listen);
+    getBoundMethods.call(this, GameEvents, events.listen);
 
     window.addEventListener("resize", () => this.resize());
   },
@@ -53,38 +38,33 @@ export default {
 
   render() {
 
-    const { board, model, ennemies } = this;
+    if (this.board.nRenders) {
 
-    if (board.nRenders) {
-      board.clear();
+      this.board.clear();
     }
 
-    model.parse(board.nRenders);
-    board.render(model);
+    this.model.parse(this.board.nRenders);
 
-    if (model.newEnnemyPieces.length) {
-      ennemies.addEach(model.newEnnemyPieces);
-    }
+    this.board.render(this.model);
 
-    if (board.nRenders > 1) {
-      this.skippedRows++;
+    if (this.model.newEnnemyPieces.length) {
+
+      this.ennemies.addEach(this.model.newEnnemyPieces);
     }
   },
 
   reset() {
 
-    const { board, model, ennemies, player } = this;
-
-    this.skippedRows = 0;
-    board.nRenders = 0;
+    this.board.nRenders = 0;
 
     events.emit("TRANSLATE_BOARD");
     events.emit("TRANSLATE_PIECES");
 
-    board.clear();
-    model.reset();
-    ennemies.empty();
-    player.init(this.playerStart);
+    this.board.clear();
+    this.model.reset();
+    this.ennemies.empty();
+    this.player.init(this.playerStart);
+
     this.render();
   },
 
@@ -92,8 +72,7 @@ export default {
 
     this.setDimensions();
 
-    this.board.nRenders--;
-    this.board.render(this.model);
+    this.board.render(this.model, { resize: true });
 
     this.player.moveSprite({ duration: 0 });
 

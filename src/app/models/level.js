@@ -3,7 +3,7 @@ import { filterMap } from 'app/utils/filter-and-map-array';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
-export default class Level {
+export default class LevelModel {
 
   pieces = getSortedPiecesNames();
 
@@ -24,7 +24,6 @@ export default class Level {
   }
 
   reset() {
-    this.firstParse = true;
     this.values = this.blueprint.map(rows => [...rows]);
     this.deepRegularSquares = [];
     this.lastRowRendered = -1;
@@ -35,14 +34,15 @@ export default class Level {
 
     this.newEnnemyPieces = [];
 
-    for (let i = this.lastRowRendered + 1; this.row.isVisible(i); i++) {
+    for (let rowIndex = this.lastRowRendered + 1; this.row.isVisible(
+      rowIndex); rowIndex++) {
 
-      const parsedRow = this.row.parse(this.values[i], i);
+      const parsedRow = this.row.parse(rowIndex);
 
       this.deepRegularSquares.push(parsedRow.regularSquares);
       this.newEnnemyPieces.push(...parsedRow.pieces);
 
-      this.lastRowRendered = i;
+      this.lastRowRendered = rowIndex;
     }
 
     this.lastRowToRender = this.lastRowRendered + 1;
@@ -63,7 +63,9 @@ const LevelRow = {
       rowIndex < this.rows;
   },
 
-  parse(row, rowIndex) {
+  parse(rowIndex) {
+
+    const row = this.values[rowIndex];
 
     return {
 
@@ -126,6 +128,7 @@ const LevelSquare = {
   },
 
   isObstacle(square) {
-    return this.square.isHole(square) || this.square.isEnnemy(square)
+    return this.square.isHole(square) ||
+      this.square.isEnnemy(square)
   }
 }

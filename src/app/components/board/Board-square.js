@@ -24,8 +24,8 @@ export const get = {
 
   clicked({ clientX, clientY }) {
 
-    const { left, bottom } = this.canvas.frontFaces.domEl
-      .getBoundingClientRect();
+    const { left, bottom } =
+    this.canvas.frontFaces.domEl.getBoundingClientRect();
 
     return [
       clientX - left,

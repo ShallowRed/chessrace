@@ -13,14 +13,6 @@ export function getBoundMethods(obj, callback, depthKeys = []) {
   }
 }
 
-export function getEachBoundMethods(objects, callback) {
-
-  objects.forEach(obj => {
-
-    getBoundMethods.call(this, obj, callback);
-  });
-}
-
 export function bindObjectsMethods(objects) {
   for (const key in objects) {
 

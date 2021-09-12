@@ -1,6 +1,7 @@
 main {
+  top: 50%;
   left: 50%;
-  transform: translateX(-49%);
+  transform: translate(-49%, -50%);
 }
 
 main,

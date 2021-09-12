@@ -11,6 +11,7 @@ import * as Squares from 'app/components/Board/render-squares';
 import * as FinishLine from 'app/components/Board/render-finishing-line';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
+// import { test } from "app/utils/test";
 
 export default class Board {
 
@@ -69,14 +70,19 @@ export default class Board {
     this.ctx.shadows.fillStyle = boardColors.shadow;
   }
 
-  render({ regularSquares, lastRowRendered, rows }) {
+  render(model, { resize = false } = {}) {
 
-    if (lastRowRendered === rows - 1) {
+    if (resize) {
 
-      this.finishLine.render(rows);
+      this.nRenders--;
     }
 
-    this.squares.render(regularSquares);
+    if (model.lastRowRendered === model.rows - 1) {
+
+      this.finishLine.render(model.rows);
+    }
+
+    this.squares.render(model.regularSquares);
 
     this.nRenders++;
   }

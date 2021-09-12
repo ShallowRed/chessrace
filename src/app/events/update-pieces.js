@@ -57,8 +57,7 @@ export function CHECK_BOARD_LIMITS() {
 }
 
 export function IS_BELOW_LIMIT(piece) {
-
-  return piece.position[1] < this.skippedRows;
+  return piece.position[1] < this.board.nRenders - 1;
 }
 
 export function PLAYER_FALL_IN_HOLE() {
