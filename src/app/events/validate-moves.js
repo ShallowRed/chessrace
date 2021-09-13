@@ -1,4 +1,5 @@
 import events from 'app/models/events';
+
 import { isValidMove, isValidTake, isLongRange } from 'app/models/pieces';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
@@ -34,7 +35,10 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
   const hole = firstObstacle && getHole(firstObstacle) ||
     getHole(targetSquare);
 
-  hole && events.emit("PLAYER_MOVE_IN_HOLE", hole);
+  if (hole) {
+
+    events.emit("PLAYER_MOVE_IN_HOLE", hole);
+  }
 
   return !firstObstacle && !hole;
 }

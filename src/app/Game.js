@@ -18,13 +18,16 @@ export default {
     const { columns, rows, visibleRows } = this;
 
     this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
+
     this.ennemies = new Ennemies(this.piecesColors[1]);
 
     this.board = new Board(columns, visibleRows);
+
     this.setDimensions();
-    this.player = new Player(this.piecesColors[0], this.playerStart);
 
     this.render();
+
+    this.player = new Player(this.piecesColors[0], this.playerStart);
 
     getBoundMethods.call(this, GameEvents, events.listen);
 
@@ -32,7 +35,9 @@ export default {
   },
 
   setDimensions() {
+
     GameObject.setDimensions(this.columns, this.visibleRows);
+
     this.board.setDimensions();
   },
 
@@ -43,7 +48,7 @@ export default {
       this.board.clear();
     }
 
-    this.model.parse(this.board.nRenders);
+    this.model.parse();
 
     this.board.render(this.model);
 
@@ -63,6 +68,7 @@ export default {
     this.board.clear();
     this.model.reset();
     this.ennemies.empty();
+    
     this.player.init(this.playerStart);
 
     this.render();

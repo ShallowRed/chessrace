@@ -6,7 +6,7 @@ export default class Canvas extends GameObject {
   constructor({ inContainer = true, ...props }) {
 
     super({
-      dom: { canvas: document.createElement('canvas') },
+      domEl: { canvas: document.createElement('canvas') },
       className: `board-part ${props.name}`,
       inContainer
     });

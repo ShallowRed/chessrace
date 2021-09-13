@@ -27,10 +27,15 @@ export const get = {
     const { left, bottom } =
     this.canvas.frontFaces.domEl.getBoundingClientRect();
 
-    return [
+    const boardSquare = [
       clientX - left,
       -(clientY - bottom)
     ].map(coord => floor(coord / GameObject.size));
+
+    return [
+      boardSquare[0],
+      boardSquare[1] + this.nRenders - 1
+    ]
   }
 }
 

@@ -15,8 +15,11 @@ export default class Player extends Piece {
   }
 
   init(playerStart) {
+
     this.updatePiece(playerStart.pieceName.slice());
+
     this.updatePosition([...playerStart.position]);
+
     this.moveSprite({ duration: 0 });
   }
 
@@ -25,6 +28,7 @@ export default class Player extends Piece {
     const { left, bottom } = this.getOffset();
 
     this.sprite.style.transitionDuration = `${duration}s`;
+
     this.sprite.style.transform = `translate(${left}px, -${bottom}px)`;
   }
 }

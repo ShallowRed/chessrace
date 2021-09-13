@@ -1,4 +1,5 @@
 import { setStyle } from "app/utils/set-style";
+
 const { min, round } = Math;
 
 export default class GameObject {
@@ -15,6 +16,7 @@ export default class GameObject {
     this.depth = round(this.size / 6);
 
     this.offset = {};
+
     this.offset.shadow = round(this.size / 3);
 
     this.playableZone = {
@@ -29,25 +31,27 @@ export default class GameObject {
   }
 
   translateY = ({ rows = 0, duration = 0 } = {}) => {
+
     this.domEl.style.transitionDuration = `${duration}s`;
+
     this.domEl.style.transform = `translateY(${rows * GameObject.size}px)`;
   }
 
-  constructor({ dom, className, inContainer },
+  constructor({ domEl, className, inContainer },
     parent = GameObject.container
   ) {
 
-    if (dom instanceof HTMLElement) {
+    if (domEl instanceof HTMLElement) {
 
-      this.domEl = dom;
+      this.domEl = domEl;
 
-    } else if (typeof dom === "object") {
+    } else if (typeof domEl === "object") {
 
       const [
-        [key, domEl]
-      ] = Object.entries(dom);
+        [key, domElement]
+      ] = Object.entries(domEl);
 
-      this.domEl = this[key] = domEl;
+      this.domEl = this[key] = domElement;
     }
 
     if (className) {
@@ -57,7 +61,7 @@ export default class GameObject {
     if (inContainer) {
 
       this.container = new GameObject({
-        dom: document.createElement('div'),
+        domEl: document.createElement('div'),
         className: `${className}-container`
       });
 
@@ -68,10 +72,12 @@ export default class GameObject {
   }
 
   setStyle = config => {
+
     setStyle.call(this, this.domEl, config);
   }
 
   onClick(callback) {
+    
     this.domEl.addEventListener("click", callback);
   }
 }

@@ -18,6 +18,7 @@ export function MOVE_PLAYER(position) {
   }, this.durations.move)
 
   if (this.player.position[1] >= this.model.rows) {
+
     animationTimeout(() => {
       events.emit("GAME_WON");
     }, this.durations.move * 2)
@@ -27,6 +28,7 @@ export function MOVE_PLAYER(position) {
 export function EAT_PIECE(ennemy) {
 
   events.emit("MOVE_PLAYER", ennemy.position);
+
   this.player.updatePiece(ennemy.pieceName);
 
   animationTimeout(() => {
@@ -45,6 +47,7 @@ export function REMOVE_ENNEMY(ennemy) {
 export function CHECK_BOARD_LIMITS() {
 
   this.ennemies.list.forEach(ennemy => {
+
     events.ask("IS_BELOW_LIMIT", ennemy) &&
       events.emit("ENNEMY_FALL_IN_HOLE", ennemy)
   });
@@ -57,6 +60,7 @@ export function CHECK_BOARD_LIMITS() {
 }
 
 export function IS_BELOW_LIMIT(piece) {
+
   return piece.position[1] < this.board.nRenders - 1;
 }
 

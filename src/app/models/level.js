@@ -24,13 +24,17 @@ export default class LevelModel {
   }
 
   reset() {
+
     this.values = this.blueprint.map(rows => [...rows]);
+
     this.deepRegularSquares = [];
+
     this.lastRowRendered = -1;
+
     this.lastRowToRender = this.visibleRows + 1;
   }
 
-  parse(nRenders) {
+  parse() {
 
     this.newEnnemyPieces = [];
 
@@ -40,6 +44,7 @@ export default class LevelModel {
       const parsedRow = this.row.parse(rowIndex);
 
       this.deepRegularSquares.push(parsedRow.regularSquares);
+
       this.newEnnemyPieces.push(...parsedRow.pieces);
 
       this.lastRowRendered = rowIndex;
@@ -47,7 +52,8 @@ export default class LevelModel {
 
     this.lastRowToRender = this.lastRowRendered + 1;
 
-    if (nRenders) {
+    if (this.lastRowRendered > this.visibleRows + 1) {
+
       this.deepRegularSquares.splice(0, 1);
     }
 
@@ -82,18 +88,22 @@ const LevelRow = {
   },
 
   isNotHole({ value }) {
+
     return value > 0;
   },
 
   isPiece({ value }) {
+
     return value > 1;
   },
 
   getSquareCoord(rowIndex) {
+
     return ({ index }) => [index, rowIndex];
   },
 
   getPiecePositionAndName(row, rowIndex) {
+
     return ({ index }) => ({
       pieceName: this.row.getPieceName(row, index),
       position: [index, rowIndex]
@@ -101,6 +111,7 @@ const LevelRow = {
   },
 
   getPieceName(row, index) {
+    
     return this.pieces[row[index] - 2];
   }
 }
@@ -108,26 +119,32 @@ const LevelRow = {
 const LevelSquare = {
 
   get([col, row]) {
+
     return this.values[row]?.[col];
   },
 
   set([col, row], value) {
+
     this.values[row][col] = value;
   },
 
   removeEnnemy(squareCoords) {
+
     this.square.set(squareCoords, 1)
   },
 
   isHole(squareCoord) {
+
     return this.square.get(squareCoord) === 0;
   },
 
   isEnnemy(squareCoord) {
+
     return this.square.get(squareCoord) > 1;
   },
 
   isObstacle(square) {
+
     return this.square.isHole(square) ||
       this.square.isEnnemy(square)
   }

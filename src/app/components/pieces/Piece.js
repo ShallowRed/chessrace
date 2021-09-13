@@ -6,13 +6,14 @@ export default class Piece extends GameObject {
 
     super({
       className,
-      dom: { sprite: document.createElement('div') },
+      domEl: { sprite: document.createElement('div') },
       inContainer: true
     })
 
     Object.assign(this, { pieceName, position, color, className });
 
     this.setSpriteDimensions();
+
     this.setSpriteClassName();
   }
 
@@ -25,20 +26,25 @@ export default class Piece extends GameObject {
   }
 
   setSpriteClassName() {
+
     this.sprite.className =
       `piece ${this.pieceName} ${this.color} ${this.className}`;
   }
 
   removeSprite() {
+
     GameObject.container.removeChild(this.container.domEl);
   }
 
   updatePiece(pieceName) {
+
     this.pieceName = pieceName;
+
     this.setSpriteClassName();
   }
 
   updatePosition(position) {
+
     this.position = position;
   }
 
@@ -55,7 +61,9 @@ export default class Piece extends GameObject {
   }
 
   fall(duration) {
+
     this.sprite.style.transitionDuration = `${duration}s`;
+
     this.sprite.style.transform +=
       "translate(15px, 15px) scale(0) rotate(180deg)";
   }
