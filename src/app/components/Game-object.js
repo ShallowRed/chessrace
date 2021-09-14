@@ -77,7 +77,7 @@ export default class GameObject {
   }
 
   onClick(callback) {
-    
+
     this.domEl.addEventListener("click", callback);
   }
 }

@@ -7,7 +7,7 @@ import boardColors from 'app/components/board/board-config-colors';
 import * as boardPartsConfig from 'app/components/Board/board-config-parts';
 
 import * as BoardSquare from 'app/components/Board/Board-square';
-import * as Squares from 'app/components/Board/render-squares';
+import * as RenderSquares from 'app/components/Board/render-squares';
 import * as FinishLine from 'app/components/Board/render-finishing-line';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
@@ -24,7 +24,7 @@ export default class Board {
     Object.assign(this, { columns, rows });
 
     bindObjectsMethods.call(this, {
-      squares: Squares,
+      squares: RenderSquares,
       square: BoardSquare,
       finishLine: FinishLine,
     });
@@ -63,6 +63,7 @@ export default class Board {
 
       canvas.container?.setStyle({
         left,
+        width: canvas.width,
         height: canvas.height - GameObject.size
       });
     }
@@ -72,9 +73,9 @@ export default class Board {
 
   render(model, { resize = false } = {}) {
 
-    if (resize) {
+    if (!resize) {
 
-      this.nRenders--;
+      this.nRenders++;
     }
 
     if (model.lastRowRendered === model.rows - 1) {
@@ -83,8 +84,6 @@ export default class Board {
     }
 
     this.squares.render(model.regularSquares);
-
-    this.nRenders++;
   }
 
   clear() {

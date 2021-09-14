@@ -6,7 +6,6 @@ export function SCROLL_ONE_SQUARE_DOWN() {
   if (!this.on) return;
 
   events.emit("TRANSLATE_BOARD", { rows: 1 });
-  
   events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
   animationTimeout(() =>

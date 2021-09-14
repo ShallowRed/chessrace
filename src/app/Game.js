@@ -29,7 +29,7 @@ export default {
 
     this.player = new Player(this.piecesColors[0], this.playerStart);
 
-    getBoundMethods.call(this, GameEvents, events.listen);
+    getBoundMethods.call(this, GameEvents, events.listen); 
 
     window.addEventListener("resize", () => this.resize());
   },
@@ -68,7 +68,7 @@ export default {
     this.board.clear();
     this.model.reset();
     this.ennemies.empty();
-    
+
     this.player.init(this.playerStart);
 
     this.render();

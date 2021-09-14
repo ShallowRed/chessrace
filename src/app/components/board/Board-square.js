@@ -11,7 +11,7 @@ export const get = {
 
   top(row) {
 
-    return (this.rows - row + this.nRenders) * GameObject.size;
+    return (this.rows - row + this.nRenders - 1) * GameObject.size;
   },
 
   coordsInCanvas([col, row]) {
@@ -50,11 +50,11 @@ export const is = {
   },
 
   inBottomRow(coords) {
-    return coords[1] === this.nRenders;
+    return coords[1] === this.nRenders - 1;
   },
 
   notInBottomRow(coords) {
-    return coords[1] !== this.nRenders;
+    return coords[1] !== this.nRenders - 1;
   },
 
   leftToHole([col, row]) {

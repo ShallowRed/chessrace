@@ -12,24 +12,31 @@ export function render(row) {
   }
 
   for (const canvas of this.dynamicCanvas) {
+
     canvas.ctx.fillStyle = boardColors.finishLine[canvas.name];
+
     canvas.draw(canvas.getShape(finishLine));
   }
 
   const canvas = this.canvas.frontFaces;
 
-  canvas.ctx.globalCompositeOperation = "source-atop";
   canvas.ctx.fillStyle = boardColors.finishLine.squares
+
+  canvas.ctx.globalCompositeOperation = "source-atop";
+
   this.finishLine.renderSquares(finishLine, canvas);
+
   canvas.ctx.globalCompositeOperation = "source-over";
 }
 
 export function renderSquares({ top, height }, canvas) {
 
   const rows = 5;
+
   const squareSize = round(height / rows);
 
   for (let row = 0; row < rows; row++) {
+    
     for (let col = 0; col < rows * (this.columns + 1); col += 2) {
 
       canvas.draw({
