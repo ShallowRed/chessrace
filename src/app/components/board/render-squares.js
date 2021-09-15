@@ -1,4 +1,3 @@
-import boardColors from 'app/components/board/board-config-colors';
 import { arrayIncludesArray } from "app/utils/array-includes-array";
 
 export function render(regularSquares) {
@@ -23,18 +22,20 @@ export function renderColoredSquares(squares) {
 
     const sameColorSquares = squares.filter(this.square.is[color]);
 
-    this.squares.renderSquaresOfColor(sameColorSquares, color)
+    const colors = this.colors.squares[color];
+
+    this.squares.renderSquaresOfColor(sameColorSquares, colors)
   }
 }
 
-export function renderSquaresOfColor(squares, color) {
+export function renderSquaresOfColor(squares, colors) {
 
-  for (const canvas of this.coloredCanvas) {
+  for (const canvas of this.canvas.coloredCollection) {
 
     const coloredSquaresInCanvas =
       canvas.filter?.bind(this)(squares) || squares;
 
-    canvas.ctx.fillStyle = boardColors.squares[color][canvas.name];
+    canvas.ctx.fillStyle = colors[canvas.shape.type];
 
     this.squares.renderSquaresSet(coloredSquaresInCanvas, canvas)
   }

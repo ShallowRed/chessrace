@@ -3,7 +3,7 @@ import GameEvents from 'app/events/';
 import LevelModel from 'app/models/level';
 
 import GameObject from 'app/components/Game-object';
-import Ennemies from 'app/models/Ennemies';
+import EnnemiesCollection from 'app/models/ennemies-collection';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
 
@@ -17,9 +17,11 @@ export default {
 
     const { columns, rows, visibleRows } = this;
 
+    const [color, ennemiesColor] = this.piecesColors;
+
     this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
 
-    this.ennemies = new Ennemies(this.piecesColors[1]);
+    this.ennemies = new EnnemiesCollection(ennemiesColor);
 
     this.board = new Board(columns, visibleRows);
 
@@ -27,9 +29,9 @@ export default {
 
     this.render();
 
-    this.player = new Player(this.piecesColors[0], this.playerStart);
+    this.player = new Player({ color, ...this.playerStart });
 
-    getBoundMethods.call(this, GameEvents, events.listen); 
+    getBoundMethods.call(this, GameEvents, events.listen);
 
     window.addEventListener("resize", () => this.resize());
   },
@@ -80,12 +82,12 @@ export default {
 
     this.board.render(this.model, { resize: true });
 
-    this.player.moveSprite({ duration: 0 });
+    this.player.moveSprite();
 
     this.ennemies.setEachPosition();
 
     events.emit("SET_EACH_PIECE", piece =>
-      piece.setSpriteDimensions()
+      piece.sprite.setSize()
     );
   }
 }

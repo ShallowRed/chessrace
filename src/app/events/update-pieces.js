@@ -46,7 +46,7 @@ export function REMOVE_ENNEMY(ennemy) {
 
 export function CHECK_BOARD_LIMITS() {
 
-  this.ennemies.list.forEach(ennemy => {
+  this.ennemies.collection.forEach(ennemy => {
 
     events.ask("IS_BELOW_LIMIT", ennemy) &&
       events.emit("ENNEMY_FALL_IN_HOLE", ennemy)
@@ -94,5 +94,5 @@ export function PLAYER_MOVE_IN_HOLE(hole) {
 
 export function SET_EACH_PIECE(callback) {
 
-  [this.player, ...this.ennemies.list].forEach(callback);
+  [this.player, ...this.ennemies.collection].forEach(callback);
 }

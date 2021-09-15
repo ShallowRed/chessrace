@@ -4,13 +4,14 @@ import 'styles/alpha.css';
 import 'app/utils/animation-polyfill';
 
 import Game from 'app/Game';
+
 import { generateLevelBlueprint } from 'app/utils/level-generator';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
 const levelConfig = {
 
   columns: 8,
-  rows: 20,
+  rows: 8,
   visibleRows: 12,
 
   playerStart: {
@@ -24,7 +25,7 @@ const levelConfig = {
     fall: 1
   },
 
-  piecesColors: getRandomPiecesColor(),
+  piecesColors: getRandomPiecesColor()
 }
 
 Game.init(levelConfig, generateLevelBlueprint(levelConfig));

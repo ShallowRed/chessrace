@@ -1,5 +1,4 @@
 import GameObject from 'app/components/Game-object';
-import boardColors from 'app/components/board/board-config-colors';
 
 const { round } = Math;
 
@@ -11,16 +10,19 @@ export function render(row) {
     height: GameObject.size
   }
 
-  for (const canvas of this.dynamicCanvas) {
+  for (const canvas of this.canvas.dynamicCollection) {
 
-    canvas.ctx.fillStyle = boardColors.finishLine[canvas.name];
+    canvas.ctx.fillStyle = this.colors.finishLine[canvas.shape.type];
 
     canvas.draw(canvas.getShape(finishLine));
   }
 
-  const canvas = this.canvas.frontFaces;
+  this.finishLine.renderFrontFace(finishLine, this.canvas.frontFaces);
+}
 
-  canvas.ctx.fillStyle = boardColors.finishLine.squares
+export function renderFrontFace(finishLine, canvas) {
+
+  canvas.ctx.fillStyle = this.colors.finishLine.squares;
 
   canvas.ctx.globalCompositeOperation = "source-atop";
 
@@ -36,7 +38,7 @@ export function renderSquares({ top, height }, canvas) {
   const squareSize = round(height / rows);
 
   for (let row = 0; row < rows; row++) {
-    
+
     for (let col = 0; col < rows * (this.columns + 1); col += 2) {
 
       canvas.draw({

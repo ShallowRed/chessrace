@@ -2,7 +2,7 @@ import GameObject from 'app/components/Game-object';
 
 export default class Piece extends GameObject {
 
-  constructor({ pieceName, position, color, className}) {
+  constructor({ className, ...props}) {
 
     super({
       className,
@@ -10,14 +10,14 @@ export default class Piece extends GameObject {
       inContainer: true
     })
 
-    Object.assign(this, { pieceName, position, color, className });
+    Object.assign(this, props);
 
-    this.setSpriteDimensions();
+    this.setSpriteSize();
 
     this.setSpriteClassName();
   }
 
-  setSpriteDimensions() {
+  setSpriteSize() {
 
     this.setStyle({
       width: GameObject.size,
@@ -52,11 +52,9 @@ export default class Piece extends GameObject {
 
     const [x, y] = this.position;
 
-    const { size, depth } = GameObject;
-
     return {
-      left: x * size,
-      bottom: (y + 1) * size + depth
+      left: x * GameObject.size,
+      bottom: (y + 1) * GameObject.size + GameObject.depth
     }
   }
 

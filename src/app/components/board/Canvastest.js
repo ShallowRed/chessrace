@@ -13,16 +13,16 @@ export default class Canvas extends GameObject {
 
     Object.assign(this, props);
 
+    this.setZIndex();
+
     this.ctx = this.canvas.getContext('2d');
 
-    (this?.container || this)
-    .domEl.style.zIndex = props?.zIndex || 0;
-
-    this.draw = draw[props.shape](this.ctx);
+    this.draw = draw[this.shape.type](this.ctx);
   }
 
   getDimensions() {
-    return this.dimensions(GameObject.playableZone, GameObject);
+
+    return this.dimensions(GameObject);
   }
 
   getShape = ({
@@ -31,6 +31,14 @@ export default class Canvas extends GameObject {
     width = GameObject.size,
     height = GameObject.size,
     depth = GameObject.depth,
-    offset = GameObject.offset
-  }) => this.getShapeProps({ left, top, width, height, depth, offset })
+    shadowOffset = GameObject.shadowOffset
+  }) => {
+
+    return this.shape.get({ left, top, width, height, depth, shadowOffset })
+  }
+
+  clear() {
+
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+  }
 }

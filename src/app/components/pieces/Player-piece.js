@@ -2,28 +2,23 @@ import Piece from 'app/components/pieces/Piece';
 
 export default class Player extends Piece {
 
-  constructor(color, playerStart) {
+  constructor(props) {
 
-    super({
-      pieceName: playerStart.pieceName.slice(),
-      position: [...playerStart.position],
-      color,
-      className: "player"
-    });
+    super({ ...props, className: "player" });
 
-    this.moveSprite({ duration: 0 });
+    this.moveSprite();
   }
 
-  init(playerStart) {
+  init({ pieceName, position }) {
 
-    this.updatePiece(playerStart.pieceName.slice());
+    this.updatePiece(pieceName);
 
-    this.updatePosition([...playerStart.position]);
+    this.updatePosition(position);
 
-    this.moveSprite({ duration: 0 });
+    this.moveSprite();
   }
 
-  moveSprite({ duration }) {
+  moveSprite({ duration = 0 } = {}) {
 
     const { left, bottom } = this.getOffset();
 

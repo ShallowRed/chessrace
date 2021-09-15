@@ -15,18 +15,16 @@ export default class GameObject {
 
     this.depth = round(this.size / 6);
 
-    this.offset = {};
+    this.shadowOffset = round(this.size / 3);
 
-    this.offset.shadow = round(this.size / 3);
-
-    this.playableZone = {
+    this.playArea = {
       width: columns * this.size,
       height: rows * this.size,
     }
 
     setStyle(this.container, {
-      width: this.playableZone.width + this.depth + this.offset.shadow,
-      height: this.playableZone.height + this.depth + this.size,
+      width: this.playArea.width + this.depth + this.shadowOffset,
+      height: this.playArea.height + this.depth + this.size,
     });
   }
 
@@ -55,6 +53,7 @@ export default class GameObject {
     }
 
     if (className) {
+
       this.domEl.className = className;
     }
 
@@ -74,6 +73,12 @@ export default class GameObject {
   setStyle = config => {
 
     setStyle.call(this, this.domEl, config);
+  }
+
+  setZIndex() {
+
+    (this?.container || this)
+    .domEl.style.zIndex = this?.zIndex || 0;
   }
 
   onClick(callback) {

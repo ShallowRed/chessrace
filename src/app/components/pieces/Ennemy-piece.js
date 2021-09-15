@@ -3,14 +3,9 @@ import Piece from 'app/components/pieces/Piece';
 
 export default class EnnemyPiece extends Piece {
 
-  constructor(pieceName, position, color) {
+  constructor(props) {
 
-    super({
-      position,
-      pieceName,
-      color,
-      className: "ennemy"
-    });
+    super({ ...props, className: "ennemy" });
 
     this.setAbsolutePosition();
 
@@ -21,8 +16,8 @@ export default class EnnemyPiece extends Piece {
 
   setAbsolutePosition() {
 
-    const { left, bottom } = this.getOffset();
+    const offset = this.getOffset();
 
-    this.container.setStyle({ left, bottom });
+    this.container.setStyle(offset);
   }
 }

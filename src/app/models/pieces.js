@@ -26,46 +26,46 @@ export function getSortedPiecesNames() {
 const Pieces = {
 
   pawn: {
-    isValidMove: ([x, y], [tx, ty]) => (
-      ty === y + 1 &&
-      x === tx
+    isValidMove: ([x1, y1], [x2, y2]) => (
+      y2 === y1 + 1 &&
+      x1 === x2
     ),
-    isValidTake: ([x, y], [tx, ty]) => (
-      ty === y + 1 &&
+    isValidTake: ([x1, y1], [x2, y2]) => (
+      y2 === y1 + 1 &&
       (
-        tx === x - 1 ||
-        tx === x + 1
+        x2 === x1 - 1 ||
+        x2 === x1 + 1
       )
     )
   },
 
   king: {
-    isValidMove: ([x, y], [tx, ty]) => (
-      abs(x - tx) <= 1 &&
-      abs(y - ty) <= 1
+    isValidMove: ([x1, y1], [x2, y2]) => (
+      abs(x1 - x2) <= 1 &&
+      abs(y1 - y2) <= 1
     )
   },
 
   knight: {
-    isValidMove: ([x, y], [tx, ty]) => (
-      abs(x - tx) === 2 &&
-      abs(y - ty) === 1
+    isValidMove: ([x1, y1], [x2, y2]) => (
+      abs(x1 - x2) === 2 &&
+      abs(y1 - y2) === 1
     ) || (
-      abs(x - tx) === 1 &&
-      abs(y - ty) === 2
+      abs(x1 - x2) === 1 &&
+      abs(y1 - y2) === 2
     )
   },
 
   bishop: {
-    isValidMove: ([x, y], [tx, ty]) => (
-      abs(x - tx) === abs(y - ty)
+    isValidMove: ([x1, y1], [x2, y2]) => (
+      abs(x1 - x2) === abs(y1 - y2)
     )
   },
 
   rook: {
-    isValidMove: ([x, y], [tx, ty]) => (
-      x === tx ||
-      y === ty
+    isValidMove: ([x1, y1], [x2, y2]) => (
+      x1 === x2 ||
+      y1 === y2
     )
   },
 
