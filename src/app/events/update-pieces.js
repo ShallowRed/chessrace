@@ -6,6 +6,7 @@ export function MOVE_PLAYER(position) {
   this.player.isMoving = true;
 
   if (!this.on) {
+
     events.emit("GAME_ON");
   }
 
@@ -41,6 +42,7 @@ export function REMOVE_ENNEMY(ennemy) {
   if (!this.on) return;
 
   this.ennemies.remove(ennemy);
+
   this.model.square.removeEnnemy(ennemy.position);
 }
 
@@ -82,7 +84,7 @@ export function ENNEMY_FALL_IN_HOLE(ennemy) {
   }, this.durations.fall);
 }
 
-export function PLAYER_MOVE_IN_HOLE(hole) {
+export function PLAYER_MOVE_THEN_FALL_IN_HOLE(hole) {
 
   events.emit("MOVE_PLAYER", hole);
 
@@ -90,9 +92,4 @@ export function PLAYER_MOVE_IN_HOLE(hole) {
     events.emit("PLAYER_FALL_IN_HOLE", hole),
     this.durations.move
   );
-}
-
-export function SET_EACH_PIECE(callback) {
-
-  [this.player, ...this.ennemies.collection].forEach(callback);
 }

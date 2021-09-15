@@ -22,33 +22,32 @@ export default new class Events {
 
     const messages = this.listeners[message];
 
-    const results = [];
-
-    if (messages) {
+    if (messages && messages.length) {
 
       messages.forEach(listener => {
 
-        results.push(listener(...args));
+        listener(...args);
       });
     }
+  }
+
+  get(message, ...args) {
+
+    const messages = this.listeners[message];
+
+    if (messages && messages.length) {
+
+      return messages.map(listener => listener(...args));
+    }
+  }
+
+  ask(message, ...args) {
+
+    const results = this.get(message, ...args);
 
     const validResults = results.filter(Boolean);
 
     return results.length === validResults.length;
-
-    // return new Promise(function(resolve) {
-    //
-    //   const validResults = results.filter(Boolean);
-    //
-    //   if (results.length === validResults.length) {
-    //     resolve(results);
-    //   }
-    // });
-  }
-
-  ask(...args) {
-
-    return this.emit(...args);
   }
 
 }();

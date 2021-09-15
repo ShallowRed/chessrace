@@ -111,7 +111,7 @@ const LevelRow = {
   },
 
   getPieceName(row, index) {
-    
+
     return this.pieces[row[index] - 2];
   }
 }
@@ -147,5 +147,13 @@ const LevelSquare = {
 
     return this.square.isHole(square) ||
       this.square.isEnnemy(square)
+  },
+
+  getIfHole(square) {
+
+    if (square && this.square.isHole(square)) {
+
+      return square;
+    }
   }
 }

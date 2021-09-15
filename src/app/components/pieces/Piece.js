@@ -10,7 +10,7 @@ export default class Piece extends GameObject {
       inContainer: true
     })
 
-    Object.assign(this, props);
+    Object.assign(this, { className, ...props});
 
     this.setSpriteSize();
 

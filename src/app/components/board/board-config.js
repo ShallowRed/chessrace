@@ -1,6 +1,6 @@
 import GameObject from 'app/components/Game-object';
 
-export const canvas = {
+export const canvasConfig = {
 
   frontFaces: {
 

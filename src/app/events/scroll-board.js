@@ -42,7 +42,8 @@ export function TRANSLATE_PIECES({ rows } = {}) {
 
   const duration = rows && this.durations.translation;
 
-  events.emit("SET_EACH_PIECE", piece =>
+  this.forEachPiece(piece => {
+
     piece.container.translateY({ rows, duration })
-  );
+  });
 }

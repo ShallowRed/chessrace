@@ -68,7 +68,9 @@ export default {
     events.emit("TRANSLATE_PIECES");
 
     this.board.clear();
+
     this.model.reset();
+
     this.ennemies.empty();
 
     this.player.init(this.playerStart);
@@ -86,8 +88,14 @@ export default {
 
     this.ennemies.setEachPosition();
 
-    events.emit("SET_EACH_PIECE", piece =>
-      piece.sprite.setSize()
-    );
+    this.forEachPiece(piece => {
+      
+      piece.setSpriteSize();
+    });
+  },
+
+  forEachPiece(callback) {
+
+    [this.player, ...this.ennemies.collection].forEach(callback);
   }
 }

@@ -29,15 +29,13 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
     getSquaresOnTrajectory(this.player.position, targetSquare)
     .find(this.model.square.isObstacle);
 
-  const getHole = square =>
-    this.model.square.isHole(square) && square
-
-  const hole = firstObstacle && getHole(firstObstacle) ||
-    getHole(targetSquare);
+  const hole =
+    this.model.square.getIfHole(firstObstacle) ||
+    this.model.square.getIfHole(targetSquare);
 
   if (hole) {
 
-    events.emit("PLAYER_MOVE_IN_HOLE", hole);
+    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", hole);
   }
 
   return !firstObstacle && !hole;

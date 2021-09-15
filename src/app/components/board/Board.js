@@ -4,11 +4,11 @@ import GameObject from 'app/components/Game-object';
 
 import CanvasCollection from 'app/models/canvas-collection';
 
-import * as config from 'app/components/Board/board-config';
+import { canvasConfig, colors } from 'app/components/Board/board-config';
 
-import * as BoardSquare from 'app/components/Board/Board-square';
+import Square from 'app/components/Board/Square';
 import * as RenderSquares from 'app/components/Board/render-squares';
-import * as FinishLine from 'app/components/Board/render-finishing-line';
+import * as RenderFinishLine from 'app/components/Board/render-finishing-line';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
 // import { test } from "app/utils/test";
@@ -19,21 +19,19 @@ export default class Board {
 
   constructor(columns, rows) {
 
-    Object.assign(this, { columns, rows });
+    Object.assign(
+      this, { columns, rows, colors },
+      new CanvasCollection(canvasConfig)
+    );
 
     bindObjectsMethods.call(this, {
+      square: Square,
       squares: RenderSquares,
-      square: BoardSquare,
-      finishLine: FinishLine,
+      finishLine: RenderFinishLine,
     });
 
-    this.colors = config.colors;
-
-    Object.assign(this, new CanvasCollection(config.canvas));
-
-    // this.createParts(config.canvas);
-
     this.canvas.frontFaces.onClick(evt => {
+
       events.emit("SQUARE_CLICKED", this.square.get.clicked(evt));
     });
   }
