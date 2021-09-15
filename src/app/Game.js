@@ -74,8 +74,6 @@ export default {
     this.ennemies.empty();
 
     this.player.init(this.playerStart);
-
-    this.render();
   },
 
   resize() {
@@ -89,7 +87,7 @@ export default {
     this.ennemies.setEachPosition();
 
     this.forEachPiece(piece => {
-      
+
       piece.setSpriteSize();
     });
   },

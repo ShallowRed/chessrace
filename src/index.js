@@ -1,4 +1,5 @@
 import 'styles/global.css';
+// import 'styles/neo.css';
 import 'styles/alpha.css';
 
 import 'app/utils/animation-polyfill';
@@ -15,7 +16,7 @@ const levelConfig = {
   visibleRows: 12,
 
   playerStart: {
-    position: [4, 0],
+    position: [3, 0],
     pieceName: "queen"
   },
 
