@@ -6,7 +6,7 @@ export const canvasConfig = {
 
     zIndex: 50,
 
-    dimensions: ({ playArea, size }) => ({
+    getDimensions: ({ playArea, size }) => ({
       width: playArea.width,
       height: playArea.height + size
     }),
@@ -22,7 +22,7 @@ export const canvasConfig = {
     zIndex: 10,
     isColored: false,
 
-    dimensions: ({ playArea, size, shadowOffset, depth }) => ({
+    getDimensions: ({ playArea, size, shadowOffset, depth }) => ({
       width: playArea.width,
       height: playArea.height + size + depth + shadowOffset,
       left: depth + shadowOffset
@@ -32,17 +32,14 @@ export const canvasConfig = {
       type: "frontFace",
       get: ({ left, top, width, height, depth, shadowOffset }) =>
         ({ left, top: top + depth + shadowOffset, width, height })
-    },
-
-    getShapeProps: ({ left, top, width, height, depth, shadowOffset }) =>
-      ({ left, top: top + depth + shadowOffset, width, height })
+    }
   },
 
   bottomFaces: {
 
     zIndex: 20,
 
-    dimensions: ({ playArea, size, depth }) => ({
+    getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width + depth,
       height: playArea.height + size + depth,
     }),
@@ -64,7 +61,7 @@ export const canvasConfig = {
 
     zIndex: 30,
 
-    dimensions: ({ playArea, size, depth }) => ({
+    getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width - size + depth,
       height: playArea.height + size + depth,
       left: size,
@@ -86,7 +83,7 @@ export const canvasConfig = {
     zIndex: 50,
     inContainer: false,
 
-    dimensions: ({ playArea, size, depth }) => ({
+    getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width + depth,
       height: depth,
       bottom: size,

@@ -20,11 +20,6 @@ export default class Canvas extends GameObject {
     this.draw = draw[this.shape.type](this.ctx);
   }
 
-  getDimensions() {
-
-    return this.dimensions(GameObject);
-  }
-
   getShape = ({
     left = 0,
     top = 0,

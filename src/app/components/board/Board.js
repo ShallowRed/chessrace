@@ -40,7 +40,7 @@ export default class Board {
 
     for (const canvas of this.canvas.collection) {
 
-      const { left, ...dimensions } = canvas.getDimensions();
+      const { left, ...dimensions } = canvas.getDimensions(GameObject);
 
       canvas.setStyle(dimensions);
 
