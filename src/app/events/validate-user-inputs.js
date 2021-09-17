@@ -1,6 +1,4 @@
 import events from 'app/models/events';
-import GameObject from 'app/components/Game-object';
-
 
 export function SQUARE_CLICKED(square) {
 

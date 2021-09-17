@@ -1,19 +1,19 @@
-import GameObject from 'app/components/Game-object';
+import PlayArea from 'app/models/play-area';
 
 const { floor } = Math;
 
 export default {
-  
+
   get: {
 
     left(col) {
 
-      return col * GameObject.size;
+      return col * PlayArea.size;
     },
 
     top(row) {
 
-      return (this.rows - row + this.nRenders - 1) * GameObject.size;
+      return (this.rows - row + this.nRenders - 1) * PlayArea.size;
     },
 
     coordsInCanvas([col, row]) {
@@ -32,7 +32,7 @@ export default {
       const boardSquare = [
         clientX - left,
         -(clientY - bottom)
-      ].map(coord => floor(coord / GameObject.size));
+      ].map(coord => floor(coord / PlayArea.size));
 
       return [
         boardSquare[0],

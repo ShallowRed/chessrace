@@ -1,4 +1,4 @@
-import GameObject from 'app/components/Game-object';
+import PlayArea from 'app/models/play-area';
 
 export const canvasConfig = {
 
@@ -6,15 +6,15 @@ export const canvasConfig = {
 
     zIndex: 40,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width,
-      height: playArea.height + size,
-      left: depth * 3
+    getDimensions: ({ width, height, size, offset }) => ({
+      width: width,
+      height: height + size,
+      left: offset.left
     }),
 
     shape: {
       type: "frontFace",
-      get: props => props
+      getProps: props => props
     }
   },
 
@@ -23,16 +23,16 @@ export const canvasConfig = {
     zIndex: 10,
     isColored: false,
 
-    getDimensions: ({ playArea, size, shadowOffset, depth }) => ({
-      width: playArea.width,
-      height: playArea.height + size + depth + shadowOffset,
-      left: depth * 4 + shadowOffset
+    getDimensions: ({ width, height, size, offset }) => ({
+      width: width,
+      height: height + size + offset.thickness + offset.depth,
+      left: offset.left + offset.thickness + offset.depth
     }),
 
     shape: {
       type: "frontFace",
-      get: ({ left, top, width, height, depth, shadowOffset }) =>
-        ({ left, top: top + depth + shadowOffset, width, height })
+      getProps: ({ top, depth, thickness, ...props }) =>
+        ({ top: top + thickness + depth, ...props })
     }
   },
 
@@ -40,16 +40,16 @@ export const canvasConfig = {
 
     zIndex: 20,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width + depth,
-      height: playArea.height + size + depth,
-      left: depth * 3
+    getDimensions: ({ width, height, size, offset }) => ({
+      width: width + offset.thickness,
+      height: height + size + offset.thickness,
+      left: offset.left
     }),
 
     shape: {
       type: "bottomFace",
-      get: ({ top, left, height, width, depth }) =>
-        ({ left, top: top + height, width, depth })
+      getProps: ({ top, height, ...props }) =>
+        ({ top: top + height, ...props })
     },
 
     filter: function(squares) {
@@ -63,16 +63,16 @@ export const canvasConfig = {
 
     zIndex: 30,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width - size + depth,
-      height: playArea.height + size + depth,
-      left: size + depth * 3,
+    getDimensions: ({ width, height, size, offset }) => ({
+      width: width - size + offset.thickness,
+      height: height + size + offset.thickness,
+      left: size + offset.left,
     }),
 
     shape: {
       type: "rightFace",
-      get: ({ left, top, width, height, depth }) =>
-        ({ left: left + width - GameObject.size, top, height, depth }),
+      getProps: ({ left, width, ...props }) =>
+        ({ left: left + width - PlayArea.size, ...props }),
     },
 
     filter: function(squares) {
@@ -85,17 +85,17 @@ export const canvasConfig = {
     zIndex: 50,
     inContainer: false,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width + depth,
-      height: depth,
-      bottom: size,
-      left: depth * 3,
+    getDimensions: ({ width, size, offset }) => ({
+      width: width + offset.thickness,
+      height: offset.thickness,
+      bottom: size - offset.thickness,
+      left: offset.left,
     }),
 
     shape: {
       type: "bottomFace",
-      get: ({ left, width, depth }) =>
-        ({ left, top: 0, width, depth }),
+      getProps: ({ top, ...props }) =>
+        ({ top: 0, ...props })
     },
 
     filter: function(squares) {
@@ -110,9 +110,9 @@ export const canvasConfig = {
     isColored: false,
     dynamic: false,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width + depth * 7,
-      height: size + depth * 3
+    getDimensions: ({ width, size, offset , input }) => ({
+      width: input.width + input.thickness.full,
+      height: offset.top + input.thickness.full - input.thickness.height
     }),
   },
 
@@ -123,9 +123,9 @@ export const canvasConfig = {
     isColored: false,
     dynamic: false,
 
-    getDimensions: ({ playArea, size, depth }) => ({
-      width: playArea.width + depth * 7,
-      height: size + depth * 3
+    getDimensions: ({ width, size, offset, input }) => ({
+      width: input.width + input.thickness.full,
+      height: offset.top + input.thickness.full - input.thickness.height
     })
   }
 };

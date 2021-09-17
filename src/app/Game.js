@@ -6,6 +6,7 @@ import GameObject from 'app/components/Game-object';
 import EnnemiesCollection from 'app/models/ennemies-collection';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
+import PlayArea from 'app/models/play-area';
 
 import { getBoundMethods } from 'app/utils/bind-methods';
 
@@ -38,9 +39,12 @@ export default {
 
   setDimensions() {
 
-    GameObject.setDimensions(this.columns, this.visibleRows);
+    PlayArea.setDimensions(this.columns, this.visibleRows);
 
     this.board.setDimensions();
+
+    console.log(this.board);
+        this.board.dotest();
   },
 
   render() {

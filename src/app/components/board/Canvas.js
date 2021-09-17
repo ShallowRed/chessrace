@@ -1,4 +1,6 @@
 import GameObject from 'app/components/Game-object';
+import PlayArea from 'app/models/play-area';
+
 import { draw } from "app/utils/draw-shapes";
 
 export default class Canvas extends GameObject {
@@ -23,13 +25,13 @@ export default class Canvas extends GameObject {
   getShape = ({
     left = 0,
     top = 0,
-    width = GameObject.size,
-    height = GameObject.size,
-    depth = GameObject.depth,
-    shadowOffset = GameObject.shadowOffset
+    width = PlayArea.size,
+    height = PlayArea.size,
+    thickness = PlayArea.offset.thickness,
+    depth = PlayArea.offset.depth
   }) => {
 
-    return this.shape.get({ left, top, width, height, depth, shadowOffset })
+    return this.shape.getProps({ left, top, width, height, thickness, depth })
   }
 
   clear() {

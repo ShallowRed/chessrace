@@ -1,10 +1,20 @@
-import GameObject from 'app/components/Game-object';
+import PlayArea from 'app/models/play-area';
 
 import { draw } from "app/utils/draw-shapes";
 
 export function render() {
 
-  const { playArea, depth, shadowOffset, size } = GameObject;
+  const {
+    width,
+    height,
+    size,
+    input,
+    offset: {
+      left,
+      top,
+      thickness
+    }
+  } = PlayArea;
 
   const ctx = {
     top: this.ctx.inputTop,
@@ -19,66 +29,75 @@ export function render() {
     xxDark: "#29292b"
   }
 
+  // Block front face
   ctx.top.fillStyle = color.light;
   draw.frontFace(ctx.top)({
     left: 0,
     top: 0,
-    width: playArea.width + depth * 4,
-    height: size - depth
+    width: input.width,
+    height: input.height
+    // height: top - input.thickness.height
   });
 
+  // front face in hole
   ctx.down.fillStyle = color.xDark;
   draw.frontFace(ctx.down)({
-    left: depth * 4,
-    top: size,
-    width: playArea.width + depth * 4,
-    height: depth
+    left: left + thickness,
+    top: input.height + input.thickness.height,
+    width: width,
+    height: thickness
   });
 
+  // Block right face
   ctx.top.fillStyle = color.medium;
   draw.rightFace(ctx.top)({
-    left: playArea.width + depth * 4,
-    top: -depth * 5,
-    height: size + depth * 4,
-    depth: depth * 3
+    left: input.width,
+    top: 0,
+    height: input.height,
+    thickness: input.thickness.full
   });
 
+  // Right face in hole
   ctx.down.fillStyle = color.xxDark;
   draw.rightFace(ctx.down)({
-    left: depth * 3,
-    top: size - depth,
-    height: depth,
-    depth: depth
+    left: left,
+    top: input.height + input.thickness.height - thickness,
+    height: thickness,
+    thickness: thickness
   });
 
+  // Top large bottom face
   ctx.top.fillStyle = color.dark;
   draw.bottomFace(ctx.top)({
-    left: 0,
-    top: size - depth,
-    width: playArea.width + depth * 4,
-    depth: depth
+    left: input.thickness.width,
+    top: input.height,
+    width: width,
+    thickness: input.thickness.height
   });
 
+  // Bottom large bottom face
   ctx.down.fillStyle = color.dark;
   draw.bottomFace(ctx.down)({
-    left: depth * 2,
-    top: size + depth,
-    width: playArea.width + depth * 2,
-    depth: depth
+    left: left + thickness,
+    top: input.height + thickness + input.thickness.height,
+    width: width,
+    thickness: input.thickness.height
   });
 
+  // Left bottom face
   draw.bottomFace(ctx.down)({
-    left: depth,
-    top: size ,
-    width: depth * 2,
-    depth: depth
+    left: 0,
+    top: input.height,
+    width: input.thickness.width,
+    thickness: input.thickness.full
   });
 
+  // Right bottom face
   draw.bottomFace(ctx.top)({
-    left: playArea.width + depth * 3,
-    top: size ,
-    width: depth * 2,
-    depth: depth * 2
+    left: width + input.thickness.width,
+    top: input.height,
+    width: input.thickness.width,
+    thickness: input.thickness.full
   });
 
 }

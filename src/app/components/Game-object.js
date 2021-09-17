@@ -1,34 +1,10 @@
-import { setStyle } from "app/utils/set-style";
+import PlayArea from 'app/models/play-area';
 
-const { min, round } = Math;
+import { setStyle } from "app/utils/set-style";
 
 export default class GameObject {
 
   static container = document.querySelector("main");
-
-  static setDimensions(columns, rows) {
-
-    this.size = min(
-      round(window.innerWidth / (columns + 1)),
-      round(window.innerHeight / (rows + 2))
-    );
-
-    this.depth = round(this.size / 6);
-
-    this.shadowOffset = round(this.size / 3);
-
-    this.playArea = {
-      width: columns * this.size,
-      height: rows * this.size,
-    }
-  }
-
-  translateY = ({ rows = 0, duration = 0 } = {}) => {
-
-    this.domEl.style.transitionDuration = `${duration}s`;
-
-    this.domEl.style.transform = `translateY(${rows * GameObject.size}px)`;
-  }
 
   constructor({ domEl, className, inContainer },
     parent = GameObject.container
@@ -47,10 +23,7 @@ export default class GameObject {
       this.domEl = this[key] = domElement;
     }
 
-    if (className) {
-
-      this.domEl.className = className;
-    }
+    this.domEl.className = className;
 
     if (inContainer) {
 
@@ -63,6 +36,13 @@ export default class GameObject {
     }
 
     parent.append(this.domEl);
+  }
+
+  translateY = ({ rows = 0, duration = 0 } = {}) => {
+
+    this.domEl.style.transitionDuration = `${duration}s`;
+
+    this.domEl.style.transform = `translateY(${rows * PlayArea.size}px)`;
   }
 
   setStyle = config => {
