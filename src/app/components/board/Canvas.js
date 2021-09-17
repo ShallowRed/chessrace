@@ -17,7 +17,7 @@ export default class Canvas extends GameObject {
 
     this.ctx = this.canvas.getContext('2d');
 
-    this.draw = draw[this.shape.type](this.ctx);
+    this.draw = draw[this?.shape?.type]?.(this.ctx);
   }
 
   getShape = ({

@@ -4,11 +4,12 @@ export const canvasConfig = {
 
   frontFaces: {
 
-    zIndex: 50,
+    zIndex: 40,
 
-    getDimensions: ({ playArea, size }) => ({
+    getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width,
-      height: playArea.height + size
+      height: playArea.height + size,
+      left: depth * 3
     }),
 
     shape: {
@@ -25,7 +26,7 @@ export const canvasConfig = {
     getDimensions: ({ playArea, size, shadowOffset, depth }) => ({
       width: playArea.width,
       height: playArea.height + size + depth + shadowOffset,
-      left: depth + shadowOffset
+      left: depth * 4 + shadowOffset
     }),
 
     shape: {
@@ -42,6 +43,7 @@ export const canvasConfig = {
     getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width + depth,
       height: playArea.height + size + depth,
+      left: depth * 3
     }),
 
     shape: {
@@ -64,7 +66,7 @@ export const canvasConfig = {
     getDimensions: ({ playArea, size, depth }) => ({
       width: playArea.width - size + depth,
       height: playArea.height + size + depth,
-      left: size,
+      left: size + depth * 3,
     }),
 
     shape: {
@@ -87,6 +89,7 @@ export const canvasConfig = {
       width: playArea.width + depth,
       height: depth,
       bottom: size,
+      left: depth * 3,
     }),
 
     shape: {
@@ -98,6 +101,32 @@ export const canvasConfig = {
     filter: function(squares) {
       return squares.filter(this.square.is.inBottomRow);
     }
+  },
+
+  inputTop: {
+
+    zIndex: 100,
+    inContainer: false,
+    isColored: false,
+    dynamic: false,
+
+    getDimensions: ({ playArea, size, depth }) => ({
+      width: playArea.width + depth * 7,
+      height: size + depth * 3
+    }),
+  },
+
+  inputBottom: {
+
+    zIndex: 15,
+    inContainer: false,
+    isColored: false,
+    dynamic: false,
+
+    getDimensions: ({ playArea, size, depth }) => ({
+      width: playArea.width + depth * 7,
+      height: size + depth * 3
+    })
   }
 };
 

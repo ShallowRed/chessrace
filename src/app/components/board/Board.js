@@ -9,7 +9,9 @@ import { canvasConfig, colors } from 'app/components/Board/board-config';
 import Square from 'app/components/Board/Square';
 import * as RenderSquares from 'app/components/Board/render-squares';
 import * as RenderFinishLine from 'app/components/Board/render-finishing-line';
+import * as RenderInput from 'app/components/Board/render-input';
 
+import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
 // import { test } from "app/utils/test";
 
@@ -28,6 +30,7 @@ export default class Board {
       square: Square,
       squares: RenderSquares,
       finishLine: RenderFinishLine,
+      input: RenderInput,
     });
 
     this.canvas.frontFaces.onClick(evt => {
@@ -38,20 +41,34 @@ export default class Board {
 
   setDimensions() {
 
-    for (const canvas of this.canvas.collection) {
+    const { playArea, depth, shadowOffset, size } = GameObject;
 
+    setStyle(GameObject.container, {
+      width: playArea.width + depth * 7,
+      // width: playArea.width + depth + shadowOffset,
+      height: playArea.height + depth + size * 2,
+    });
+
+    for (const canvas of this.canvas.collection) {
       const { left, ...dimensions } = canvas.getDimensions(GameObject);
 
-      canvas.setStyle(dimensions);
+      canvas.setStyle({
+        ...dimensions,
+        left: !canvas.container && left || 0
+      });
 
       canvas.container?.setStyle({
         left,
         width: canvas.width,
+        top: GameObject.size,
         height: canvas.height - GameObject.size
       });
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
+    // this.ctx.shadows.filter = "blur(2px)";
+
+    this.input.render();
   }
 
   render(model, { resize = false } = {}) {
@@ -71,8 +88,8 @@ export default class Board {
 
   clear() {
 
-    for (const canvas of this.canvas.collection) {
-
+    for (const canvas of this.canvas.dynamicCollection) {
+      console.log(canvas);
       canvas.clear();
     }
   }

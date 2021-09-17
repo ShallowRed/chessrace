@@ -12,7 +12,7 @@ import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 const levelConfig = {
 
   columns: 8,
-  rows: 8,
+  rows: 18,
   visibleRows: 12,
 
   playerStart: {

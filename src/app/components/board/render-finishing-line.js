@@ -10,7 +10,7 @@ export function render(row) {
     height: GameObject.size
   }
 
-  for (const canvas of this.canvas.dynamicCollection) {
+  for (const canvas of this.canvas.movableCollection) {
 
     canvas.ctx.fillStyle = this.colors.finishLine[canvas.shape.type];
 

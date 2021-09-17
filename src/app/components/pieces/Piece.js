@@ -53,7 +53,7 @@ export default class Piece extends GameObject {
     const [x, y] = this.position;
 
     return {
-      left: x * GameObject.size,
+      left: x * GameObject.size + GameObject.depth * 3,
       bottom: (y + 1) * GameObject.size + GameObject.depth
     }
   }

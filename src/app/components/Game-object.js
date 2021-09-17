@@ -21,11 +21,6 @@ export default class GameObject {
       width: columns * this.size,
       height: rows * this.size,
     }
-
-    setStyle(this.container, {
-      width: this.playArea.width + this.depth + this.shadowOffset,
-      height: this.playArea.height + this.depth + this.size,
-    });
   }
 
   translateY = ({ rows = 0, duration = 0 } = {}) => {

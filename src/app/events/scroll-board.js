@@ -32,7 +32,7 @@ export function TRANSLATE_BOARD({ rows } = {}) {
 
   const duration = rows && this.durations.translation;
 
-  for (const canvas of this.board.canvas.dynamicCollection) {
+  for (const canvas of this.board.canvas.movableCollection) {
 
     canvas.translateY({ rows, duration });
   }

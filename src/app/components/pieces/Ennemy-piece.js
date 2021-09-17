@@ -5,9 +5,11 @@ export default class EnnemyPiece extends Piece {
 
   constructor(props) {
 
-    super({ ...props, className: "ennemy" });
+    super({ ...props, className: "ennemy", zIndex: 80 });
 
     this.setAbsolutePosition();
+
+    this.setZIndex();
 
     this.onClick(() =>
       events.emit("ENNEMY_CLICKED", this)

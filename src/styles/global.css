@@ -1,7 +1,14 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+}
+
 main {
-  top: 50%;
+  /* top: 50%; */
   left: 50%;
-  transform: translate(-49%, -50%);
+  transform: translateX(-49%);
+  /* transform: translate(-49%, -50%); */
 }
 
 main,
