@@ -4,17 +4,7 @@ import { draw } from "app/utils/draw-shapes";
 
 export function render() {
 
-  const {
-    width,
-    height,
-    size,
-    input,
-    offset: {
-      left,
-      top,
-      thickness
-    }
-  } = PlayArea;
+  const { width, input, offset: { left, thickness } } = PlayArea;
 
   const ctx = {
     top: this.ctx.inputTop,
@@ -69,18 +59,18 @@ export function render() {
   // Top large bottom face
   ctx.top.fillStyle = color.dark;
   draw.bottomFace(ctx.top)({
-    left: input.thickness.width,
+    left: input.thickness.width - 1,
     top: input.height,
-    width: width,
+    width: width + 2,
     thickness: input.thickness.height
   });
 
   // Bottom large bottom face
   ctx.down.fillStyle = color.dark;
   draw.bottomFace(ctx.down)({
-    left: left + thickness,
+    left: left + thickness - 1,
     top: input.height + thickness + input.thickness.height,
-    width: width,
+    width: width + 2,
     thickness: input.thickness.height
   });
 

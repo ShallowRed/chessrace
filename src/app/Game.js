@@ -2,7 +2,6 @@ import events from 'app/models/events';
 import GameEvents from 'app/events/';
 import LevelModel from 'app/models/level';
 
-import GameObject from 'app/components/Game-object';
 import EnnemiesCollection from 'app/models/ennemies-collection';
 import Board from 'app/components/board/Board';
 import Player from 'app/components/pieces/Player-piece';
@@ -43,8 +42,7 @@ export default {
 
     this.board.setDimensions();
 
-    console.log(this.board);
-        this.board.dotest();
+    // this.board.dotest();
   },
 
   render() {

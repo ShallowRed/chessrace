@@ -16,6 +16,8 @@ import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
 // import { test } from "app/utils/test";
 
+const { round } = Math;
+
 export default class Board {
 
   nRenders = 0;
@@ -44,12 +46,14 @@ export default class Board {
 
   setDimensions() {
 
-    const { width, height, offset, size, input } = PlayArea;
+    const { width, height, offset, size } = PlayArea;
+
+    const totalWidth = width + offset.thickness + offset.left * 2;
 
     setStyle(GameObject.container, {
       top: 5,
-      left: Math.round((window.innerWidth - width) / 2.7),
-      width: width + offset.thickness + offset.left * 2,
+      left: round((window.innerWidth - totalWidth) / 2),
+      width: totalWidth,
       height: height + size + offset.top,
     });
 

@@ -95,7 +95,7 @@ export const canvasConfig = {
     shape: {
       type: "bottomFace",
       getProps: ({ top, ...props }) =>
-        ({ top: 0, ...props })
+        ({ top: top * 0, ...props })
     },
 
     filter: function(squares) {
@@ -110,7 +110,7 @@ export const canvasConfig = {
     isColored: false,
     dynamic: false,
 
-    getDimensions: ({ width, size, offset , input }) => ({
+    getDimensions: ({ offset , input }) => ({
       width: input.width + input.thickness.full,
       height: offset.top + input.thickness.full - input.thickness.height
     }),
@@ -123,7 +123,7 @@ export const canvasConfig = {
     isColored: false,
     dynamic: false,
 
-    getDimensions: ({ width, size, offset, input }) => ({
+    getDimensions: ({ offset, input }) => ({
       width: input.width + input.thickness.full,
       height: offset.top + input.thickness.full - input.thickness.height
     })
