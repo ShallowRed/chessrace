@@ -128,32 +128,32 @@ const LevelSquare = {
     this.values[row][col] = value;
   },
 
-  removeEnnemy(squareCoords) {
+  removeEnnemy(squareCoordss) {
 
-    this.square.set(squareCoords, 1)
+    this.square.set(squareCoordss, 1)
   },
 
-  isHole(squareCoord) {
+  isHole(squareCoords) {
 
-    return this.square.get(squareCoord) === 0;
+    return this.square.get(squareCoords) === 0;
   },
 
-  isEnnemy(squareCoord) {
+  isEnnemy(squareCoords) {
 
-    return this.square.get(squareCoord) > 1;
+    return this.square.get(squareCoords) > 1;
   },
 
-  isObstacle(square) {
+  isObstacle(squareCoords) {
 
-    return this.square.isHole(square) ||
-      this.square.isEnnemy(square)
+    return this.square.isHole(squareCoords) ||
+      this.square.isEnnemy(squareCoords)
   },
 
-  getIfHole(square) {
+  getIfHole(squareCoords) {
 
-    if (square && this.square.isHole(square)) {
+    if (squareCoords && this.square.isHole(squareCoords)) {
 
-      return square;
+      return squareCoords;
     }
   }
 }

@@ -1,5 +1,5 @@
 import events from 'app/models/events';
-import { animationTimeout } from 'app/utils/animation-timeout';
+// import { animationTimeout } from 'app/utils/animation-timeout';
 
 export function SCROLL_ONE_SQUARE_DOWN() {
 
@@ -8,10 +8,7 @@ export function SCROLL_ONE_SQUARE_DOWN() {
   events.emit("TRANSLATE_BOARD", { rows: 1 });
   events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
-  animationTimeout(() =>
-    events.emit("NEXT_SCROLL_STEP"),
-    this.durations.translation
-  );
+  events.timeout("NEXT_SCROLL_STEP", this.durations.translation);
 }
 
 export function NEXT_SCROLL_STEP() {

@@ -1,11 +1,11 @@
-export default new class Events {
+import { animationTimeout } from 'app/utils/animation-timeout';
 
+export default new class Events {
 
   constructor() {
 
     this.listeners = {};
   }
-
 
   listen = (message, listener) => {
 
@@ -17,12 +17,11 @@ export default new class Events {
     this.listeners[message].push(listener);
   }
 
-
   emit(message, ...args) {
 
     const messages = this.listeners[message];
 
-    if (messages && messages.length) {
+    if (messages?.length) {
 
       messages.forEach(listener => {
 
@@ -35,7 +34,7 @@ export default new class Events {
 
     const messages = this.listeners[message];
 
-    if (messages && messages.length) {
+    if (messages?.length) {
 
       return messages.map(listener => listener(...args));
     }
@@ -48,6 +47,19 @@ export default new class Events {
     const validResults = results.filter(Boolean);
 
     return results.length === validResults.length;
+  }
+
+  timeout(message, args, delay) {
+
+    if (!delay) {
+      
+      delay = args
+    }
+
+    animationTimeout(() =>
+      this.emit(message, args),
+      delay
+    );
   }
 
 }();

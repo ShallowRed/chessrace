@@ -5,12 +5,11 @@ import PlayArea from 'app/models/play-area';
 
 import CanvasCollection from 'app/models/canvas-collection';
 
-import { canvasConfig, colors } from 'app/components/Board/board-config';
-
 import Square from 'app/components/Board/Square';
 import * as RenderSquares from 'app/components/Board/render-squares';
 import * as RenderFinishLine from 'app/components/Board/render-finishing-line';
 import * as RenderInput from 'app/components/Board/render-input';
+import { canvasConfig, colors } from 'app/components/Board/board-config';
 
 import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
@@ -58,6 +57,7 @@ export default class Board {
     });
 
     for (const canvas of this.canvas.collection) {
+
       const { left, ...dimensions } = canvas.getDimensions(PlayArea);
 
       canvas.setStyle({
@@ -102,6 +102,7 @@ export default class Board {
   }
 
   testinit() {
+
     this.test = new GameObject({
       domEl: document.createElement('div'),
       className: `test`
@@ -122,6 +123,7 @@ export default class Board {
     for (const canvas of [
         this.canvas.inputTop, this.canvas.inputBottom
       ]) {
+
       this.test.translateY({ rows: this.rows });
       canvas.translateY({ rows: this.rows });
     }
@@ -136,6 +138,7 @@ export default class Board {
           this.test.translateY({ rows: 0, duration: 1 });
           canvas.translateY({ rows: 0, duration: 1 })
         })
+        
       }
     }, 1000);
   }

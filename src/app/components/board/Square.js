@@ -29,15 +29,14 @@ export default {
       const { left, bottom } =
       this.canvas.frontFaces.domEl.getBoundingClientRect();
 
-      const boardSquare = [
+      const [x, y] = [
         clientX - left,
         -(clientY - bottom)
-      ].map(coord => floor(coord / PlayArea.size));
+      ].map(coords =>
+        floor(coords / PlayArea.size)
+      );
 
-      return [
-        boardSquare[0],
-        boardSquare[1] + this.nRenders - 1
-      ]
+      return [x, y + this.nRenders - 1];
     }
   },
 
