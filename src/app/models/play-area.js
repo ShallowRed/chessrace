@@ -20,7 +20,7 @@ export default {
     this.offset.thickness = round(this.size / 6);
 
     this.input = {
-      height: round(this.size / 1.5),
+      height: round(this.size / 5),
       thickness: {
         width: round(this.size / 5),
         height: round(this.size / 8)

@@ -24,17 +24,19 @@ export default {
       };
     },
 
-    clicked({ clientX, clientY }) {
+    clicked({ target, clientX, clientY }) {
 
-      const { left, bottom } =
-      this.canvas.frontFaces.domEl.getBoundingClientRect();
+      const { left, bottom } = target.getBoundingClientRect();
 
-      const [x, y] = [
+      const clientCoordsInCanvas = [
         clientX - left,
         -(clientY - bottom)
-      ].map(coords =>
-        floor(coords / PlayArea.size)
-      );
+      ];
+
+      const getSquareCoords = coords =>
+        floor(coords / PlayArea.size);
+
+      const [x, y] = clientCoordsInCanvas.map(getSquareCoords);
 
       return [x, y + this.nRenders - 1];
     }
@@ -43,26 +45,43 @@ export default {
   is: {
 
     light([col, row]) {
+
+      // console.log(this.columns);
+      // console.log(this.rows);
+
       return (col + row) % 2
     },
 
     dark([col, row]) {
+
       return (col + row + 1) % 2
     },
 
+    inBoard([col, row]) {
+
+      return col >= 0 &&
+        row >= 0 &&
+        col < this.columns &&
+        row <= this.rows;
+    },
+
     inBottomRow(coords) {
+
       return coords[1] === this.nRenders - 1;
     },
 
     notInBottomRow(coords) {
+
       return coords[1] !== this.nRenders - 1;
     },
 
     leftToHole([col, row]) {
+
       return !this.squares.includes([col + 1, row]);
     },
 
     belowHole([col, row]) {
+
       return !this.squares.includes([col, row - 1]);
     }
   }

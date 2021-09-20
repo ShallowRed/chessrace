@@ -3,23 +3,15 @@ import events from 'app/models/events';
 import { isValidMove, isValidTake, isLongRange } from 'app/models/pieces';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
-export function IS_VALID_MOVE(square) {
+export function IS_VALID_MOVE(targetSquare) {
 
-  const isInBoard = ([col, row]) =>
-    col >= 0 &&
-    row >= 0 &&
-    col < this.columns &&
-    row <= this.rows;
-
-  if (
-    isValidMove(this.player, square) &&
-    isInBoard(square)
-  ) return true;
+  return isValidMove(this.player, targetSquare) &&
+    this.board.square.is.inBoard(targetSquare);
 }
 
-export function IS_VALID_TAKE(square) {
+export function IS_VALID_TAKE(ennemyPosition) {
 
-  return isValidTake(this.player, square);
+  return isValidTake(this.player, ennemyPosition);
 }
 
 export function IS_VALID_TRAJECTORY(targetSquare) {

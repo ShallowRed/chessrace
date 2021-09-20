@@ -12,6 +12,7 @@ export function GAME_OVER() {
   this.on = false;
 
   this.reset();
+
   this.render();
 
   setTimeout(() =>
@@ -25,6 +26,7 @@ export function GAME_WON() {
   this.on = false;
 
   this.reset();
+  
   this.render();
 
   setTimeout(() =>

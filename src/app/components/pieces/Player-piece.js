@@ -1,5 +1,7 @@
 import Piece from 'app/components/pieces/Piece';
 
+import { animationTimeout } from 'app/utils/animation-timeout';
+
 export default class Player extends Piece {
 
   constructor(props) {
@@ -25,5 +27,11 @@ export default class Player extends Piece {
     this.sprite.style.transitionDuration = `${duration}s`;
 
     this.sprite.style.transform = `translate(${left}px, -${bottom}px)`;
+
+    this.isMoving = true;
+
+    animationTimeout(() => {
+      this.isMoving = false;
+    }, duration)
   }
 }

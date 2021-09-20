@@ -38,8 +38,9 @@ export default class LevelModel {
 
     this.newEnnemyPieces = [];
 
-    for (let rowIndex = this.lastRowRendered + 1; this.row.isVisible(
-      rowIndex); rowIndex++) {
+    let rowIndex = this.lastRowRendered + 1;
+
+    for (rowIndex; this.row.isVisible(rowIndex); rowIndex++) {
 
       const parsedRow = this.row.parse(rowIndex);
 
@@ -54,7 +55,7 @@ export default class LevelModel {
 
     if (this.lastRowRendered > this.visibleRows + 1) {
 
-      this.deepRegularSquares.splice(0, 1);
+      this.deepRegularSquares.shift();
     }
 
     this.regularSquares = this.deepRegularSquares.flat();
@@ -77,7 +78,7 @@ const LevelRow = {
 
       regularSquares: filterMap(row, {
         filter: this.row.isNotHole,
-        map: this.row.getSquareCoord(rowIndex)
+        map: this.row.getSquareCoords(rowIndex)
       }),
 
       pieces: filterMap(row, {
@@ -97,7 +98,7 @@ const LevelRow = {
     return value > 1;
   },
 
-  getSquareCoord(rowIndex) {
+  getSquareCoords(rowIndex) {
 
     return ({ index }) => [index, rowIndex];
   },
