@@ -46,9 +46,6 @@ export default {
 
     light([col, row]) {
 
-      // console.log(this.columns);
-      // console.log(this.rows);
-
       return (col + row) % 2
     },
 

@@ -17,6 +17,7 @@ export const draw = {
   },
 
   bottomFace: ctx => ({ left, top, width, thickness }) => {
+
     ctx.beginPath();
     ctx.moveTo(left, top);
     ctx.lineTo(left + width, top);

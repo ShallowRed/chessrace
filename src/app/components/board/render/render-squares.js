@@ -33,7 +33,7 @@ export function renderSquaresOfColor(squares, colors) {
   for (const canvas of this.canvas.coloredCollection) {
 
     const coloredSquaresInCanvas =
-      canvas.filter?.bind(this)(squares) || squares;
+      canvas.filter?.call(this, squares) || squares;
 
     canvas.ctx.fillStyle = colors[canvas.shape.type];
 

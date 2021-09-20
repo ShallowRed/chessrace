@@ -35,13 +35,12 @@ canvas {
   left: 0;
 }
 
-canvas {
+/* canvas {
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: -webkit-crisp-edges;
   image-rendering: crisp-edges;
-}
-
+} */
 .board-part>canvas {
   bottom: 0;
 }

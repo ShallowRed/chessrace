@@ -13,7 +13,7 @@ export function test(key, callback, n = 1) {
   const start = Date.now();
 
   for (var i = 0; i < n; i++) {
-    
+
     callback();
   }
 
