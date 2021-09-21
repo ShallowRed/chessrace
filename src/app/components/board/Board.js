@@ -14,7 +14,6 @@ import { canvasConfig, colors } from 'app/components/Board/board-config';
 
 import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
-import { setPixelRatio } from "app/utils/set-pixel-ratio";
 // import { test } from "app/utils/test";
 
 const { round } = Math;
@@ -78,7 +77,6 @@ export default class Board {
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
-
     this.input.render();
   }
 

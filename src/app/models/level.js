@@ -151,10 +151,6 @@ const LevelSquare = {
   },
 
   getIfHole(squareCoords) {
-
-    if (squareCoords && this.square.isHole(squareCoords)) {
-
-      return squareCoords;
-    }
+    if (squareCoords && this.square.isHole(squareCoords)) return squareCoords
   }
 }
