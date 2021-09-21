@@ -3,13 +3,14 @@ import events from 'app/models/events';
 import GameObject from 'app/components/Game-object';
 import PlayArea from 'app/models/play-area';
 
-import CanvasCollection from 'app/models/canvas-collection';
+import CanvasCollections from 'app/models/canvas-collection';
 
 import Square from 'app/components/Board/Square';
 import * as RenderSquares from 'app/components/Board/render/render-squares';
 import *
 as RenderFinishLine from 'app/components/Board/render/render-finishing-line';
 import * as RenderInput from 'app/components/Board/render/render-input';
+
 import { canvasConfig, colors } from 'app/components/Board/board-config';
 
 import { setStyle } from "app/utils/set-style";
@@ -26,7 +27,7 @@ export default class Board {
 
     Object.assign(
       this, { columns, rows, colors },
-      new CanvasCollection(canvasConfig)
+      new CanvasCollections(canvasConfig)
     );
 
     bindObjectsMethods.call(this, {
@@ -77,6 +78,7 @@ export default class Board {
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
+    
     this.input.render();
   }
 

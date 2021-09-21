@@ -119,9 +119,18 @@ const LevelRow = {
 
 const LevelSquare = {
 
+  isInBoard([col, row]) {
+
+    return col >= 0 &&
+      row >= 0 &&
+      col < this.columns &&
+      row <= this.rows &&
+      row <= this.visibleRows;
+  },
+
   get([col, row]) {
 
-    return this.values[row]?.[col];
+    return this.values[row]?. [col];
   },
 
   set([col, row], value) {

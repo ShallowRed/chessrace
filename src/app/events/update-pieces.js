@@ -11,7 +11,7 @@ export function MOVE_PLAYER(position) {
 
   this.player.moveSprite({ duration: this.durations.move });
 
-  if (this.player.position[1] >= this.model.rows) {
+  if (events.ask("IS_PLAYER_ON_FINISHLINE")) {
 
     events.timeout("GAME_WON", this.durations.move * 2);
   }
@@ -35,9 +35,14 @@ export function REMOVE_ENNEMY(ennemy) {
   this.model.square.removeEnnemy(ennemy.position);
 }
 
-export function IS_BELOW_LIMIT(piece) {
+export function IS_BELOW_BOARD(piece) {
 
   return piece.position[1] < this.board.nRenders - 1;
+}
+
+export function IS_PLAYER_ON_FINISHLINE() {
+
+  return this.player.position[1] === this.model.rows
 }
 
 export function PLAYER_FALL_IN_HOLE() {

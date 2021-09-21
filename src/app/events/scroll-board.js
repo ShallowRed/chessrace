@@ -9,10 +9,10 @@ export function SCROLL_ONE_SQUARE_DOWN() {
 
   events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
-  events.timeout("NEXT_SCROLL_STEP", this.durations.scroll);
+  events.timeout("INIT_NEXT_SCROLL_STEP", this.durations.scroll);
 }
 
-export function NEXT_SCROLL_STEP() {
+export function INIT_NEXT_SCROLL_STEP() {
 
   if (!this.on) return;
 
@@ -22,40 +22,37 @@ export function NEXT_SCROLL_STEP() {
 
   this.ennemies.collection.forEach(ennemy => {
 
-    if (events.ask("IS_BELOW_LIMIT", ennemy)) {
+    if (events.ask("IS_BELOW_BOARD", ennemy)) {
 
-      events.emit("ENNEMY_FALL_IN_HOLE", ennemy)
+      events.emit("ENNEMY_FALL_IN_HOLE", ennemy);
     }
   });
 
-  if (events.ask("IS_BELOW_LIMIT", this.player)) {
+  if (events.ask("IS_BELOW_BOARD", this.player)) {
 
     events.emit("PLAYER_FALL_IN_HOLE", this.player);
 
     return;
   }
 
-  window.requestAnimationFrame(() =>
-    events.emit("SCROLL_ONE_SQUARE_DOWN")
-  );
+  window.requestAnimationFrame(() => {
+
+    events.emit("SCROLL_ONE_SQUARE_DOWN");
+  });
 }
 
 export function TRANSLATE_BOARD({ rows } = {}) {
 
-  const duration = rows && this.durations.scroll;
-
   for (const canvas of this.board.canvas.movableCollection) {
 
-    canvas.translateY({ rows, duration });
+    canvas.translateY({ rows, duration: rows && this.durations.scroll });
   }
 }
 
 export function TRANSLATE_PIECES({ rows } = {}) {
 
-  const duration = rows && this.durations.scroll;
+  this.forEachPiece(({ container }) => {
 
-  this.forEachPiece(piece => {
-
-    piece.container.translateY({ rows, duration })
+    container.translateY({ rows, duration: rows && this.durations.scroll });
   });
 }

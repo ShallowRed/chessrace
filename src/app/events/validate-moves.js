@@ -2,12 +2,11 @@ import events from 'app/models/events';
 
 import { isValidMove, isValidTake, isLongRange } from 'app/models/pieces';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
-import { filterMap } from 'app/utils/filter-and-map-array';
 
 export function IS_VALID_MOVE(targetSquare) {
 
   return isValidMove(this.player, targetSquare) &&
-    this.board.square.is.inBoard(targetSquare);
+    this.model.square.isInBoard(targetSquare);
 }
 
 export function IS_VALID_TAKE(ennemyPosition) {
@@ -17,35 +16,26 @@ export function IS_VALID_TAKE(ennemyPosition) {
 
 export function IS_VALID_TRAJECTORY(targetSquare) {
 
-  const squaresOnTrajectory =
-    isLongRange(this.player.pieceName) &&
-    getSquaresOnTrajectory(this.player.position, targetSquare);
+  const squaresOnTrajectory = [];
 
-  const obstacles = squaresOnTrajectory.filter(coords =>
-    this.model.square.isObstacle(coords)
-  )
-  // const obstacles = filterMap(squaresOnTrajectory, {
-  //   filter: ({ value }) => this.model.square.isObstacle(value)
-  //   map: ({ value }) => ({
-  //     coords: value,
-  //     type: this.model.square.isHole(value) ? "hole" : "piece"
-  //   })
-  // });
+  if (isLongRange(this.player.pieceName)) {
 
-  const canGoHere = !obstacles.filter(this.model.square.isPiece).length;
+    squaresOnTrajectory.push(
+      ...getSquaresOnTrajectory(this.player.position, targetSquare)
+    );
 
-  if (!canGoHere) return;
+    const ennemiesBeforeTargetSquare = squaresOnTrajectory
+      .filter(this.model.square.isEnnemy);
 
-  const firstHole = obstacles.filter(this.model.square.isPiece)
-    ?.[0]?.coords ||
-    this.model.square.isHole(targetSquare) && targetSquare;
-
-  if (firstHole) {
-
-    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", firstHole);
-
-    return
+    if (ennemiesBeforeTargetSquare.length) return;
   }
 
-  return true;
+  const holes = [...squaresOnTrajectory, targetSquare]
+    .filter(this.model.square.isHole);
+
+  if (holes.length) {
+
+    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", holes[0]);
+
+  } else return true;
 }

@@ -54,14 +54,6 @@ export default {
       return (col + row + 1) % 2
     },
 
-    inBoard([col, row]) {
-
-      return col >= 0 &&
-        row >= 0 &&
-        col < this.columns &&
-        row <= this.rows;
-    },
-
     inBottomRow(coords) {
 
       return coords[1] === this.nRenders - 1;

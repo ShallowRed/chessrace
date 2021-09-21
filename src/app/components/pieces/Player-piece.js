@@ -28,10 +28,24 @@ export default class Player extends Piece {
 
     this.sprite.style.transform = `translate(${left}px, -${bottom}px)`;
 
-    this.isMoving = true;
+    this.setFlag("isMoving", duration)
+  }
+
+  fall(duration) {
+
+    super.fall(duration);
+
+    this.setFlag("isFalling", duration)
+  }
+
+  setFlag(flag, duration) {
+
+    this[flag] = true;
 
     animationTimeout(() => {
-      this.isMoving = false;
+
+      this[flag] = false;
+
     }, duration)
   }
 }

@@ -1,8 +1,9 @@
 import Canvas from 'app/components/board/Canvas';
 
-export default class CanvasCollection {
+export default class CanvasCollections {
 
   canvas = {};
+
   ctx = {};
 
   constructor(config) {
@@ -12,18 +13,24 @@ export default class CanvasCollection {
       const canvas = new Canvas({ name, ...config[name] });
 
       this.canvas[name] = canvas;
+
       this.ctx[name] = canvas.ctx;
     }
 
     this.canvas.collection = Object.values(this.canvas);
 
-    this.canvas.dynamicCollection = this.canvas.collection
-      .filter(({ name }) => config[name].dynamic !== false);
+    this.canvas.dynamicCollection = this.newCollection(config, "dynamic");
 
-    this.canvas.movableCollection = this.canvas.collection
-      .filter(({ name }) => config[name].inContainer !== false);
+    this.canvas.movableCollection = this.newCollection(config, "inContainer");
 
-    this.canvas.coloredCollection = this.canvas.collection
-      .filter(({ name }) => config[name].isColored !== false);
+    this.canvas.coloredCollection = this.newCollection(config, "isColored");
+  }
+
+  newCollection(config, condition) {
+
+    return this.canvas.collection.filter(({ name }) => {
+
+      return config[name][condition] !== false
+    });
   }
 }

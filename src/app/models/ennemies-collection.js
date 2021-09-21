@@ -11,7 +11,7 @@ export default class EnnemiesCollection {
 
   add = props => {
 
-    const ennemy = new EnnemyPiece({ ...props, color: this.color });
+    const ennemy = new EnnemyPiece({ color: this.color, ...props });
 
     this.collection.push(ennemy);
   }
@@ -23,10 +23,10 @@ export default class EnnemiesCollection {
 
   setEachPosition() {
 
-    this.collection.forEach(ennemy => {
+    for (const ennemy of this.collection) {
 
       ennemy.setAbsolutePosition();
-    });
+    }
   }
 
   remove(ennemy) {
@@ -38,14 +38,9 @@ export default class EnnemiesCollection {
 
   empty() {
 
-    if (this.collection) {
+    for (const ennemy of this.collection) {
 
-      this.collection.forEach(ennemy => {
-
-        ennemy.removeSprite();
-      });
+      this.remove(ennemy)
     }
-
-    this.collection = [];
   }
 }
