@@ -39,7 +39,12 @@ export default class Board {
 
     this.canvas.frontFaces.onClick(evt => {
 
-      events.emit("SQUARE_CLICKED", this.square.get.clicked(evt));
+      const targetSquare = this.square.get.clicked(evt);
+
+      if (events.ask("IS_VALID_MOVE", targetSquare)) {
+
+        events.emit("MOVE_PLAYER", targetSquare);
+      }
     });
 
     this.testinit();
@@ -78,7 +83,7 @@ export default class Board {
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
-    
+
     this.input.render();
   }
 

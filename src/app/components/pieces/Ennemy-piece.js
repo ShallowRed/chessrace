@@ -11,9 +11,13 @@ export default class EnnemyPiece extends Piece {
 
     this.setZIndex();
 
-    this.onClick(() =>
-      events.emit("ENNEMY_CLICKED", this)
-    );
+    this.onClick(() => {
+
+      if (events.ask("IS_VALID_TAKE", this.position)) {
+
+        events.emit("EAT_PIECE", this);
+      }
+    });
   }
 
   setAbsolutePosition() {

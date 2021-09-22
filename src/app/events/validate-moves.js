@@ -5,13 +5,23 @@ import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
 export function IS_VALID_MOVE(targetSquare) {
 
-  return isValidMove(this.player, targetSquare) &&
-    this.model.square.isInBoard(targetSquare);
+  return (
+    !this.player.isMoving &&
+    !this.player.isFalling &&
+    isValidMove(this.player, targetSquare) &&
+    this.model.square.isInBoard(targetSquare) &&
+    events.ask("IS_VALID_TRAJECTORY", targetSquare)
+  )
 }
 
 export function IS_VALID_TAKE(ennemyPosition) {
 
-  return isValidTake(this.player, ennemyPosition);
+  return (
+    !this.player.isMoving &&
+    !this.player.isFalling &&
+    isValidTake(this.player, ennemyPosition) &&
+    events.ask("IS_VALID_TRAJECTORY", ennemyPosition)
+  )
 }
 
 export function IS_VALID_TRAJECTORY(targetSquare) {

@@ -157,9 +157,5 @@ const LevelSquare = {
 
     return this.square.isHole(squareCoords) ||
       this.square.isEnnemy(squareCoords)
-  },
-
-  getIfHole(squareCoords) {
-    if (squareCoords && this.square.isHole(squareCoords)) return squareCoords
   }
 }
