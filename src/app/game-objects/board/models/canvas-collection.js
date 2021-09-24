@@ -1,4 +1,4 @@
-import Canvas from 'app/components/board/Canvas';
+import Canvas from 'app/game-objects/board/models/canvas';
 
 export default class CanvasCollections {
 

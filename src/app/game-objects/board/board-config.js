@@ -1,4 +1,4 @@
-import PlayArea from 'app/models/play-area';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 export const canvasConfig = {
 
@@ -6,9 +6,9 @@ export const canvasConfig = {
 
     zIndex: 40,
 
-    getDimensions: ({ width, height, size, offset }) => ({
+    getDimensions: ({ width, height, squareSize, offset }) => ({
       width: width,
-      height: height + size,
+      height: height + squareSize,
       left: offset.left
     }),
 
@@ -23,9 +23,9 @@ export const canvasConfig = {
     zIndex: 10,
     isColored: false,
 
-    getDimensions: ({ width, height, size, offset }) => ({
+    getDimensions: ({ width, height, squareSize, offset }) => ({
       width: width,
-      height: height + size + offset.thickness + offset.depth,
+      height: height + squareSize + offset.thickness + offset.depth,
       left: offset.left + offset.thickness + offset.depth
     }),
 
@@ -40,9 +40,9 @@ export const canvasConfig = {
 
     zIndex: 20,
 
-    getDimensions: ({ width, height, size, offset }) => ({
+    getDimensions: ({ width, height, squareSize, offset }) => ({
       width: width + offset.thickness,
-      height: height + size + offset.thickness,
+      height: height + squareSize + offset.thickness,
       left: offset.left
     }),
 
@@ -63,16 +63,16 @@ export const canvasConfig = {
 
     zIndex: 30,
 
-    getDimensions: ({ width, height, size, offset }) => ({
-      width: width - size + offset.thickness,
-      height: height + size + offset.thickness,
-      left: size + offset.left,
+    getDimensions: ({ width, height, squareSize, offset }) => ({
+      width: width - squareSize + offset.thickness,
+      height: height + squareSize + offset.thickness,
+      left: squareSize + offset.left,
     }),
 
     shape: {
       type: "rightFace",
       getProps: ({ left, width, ...props }) =>
-        ({ left: left + width - PlayArea.size, ...props }),
+        ({ left: left + width - PlayArea.squareSize, ...props }),
     },
 
     filter: function(squares) {
@@ -85,10 +85,10 @@ export const canvasConfig = {
     zIndex: 50,
     inContainer: false,
 
-    getDimensions: ({ width, size, offset }) => ({
+    getDimensions: ({ width, squareSize, offset }) => ({
       width: width + offset.thickness,
       height: offset.thickness,
-      bottom: size - offset.thickness,
+      bottom: squareSize - offset.thickness,
       left: offset.left,
     }),
 

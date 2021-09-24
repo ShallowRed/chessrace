@@ -7,7 +7,7 @@ export default new class Events {
     this.listeners = {};
   }
 
-  listen = (message, listener) => {
+  on = (message, listener) => {
 
     if (!this.listeners[message]) {
 
@@ -52,7 +52,7 @@ export default new class Events {
   timeout(message, args, delay) {
 
     if (!delay) {
-      
+
       delay = args
     }
 

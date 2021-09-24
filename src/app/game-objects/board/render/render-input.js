@@ -1,4 +1,4 @@
-import PlayArea from 'app/models/play-area';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { draw } from "app/utils/draw-shapes";
 

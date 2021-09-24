@@ -1,4 +1,4 @@
-import PlayArea from 'app/models/play-area';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 const { floor } = Math;
 
@@ -8,12 +8,12 @@ export default {
 
     left(col) {
 
-      return col * PlayArea.size;
+      return col * PlayArea.squareSize;
     },
 
     top(row) {
 
-      return (this.rows - row + this.nRenders - 1) * PlayArea.size;
+      return (this.rows - row + this.nRenders - 1) * PlayArea.squareSize;
     },
 
     coordsInCanvas([col, row]) {
@@ -33,8 +33,8 @@ export default {
         -(clientY - bottom)
       ];
 
-      const getSquareCoords = coords =>
-        floor(coords / PlayArea.size);
+      const getSquareCoords = coordsInCanvas =>
+        floor(coordsInCanvas / PlayArea.squareSize);
 
       const [x, y] = clientCoordsInCanvas.map(getSquareCoords);
 

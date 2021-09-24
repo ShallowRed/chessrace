@@ -18,11 +18,6 @@ export function isLongRange(pieceName) {
   return ["bishop", "rook", "queen"].includes(pieceName);
 }
 
-export function getSortedPiecesNames() {
-  return Object.keys(Pieces)
-    .sort();
-}
-
 const Pieces = {
 
   pawn: {

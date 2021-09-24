@@ -1,11 +1,11 @@
-import events from 'app/models/events';
-import GameEvents from 'app/events/';
-import LevelModel from 'app/models/level';
+import events from 'app/game-events/event-emitter';
+import GameEvents from 'app/game-events/';
+import LevelModel from 'app/level/level';
 
-import EnnemiesCollection from 'app/models/ennemies-collection';
-import Board from 'app/components/board/Board';
-import Player from 'app/components/pieces/Player-piece';
-import PlayArea from 'app/models/play-area';
+import EnnemiesCollection from 'app/game-objects/pieces//models/ennemies-collection';
+import Board from 'app/game-objects/board/board';
+import Player from 'app/game-objects/pieces/player-sprite';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { getBoundMethods } from 'app/utils/bind-methods';
 
@@ -15,23 +15,32 @@ export default {
 
     Object.assign(this, levelConfig);
 
+
     const { columns, rows, visibleRows } = this;
 
     const [color, ennemiesColor] = this.piecesColors;
 
+
     this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
+
+    this.board = new Board(columns, visibleRows);
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
 
-    this.board = new Board(columns, visibleRows);
+    this.player = new Player(color, this.playerInit);
+
 
     this.setDimensions();
 
     this.render();
 
-    this.player = new Player({ color, ...this.playerStart });
+    this.player.render();
 
-    getBoundMethods.call(this, GameEvents, events.listen);
+
+    getBoundMethods.call(this, GameEvents, (message, listener) => {
+
+      events.on(message, listener);
+    });
 
     window.addEventListener("resize", () => this.resize());
   },
@@ -52,7 +61,9 @@ export default {
       this.board.clear();
     }
 
-    this.model.parse();
+    this.model.parseNextRows();
+
+    this.board.nRenders++;
 
     this.board.render(this.model);
 
@@ -67,31 +78,33 @@ export default {
     this.board.nRenders = 0;
 
     events.emit("TRANSLATE_BOARD");
+
     events.emit("TRANSLATE_PIECES");
 
     this.board.clear();
 
-    this.model.reset();
-
     this.ennemies.empty();
 
-    this.player.init(this.playerStart);
+    this.model.init();
+
+    this.player.reset();
   },
 
   resize() {
 
     this.setDimensions();
 
-    this.board.render(this.model, { resize: true });
-
-    this.player.moveSprite();
-
-    this.ennemies.setEachPosition();
+    this.board.render(this.model);
 
     this.forEachPiece(piece => {
 
       piece.setSpriteSize();
     });
+
+    this.player.moveSprite();
+
+    this.ennemies.setEachPosition();
+
   },
 
   forEachPiece(callback) {

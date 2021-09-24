@@ -1,4 +1,4 @@
-import PlayArea from 'app/models/play-area';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { setStyle } from "app/utils/set-style";
 
@@ -6,34 +6,32 @@ export default class GameObject {
 
   static container = document.querySelector("main");
 
-  constructor({ domEl, className, inContainer },
-    parent = GameObject.container
-  ) {
+  constructor(props, parent = GameObject.container ) {
 
-    if (domEl instanceof HTMLElement) {
+    if (props.domEl instanceof HTMLElement) {
 
-      this.domEl = domEl;
+      this.domEl = props.domEl;
 
-    } else if (typeof domEl === "object") {
+    } else if (typeof props.domEl === "object") {
 
       const [
-        [key, domElement]
-      ] = Object.entries(domEl);
+        [key, domEl]
+      ] = Object.entries(props.domEl);
 
-      this.domEl = this[key] = domElement;
+      this.domEl = this[key] = domEl;
     }
 
-    this.domEl.className = className;
-
-    if (inContainer) {
+    if (props.inContainer) {
 
       this.container = new GameObject({
         domEl: document.createElement('div'),
-        className: `${className}-container`
+        className: `${props.className}-container`
       });
 
       parent = this.container.domEl;
     }
+
+    this.domEl.className = props.className;
 
     parent.append(this.domEl);
   }
@@ -42,7 +40,7 @@ export default class GameObject {
 
     this.domEl.style.transitionDuration = `${duration}s`;
 
-    this.domEl.style.transform = `translateY(${rows * PlayArea.size}px)`;
+    this.domEl.style.transform = `translateY(${rows * PlayArea.squareSize}px)`;
   }
 
   setStyle = config => {

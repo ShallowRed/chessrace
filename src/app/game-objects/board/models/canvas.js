@@ -1,5 +1,5 @@
-import GameObject from 'app/components/Game-object';
-import PlayArea from 'app/models/play-area';
+import GameObject from 'app/game-objects/game-object';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { draw } from "app/utils/draw-shapes";
 import { PIXEL_RATIO } from "app/utils/set-pixel-ratio";
@@ -20,7 +20,7 @@ export default class Canvas extends GameObject {
 
     this.ctx = this.canvas.getContext('2d');
 
-    this.draw = draw[this?.shape?.type]?.(this.ctx);
+    this.draw = draw[this.shape?.type]?.(this.ctx);
   }
 
   setPixelRatio() {
@@ -39,8 +39,8 @@ export default class Canvas extends GameObject {
   getShape = ({
     left = 0,
     top = 0,
-    width = PlayArea.size,
-    height = PlayArea.size,
+    width = PlayArea.squareSize,
+    height = PlayArea.squareSize,
     thickness = PlayArea.offset.thickness,
     depth = PlayArea.offset.depth
   }) => {

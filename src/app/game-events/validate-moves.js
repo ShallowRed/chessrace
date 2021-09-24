@@ -1,26 +1,40 @@
-import events from 'app/models/events';
+import events from 'app/game-events/event-emitter';
 
-import { isValidMove, isValidTake, isLongRange } from 'app/models/pieces';
+import { isValidMove, isValidTake, isLongRange } from 'app/game-objects/pieces/models/pieces-movements/';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
-export function IS_VALID_MOVE(targetSquare) {
+export function CANVAS_CLICKED(evt) {
 
-  return (
-    !this.player.isMoving &&
-    !this.player.isFalling &&
+  const targetSquare = this.board.square.get.clicked(evt);
+
+  if (
     isValidMove(this.player, targetSquare) &&
     this.model.square.isInBoard(targetSquare) &&
+    events.ask("IS_ALLOWED_MOVING") &&
     events.ask("IS_VALID_TRAJECTORY", targetSquare)
-  )
+  ) {
+
+    events.emit("MOVE_PLAYER", targetSquare);
+  }
 }
 
-export function IS_VALID_TAKE(ennemyPosition) {
+export function ENNEMY_CLICKED(ennemy) {
+
+  if (
+    isValidTake(this.player, ennemy.position) &&
+    events.ask("IS_ALLOWED_MOVING") &&
+    events.ask("IS_VALID_TRAJECTORY", ennemy.position)
+  ) {
+
+    events.emit("EAT_PIECE", ennemy);
+  }
+}
+
+export function IS_ALLOWED_MOVING() {
 
   return (
     !this.player.isMoving &&
-    !this.player.isFalling &&
-    isValidTake(this.player, ennemyPosition) &&
-    events.ask("IS_VALID_TRAJECTORY", ennemyPosition)
+    !this.player.isFalling
   )
 }
 

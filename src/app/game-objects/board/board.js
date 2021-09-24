@@ -1,17 +1,14 @@
-import events from 'app/models/events';
+import events from 'app/game-events/event-emitter';
 
-import GameObject from 'app/components/Game-object';
-import PlayArea from 'app/models/play-area';
+import GameObject from 'app/game-objects/game-object';
 
-import CanvasCollections from 'app/models/canvas-collection';
+import PlayArea from 'app/game-objects/board/models/play-area';
+import CanvasCollections from 'app/game-objects/board/models/canvas-collection';
+import Square from 'app/game-objects/board/models/square';
 
-import Square from 'app/components/Board/Square';
-import * as RenderSquares from 'app/components/Board/render/render-squares';
-import *
-as RenderFinishLine from 'app/components/Board/render/render-finishing-line';
-import * as RenderInput from 'app/components/Board/render/render-input';
+import Render from 'app/game-objects/board/render/';
 
-import { canvasConfig, colors } from 'app/components/Board/board-config';
+import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
 import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
@@ -25,34 +22,23 @@ export default class Board {
 
   constructor(columns, rows) {
 
-    Object.assign(
-      this, { columns, rows, colors },
+    Object.assign( this, { columns, rows, colors },
       new CanvasCollections(canvasConfig)
     );
 
-    bindObjectsMethods.call(this, {
-      square: Square,
-      squares: RenderSquares,
-      finishLine: RenderFinishLine,
-      input: RenderInput,
-    });
+    bindObjectsMethods.call(this, { square: Square, ...Render });
 
     this.canvas.frontFaces.onClick(evt => {
 
-      const targetSquare = this.square.get.clicked(evt);
-
-      if (events.ask("IS_VALID_MOVE", targetSquare)) {
-
-        events.emit("MOVE_PLAYER", targetSquare);
-      }
+      events.emit("CANVAS_CLICKED", evt);
     });
 
-    this.testinit();
+    // this.testinit();
   }
 
   setDimensions() {
 
-    const { width, height, offset, size } = PlayArea;
+    const { width, height, offset, squareSize } = PlayArea;
 
     const totalWidth = width + offset.thickness + offset.left * 2;
 
@@ -60,7 +46,7 @@ export default class Board {
       top: 5,
       left: round((window.innerWidth - totalWidth) / 2),
       width: totalWidth,
-      height: height + size + offset.top,
+      height: height + squareSize + offset.top,
     });
 
     for (const canvas of this.canvas.collection) {
@@ -78,7 +64,7 @@ export default class Board {
         left,
         width: canvas.width,
         top: offset.top,
-        height: canvas.height - size
+        height: canvas.height - squareSize
       });
     }
 
@@ -87,12 +73,7 @@ export default class Board {
     this.input.render();
   }
 
-  render(model, { resize = false } = {}) {
-
-    if (!resize) {
-
-      this.nRenders++;
-    }
+  render(model) {
 
     if (model.lastRowRendered === model.rows - 1) {
 

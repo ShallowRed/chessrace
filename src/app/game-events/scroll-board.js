@@ -1,4 +1,4 @@
-import events from 'app/models/events';
+import events from 'app/game-events/event-emitter';
 // import { animationTimeout } from 'app/utils/animation-timeout';
 
 export function SCROLL_ONE_SQUARE_DOWN() {

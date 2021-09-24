@@ -1,9 +1,9 @@
-import GameObject from 'app/components/Game-object';
-import PlayArea from 'app/models/play-area';
+import GameObject from 'app/game-objects/game-object';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 export default class Piece extends GameObject {
 
-  constructor({ className, ...props}) {
+  constructor({ className, ...props }) {
 
     super({
       className,
@@ -11,7 +11,10 @@ export default class Piece extends GameObject {
       inContainer: true
     })
 
-    Object.assign(this, { className, ...props});
+    Object.assign(this, { className, ...props });
+  }
+
+  render() {
 
     this.setSpriteSize();
 
@@ -21,8 +24,8 @@ export default class Piece extends GameObject {
   setSpriteSize() {
 
     this.setStyle({
-      width: PlayArea.size,
-      height: PlayArea.size
+      width: PlayArea.squareSize,
+      height: PlayArea.squareSize
     });
   }
 
@@ -53,9 +56,11 @@ export default class Piece extends GameObject {
 
     const [x, y] = this.position;
 
+    const { squareSize, offset } = PlayArea;
+
     return {
-      left: x * PlayArea.size + PlayArea.offset.left,
-      bottom: (y + 1) * PlayArea.size
+      left: x * squareSize + offset.left,
+      bottom: (y + 1) * squareSize
     }
   }
 

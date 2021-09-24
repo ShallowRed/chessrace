@@ -4,7 +4,7 @@ import 'styles/alpha.css';
 
 import 'app/utils/animation-polyfill';
 
-import Game from 'app/Game';
+import Game from 'app/game';
 
 import { generateLevelBlueprint } from 'app/utils/level-generator';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
@@ -15,7 +15,7 @@ const levelConfig = {
   rows: 8,
   visibleRows: 12,
 
-  playerStart: {
+  playerInit: {
     position: [3, 0],
     pieceName: "queen"
   },

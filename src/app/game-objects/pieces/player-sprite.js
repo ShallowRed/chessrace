@@ -1,17 +1,26 @@
-import Piece from 'app/components/pieces/Piece';
+import Piece from 'app/game-objects/pieces/piece-sprite';
 
 import { animationTimeout } from 'app/utils/animation-timeout';
 
 export default class Player extends Piece {
 
-  constructor(props) {
+  constructor(color, { position, pieceName }) {
 
-    super({ ...props, className: "player" });
+    super({ color, position, pieceName, className: "player" });
+
+    this.initProps = { position, pieceName };
+  }
+
+  render() {
+
+    super.render();
 
     this.moveSprite();
   }
 
-  init({ pieceName, position }) {
+  reset() {
+
+    const { pieceName, position } = this.initProps;
 
     this.updatePiece(pieceName);
 

@@ -6,24 +6,24 @@ export default {
 
   setDimensions(columns, rows) {
 
-    this.size = min(
+    this.squareSize = min(
       round(window.innerWidth / (columns + 1)),
       round(window.innerHeight / (rows + 2))
     );
 
-    this.width = columns * this.size;
+    this.width = columns * this.squareSize;
 
-    this.height = rows * this.size;
+    this.height = rows * this.squareSize;
 
-    this.offset.depth = round(this.size / 3);
+    this.offset.depth = round(this.squareSize / 3);
 
-    this.offset.thickness = round(this.size / 6);
+    this.offset.thickness = round(this.squareSize / 6);
 
     this.input = {
-      height: round(this.size / 5),
+      height: round(this.squareSize / 5),
       thickness: {
-        width: round(this.size / 5),
-        height: round(this.size / 8)
+        width: round(this.squareSize / 5),
+        height: round(this.squareSize / 8)
       }
     }
 

@@ -1,4 +1,4 @@
-import PlayArea from 'app/models/play-area';
+import PlayArea from 'app/game-objects/board/models/play-area';
 
 const { round } = Math;
 
@@ -6,8 +6,8 @@ export function render(row) {
 
   const finishLine = {
     top: this.square.get.top(row),
-    width: this.columns * PlayArea.size,
-    height: PlayArea.size
+    width: this.columns * PlayArea.squareSize,
+    height: PlayArea.squareSize
   }
 
   for (const canvas of this.canvas.movableCollection) {

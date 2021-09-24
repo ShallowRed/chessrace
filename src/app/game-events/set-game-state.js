@@ -1,4 +1,4 @@
-import events from 'app/models/events';
+import events from 'app/game-events/event-emitter';
 
 export function GAME_ON() {
 
