@@ -4,9 +4,9 @@ import GameObject from 'app/game-objects/game-object';
 
 import PlayArea from 'app/game-objects/board/models/play-area';
 import CanvasCollections from 'app/game-objects/board/models/canvas-collection';
-import Square from 'app/game-objects/board/models/square';
 
-import Render from 'app/game-objects/board/render/';
+import { getSquare, isSquare } from 'app/game-objects/board/models/square';
+import render from 'app/game-objects/board/render/';
 
 import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
@@ -26,7 +26,7 @@ export default class Board {
       new CanvasCollections(canvasConfig)
     );
 
-    bindObjectsMethods.call(this, { square: Square, ...Render });
+    bindObjectsMethods.call(this, { getSquare, isSquare, ...render });
 
     this.canvas.frontFaces.onClick(evt => {
 

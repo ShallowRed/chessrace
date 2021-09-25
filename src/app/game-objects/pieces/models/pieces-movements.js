@@ -7,24 +7,26 @@ export function isValidMove({ position, pieceName }, targetPosition) {
 
 export function isValidTake({ position, pieceName }, ennemyPosition) {
 
-  const isValidAction = pieceName === "pawn" ?
-    "isValidTake" :
-    "isValidMove";
-
-  return Pieces[pieceName][isValidAction](position, ennemyPosition);
+  return (
+    Pieces[pieceName].isValidTake ||
+    Pieces[pieceName].isValidMove
+  )(position, ennemyPosition);
 }
 
 export function isLongRange(pieceName) {
-  return ["bishop", "rook", "queen"].includes(pieceName);
+
+  return Pieces[pieceName].isLongRange;
 }
 
 const Pieces = {
 
   pawn: {
+
     isValidMove: ([x1, y1], [x2, y2]) => (
       y2 === y1 + 1 &&
       x1 === x2
     ),
+
     isValidTake: ([x1, y1], [x2, y2]) => (
       y2 === y1 + 1 &&
       (
@@ -35,6 +37,7 @@ const Pieces = {
   },
 
   king: {
+
     isValidMove: ([x1, y1], [x2, y2]) => (
       abs(x1 - x2) <= 1 &&
       abs(y1 - y2) <= 1
@@ -42,6 +45,7 @@ const Pieces = {
   },
 
   knight: {
+
     isValidMove: ([x1, y1], [x2, y2]) => (
       abs(x1 - x2) === 2 &&
       abs(y1 - y2) === 1
@@ -52,12 +56,18 @@ const Pieces = {
   },
 
   bishop: {
+
+    isLongRange: true,
+
     isValidMove: ([x1, y1], [x2, y2]) => (
       abs(x1 - x2) === abs(y1 - y2)
     )
   },
 
   rook: {
+
+    isLongRange: true,
+
     isValidMove: ([x1, y1], [x2, y2]) => (
       x1 === x2 ||
       y1 === y2
@@ -65,6 +75,9 @@ const Pieces = {
   },
 
   queen: {
+
+    isLongRange: true,
+
     isValidMove: (...coords) => (
       Pieces.bishop.isValidMove(...coords) ||
       Pieces.rook.isValidMove(...coords)

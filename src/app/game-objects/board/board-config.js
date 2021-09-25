@@ -54,8 +54,8 @@ export const canvasConfig = {
 
     filter: function(squares) {
       return squares
-        .filter(this.square.is.notInBottomRow)
-        .filter(this.square.is.belowHole)
+        .filter(this.isSquare.notInBottomRow)
+        .filter(this.isSquare.belowHole)
     }
   },
 
@@ -76,7 +76,7 @@ export const canvasConfig = {
     },
 
     filter: function(squares) {
-      return squares.filter(this.square.is.leftToHole);
+      return squares.filter(this.isSquare.leftToHole);
     }
   },
 
@@ -99,7 +99,7 @@ export const canvasConfig = {
     },
 
     filter: function(squares) {
-      return squares.filter(this.square.is.inBottomRow);
+      return squares.filter(this.isSquare.inBottomRow);
     }
   },
 

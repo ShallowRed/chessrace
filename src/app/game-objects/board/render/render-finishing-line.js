@@ -5,7 +5,7 @@ const { round } = Math;
 export function render(row) {
 
   const finishLine = {
-    top: this.square.get.top(row),
+    top: this.getSquare.top(row),
     width: this.columns * PlayArea.squareSize,
     height: PlayArea.squareSize
   }

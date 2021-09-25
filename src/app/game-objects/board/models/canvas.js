@@ -16,8 +16,6 @@ export default class Canvas extends GameObject {
 
     Object.assign(this, props);
 
-    this.setZIndex();
-
     this.ctx = this.canvas.getContext('2d');
 
     this.draw = draw[this.shape?.type]?.(this.ctx);
@@ -27,13 +25,15 @@ export default class Canvas extends GameObject {
 
     if (PIXEL_RATIO === 1) return;
 
-    this.canvas.width = this.width * PIXEL_RATIO;
-    this.canvas.height = this.height * PIXEL_RATIO;
+    const { canvas, ctx, width, height } = this;
 
-    this.canvas.style.width = `${this.width}px`;
-    this.canvas.style.height = `${this.height}px`;
+    canvas.width = width * PIXEL_RATIO;
+    canvas.height = height * PIXEL_RATIO;
 
-    this.ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
+
+    ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
   }
 
   getShape = ({

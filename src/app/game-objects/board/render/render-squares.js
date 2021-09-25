@@ -11,7 +11,7 @@ export function render(regularSquares) {
 
 export function renderSquaresSet(squares, canvas) {
 
-  squares.map(this.square.get.coordsInCanvas)
+  squares.map(this.getSquare.coordsInCanvas)
     .map(canvas.getShape)
     .forEach(canvas.draw);
 }
@@ -20,7 +20,7 @@ export function renderColoredSquares(squares) {
 
   for (const color of ["light", "dark"]) {
 
-    const sameColorSquares = squares.filter(this.square.is[color]);
+    const sameColorSquares = squares.filter(this.isSquare[color]);
 
     const colors = this.colors.squares[color];
 

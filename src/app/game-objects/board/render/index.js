@@ -1,14 +1,10 @@
-import * as RenderSquares
+import * as squares
 from 'app/game-objects/board/render/render-squares';
 
-import * as RenderFinishLine
+import * as finishLine
 from 'app/game-objects/board/render/render-finishing-line';
 
-import * as RenderInput
+import * as input
 from 'app/game-objects/board/render/render-input';
 
-export default {
-  squares: RenderSquares,
-  finishLine: RenderFinishLine,
-  input: RenderInput
-};
+export default { squares, finishLine, input };

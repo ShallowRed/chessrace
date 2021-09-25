@@ -1,11 +1,12 @@
 import events from 'app/game-events/event-emitter';
 
-import { isValidMove, isValidTake, isLongRange } from 'app/game-objects/pieces/models/pieces-movements/';
+import { isValidMove, isValidTake,
+  isLongRange } from 'app/game-objects/pieces/models/pieces-movements/';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
 export function CANVAS_CLICKED(evt) {
 
-  const targetSquare = this.board.square.get.clicked(evt);
+  const targetSquare = this.board.getSquare.clicked(evt);
 
   if (
     isValidMove(this.player, targetSquare) &&
@@ -42,24 +43,22 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
 
   const squaresOnTrajectory = [];
 
+  const { isEnnemy, isHole } = this.model.square;
+
   if (isLongRange(this.player.pieceName)) {
 
     squaresOnTrajectory.push(
       ...getSquaresOnTrajectory(this.player.position, targetSquare)
     );
 
-    const ennemiesBeforeTargetSquare = squaresOnTrajectory
-      .filter(this.model.square.isEnnemy);
-
-    if (ennemiesBeforeTargetSquare.length) return;
+    if (squaresOnTrajectory.some(isEnnemy)) return;
   }
 
-  const holes = [...squaresOnTrajectory, targetSquare]
-    .filter(this.model.square.isHole);
+  const hole = [...squaresOnTrajectory, targetSquare].find(isHole);
 
-  if (holes.length) {
+  if (hole) {
 
-    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", holes[0]);
+    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", hole);
 
   } else return true;
 }

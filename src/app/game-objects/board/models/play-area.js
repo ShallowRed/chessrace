@@ -15,21 +15,29 @@ export default {
 
     this.height = rows * this.squareSize;
 
+
     this.offset.depth = round(this.squareSize / 3);
 
     this.offset.thickness = round(this.squareSize / 6);
 
+
     this.input = {
+
       height: round(this.squareSize / 5),
+
       thickness: {
+
         width: round(this.squareSize / 5),
+
         height: round(this.squareSize / 8)
       }
     }
 
     this.input.width = this.width + this.input.thickness.width * 2;
 
-    this.input.thickness.full = this.offset.thickness + this.input.thickness.height * 2;
+    this.input.thickness.full = this.offset.thickness + this.input.thickness
+      .height * 2;
+
 
     this.offset.left = this.input.thickness.height + this.input.thickness.width;
 

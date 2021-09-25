@@ -26,12 +26,12 @@ export default {
 
   isHole(squareCoords) {
 
-    return this.square.get(squareCoords) === 0;
+    return this.getSquare(squareCoords) === 0;
   },
 
   isEnnemy(squareCoords) {
 
-    return this.square.get(squareCoords) > 1;
+    return this.getSquare(squareCoords) > 1;
   },
 
   isObstacle(squareCoords) {

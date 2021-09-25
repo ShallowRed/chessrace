@@ -15,6 +15,8 @@ export default class CanvasCollections {
       this.canvas[name] = canvas;
 
       this.ctx[name] = canvas.ctx;
+
+      canvas.setZIndex();
     }
 
     this.canvas.collection = Object.values(this.canvas);
