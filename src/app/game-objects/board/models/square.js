@@ -22,21 +22,23 @@ export const getSquare = {
     };
   },
 
+  coord(coordInCanvas) {
+
+    return floor(coordInCanvas / PlayArea.squareSize)
+  },
+
   clicked({ target, clientX, clientY }) {
 
     const { left, bottom } = target.getBoundingClientRect();
 
     const clientCoordsInCanvas = [
       clientX - left,
-      -(clientY - bottom)
+      bottom - clientY
     ];
 
-    const getSquareCoords = coordsInCanvas =>
-      floor(coordsInCanvas / PlayArea.squareSize);
+    const [col, row] = clientCoordsInCanvas.map(this.getSquare.coord);
 
-    const [x, y] = clientCoordsInCanvas.map(getSquareCoords);
-
-    return [x, y + this.nRenders - 1];
+    return [col, row + this.nRenders - 1];
   }
 }
 

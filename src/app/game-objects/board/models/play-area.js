@@ -35,8 +35,8 @@ export default {
 
     this.input.width = this.width + this.input.thickness.width * 2;
 
-    this.input.thickness.full = this.offset.thickness + this.input.thickness
-      .height * 2;
+    this.input.thickness.full =
+      this.offset.thickness + this.input.thickness.height * 2;
 
 
     this.offset.left = this.input.thickness.height + this.input.thickness.width;

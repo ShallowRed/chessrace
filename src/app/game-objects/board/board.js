@@ -22,12 +22,12 @@ export default class Board {
 
   constructor(columns, rows) {
 
-    Object.assign( this, { columns, rows, colors },
+    Object.assign(this, { columns, rows, colors },
       new CanvasCollections(canvasConfig)
     );
 
     bindObjectsMethods.call(this, { getSquare, isSquare, ...render });
-
+console.log(this);
     this.canvas.frontFaces.onClick(evt => {
 
       events.emit("CANVAS_CLICKED", evt);
@@ -90,46 +90,46 @@ export default class Board {
       canvas.clear();
     }
   }
-
-  testinit() {
-
-    this.test = new GameObject({
-      domEl: document.createElement('div'),
-      className: `test`
-    });
-
-    this.test.domEl.style.position = "absolute";
-    this.test.domEl.style.bottom = "100%";
-    this.test.domEl.style.left = "0";
-    this.test.domEl.style.width = "100%";
-    this.test.domEl.style.height = "120vh";
-    this.test.domEl.style.zIndex = "700";
-    this.test.domEl.style.background = "white";
-
-  }
-
-  dotest() {
-
-    for (const canvas of [
-        this.canvas.inputTop, this.canvas.inputBottom
-      ]) {
-
-      this.test.translateY({ rows: this.rows });
-      canvas.translateY({ rows: this.rows });
-    }
-
-    setTimeout(() => {
-
-      for (const canvas of [
-          this.canvas.inputTop, this.canvas.inputBottom
-        ]) {
-
-        setTimeout(() => {
-          this.test.translateY({ rows: 0, duration: 1 });
-          canvas.translateY({ rows: 0, duration: 1 })
-        })
-
-      }
-    }, 1000);
-  }
+  //
+  //   testinit() {
+  //
+  //     this.test = new GameObject({
+  //       domEl: document.createElement('div'),
+  //       className: `test`
+  //     });
+  //
+  //     this.test.domEl.style.position = "absolute";
+  //     this.test.domEl.style.bottom = "100%";
+  //     this.test.domEl.style.left = "0";
+  //     this.test.domEl.style.width = "100%";
+  //     this.test.domEl.style.height = "120vh";
+  //     this.test.domEl.style.zIndex = "700";
+  //     this.test.domEl.style.background = "white";
+  //
+  //   }
+  //
+  //   dotest() {
+  //
+  //     for (const canvas of [
+  //         this.canvas.inputTop, this.canvas.inputBottom
+  //       ]) {
+  //
+  //       this.test.translateY({ rows: this.rows });
+  //       canvas.translateY({ rows: this.rows });
+  //     }
+  //
+  //     setTimeout(() => {
+  //
+  //       for (const canvas of [
+  //           this.canvas.inputTop, this.canvas.inputBottom
+  //         ]) {
+  //
+  //         setTimeout(() => {
+  //           this.test.translateY({ rows: 0, duration: 1 });
+  //           canvas.translateY({ rows: 0, duration: 1 })
+  //         })
+  //
+  //       }
+  //     }, 1000);
+  //   }
 }

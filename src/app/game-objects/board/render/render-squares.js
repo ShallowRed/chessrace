@@ -16,26 +16,28 @@ export function renderSquaresSet(squares, canvas) {
     .forEach(canvas.draw);
 }
 
+const SQUARE_COLORS_KEYS = ["light", "dark"];
+
 export function renderColoredSquares(squares) {
 
-  for (const color of ["light", "dark"]) {
+  for (const color of SQUARE_COLORS_KEYS) {
 
     const sameColorSquares = squares.filter(this.isSquare[color]);
 
-    const colors = this.colors.squares[color];
+    const colorShades = this.colors.squares[color];
 
-    this.squares.renderSquaresOfColor(sameColorSquares, colors)
+    this.squares.renderSquaresOfColor(sameColorSquares, colorShades)
   }
 }
 
-export function renderSquaresOfColor(squares, colors) {
+export function renderSquaresOfColor(squares, colorShades) {
 
   for (const canvas of this.canvas.coloredCollection) {
 
     const coloredSquaresInCanvas =
       canvas.filter?.call(this, squares) || squares;
 
-    canvas.ctx.fillStyle = colors[canvas.shape.type];
+    canvas.ctx.fillStyle = colorShades[canvas.shape.type];
 
     this.squares.renderSquaresSet(coloredSquaresInCanvas, canvas)
   }

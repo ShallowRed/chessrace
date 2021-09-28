@@ -54,13 +54,13 @@ export default class Piece extends GameObject {
 
   getOffset() {
 
-    const [x, y] = this.position;
+    const [col, row] = this.position;
 
     const { squareSize, offset } = PlayArea;
 
     return {
-      left: x * squareSize + offset.left,
-      bottom: (y + 1) * squareSize
+      left: col * squareSize + offset.left,
+      bottom: (row + 1) * squareSize
     }
   }
 

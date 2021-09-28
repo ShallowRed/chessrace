@@ -1,9 +1,29 @@
-export function filterMap(array, { filter, map }) {
+export default class FilterMap {
 
-  const valuesAndIndexMatchingFilter = (value, index) =>
-    filter({ value, index }) && ({ value, index });
+  constructor(array) {
 
-  return array.map(valuesAndIndexMatchingFilter)
-    .filter(Boolean)
-    .map(map)
+    this.array = array;
+  }
+
+  filter(callback) {
+
+    this.filteredArray = this.array.map((value, index) => {
+
+        if (callback(value, index)) {
+
+          return ({ value, index });
+        }
+      })
+      .filter(Boolean);
+
+    return this;
+  }
+
+  map(callback) {
+
+    return this.filteredArray.map(({ value, index }) => {
+
+      return callback(value, index);
+    })
+  }
 }
