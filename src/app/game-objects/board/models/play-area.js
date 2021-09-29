@@ -23,7 +23,7 @@ export default {
 
 
     const { edgeToHole } = this.input = getInput(this);
-    
+
 
     this.offset.left = edgeToHole.thickness + edgeToHole.width;
 
@@ -33,7 +33,7 @@ export default {
 
 function getInput({ width, thickness, squareSize }) {
 
-  const height = round(squareSize / 5);
+  const height = round(squareSize / 1.8);
 
   const edgeToHole = {
 

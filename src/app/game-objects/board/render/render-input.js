@@ -90,4 +90,57 @@ export function render() {
     thickness: input.thickness
   });
 
+  drawText(ctx.top, input);
+}
+
+function drawText(ctx, input) {
+
+  const text = "Chess Race";
+
+  const w = input.width - 6;
+  const h = input.height - 3;
+
+  const offset = 500;
+
+
+  const fontSize =
+
+    Math.min(
+      30,
+      Math.max(
+        Math.round(input.height / 2),
+        Math.round(input.width / 20)
+      )
+    );
+
+    console.log(fontSize);
+
+  const shift = Math.round(fontSize / 10);;
+  const blur = Math.round(fontSize / 5);
+
+  ctx.font = `800 ${fontSize}px sans-serif`;
+  ctx.textAlign = "right";
+  ctx.textBaseline = "bottom";
+
+  ctx.globalCompositeOperation = "destination-out";
+  ctx.fillStyle = "black";
+  ctx.fillText(text, w, h);
+
+  ctx.globalCompositeOperation = "destination-over";
+  ctx.shadowColor = "white";
+  ctx.shadowBlur = blur;
+  ctx.shadowOffsetX = offset * 2 + shift;
+  ctx.shadowOffsetY = offset * 2 + shift;
+  ctx.fillText(text, w - offset, h - offset);
+
+  ctx.globalCompositeOperation = "xor";
+  ctx.fillStyle = "#29292b";
+  ctx.shadowColor = "transparent";
+  ctx.fillText(text, w, h);
+
+  ctx.globalCompositeOperation = "destination-over";
+  ctx.fillStyle = "#909199";
+  ctx.fillText(text, w, h);
+
+  ctx.globalCompositeOperation = "source-over";
 }
