@@ -21,6 +21,26 @@ export default class Canvas extends GameObject {
     this.draw = draw[this.shape?.type]?.(this.ctx);
   }
 
+  setDimensions({
+    canvasDimensions: { left, ...canvasDimensions },
+    getContainerDimensions
+  }) {
+
+    this.setStyle(canvasDimensions);
+
+    this.setPixelRatio();
+
+    if (this.container) {
+
+      this.container.setStyle({ left, ...getContainerDimensions(this) });
+
+    } else {
+
+      this.setStyle({ left });
+    }
+
+  }
+
   setPixelRatio() {
 
     if (PIXEL_RATIO === 1) return;
@@ -41,7 +61,7 @@ export default class Canvas extends GameObject {
     top = 0,
     width = PlayArea.squareSize,
     height = PlayArea.squareSize,
-    thickness = PlayArea.offset.thickness,
+    thickness = PlayArea.thickness,
     depth = PlayArea.offset.depth
   }) => {
 

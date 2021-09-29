@@ -4,7 +4,7 @@ import { draw } from "app/utils/draw-shapes";
 
 export function render() {
 
-  const { width, input, offset: { left, thickness } } = PlayArea;
+  const { width, thickness, input, offset } = PlayArea;
 
   const ctx = {
     top: this.ctx.inputTop,
@@ -26,14 +26,14 @@ export function render() {
     top: 0,
     width: input.width,
     height: input.height
-    // height: top - input.thickness.height
+    // height: top - input.edgeToHole.thickness
   });
 
   // front face in hole
   ctx.down.fillStyle = color.xDark;
   draw.frontFace(ctx.down)({
-    left: left + thickness,
-    top: input.height + input.thickness.height,
+    left: offset.left + thickness,
+    top: input.height + input.edgeToHole.thickness,
     width: width,
     height: thickness
   });
@@ -44,14 +44,14 @@ export function render() {
     left: input.width,
     top: 0,
     height: input.height,
-    thickness: input.thickness.full
+    thickness: input.thickness
   });
 
   // Right face in hole
   ctx.down.fillStyle = color.xxDark;
   draw.rightFace(ctx.down)({
-    left: left,
-    top: input.height + input.thickness.height - thickness,
+    left: offset.left,
+    top: input.height + input.edgeToHole.thickness - thickness,
     height: thickness,
     thickness: thickness
   });
@@ -59,35 +59,35 @@ export function render() {
   // Top large bottom face
   ctx.top.fillStyle = color.dark;
   draw.bottomFace(ctx.top)({
-    left: input.thickness.width - 1,
+    left: input.edgeToHole.width - 1,
     top: input.height,
     width: width + 2,
-    thickness: input.thickness.height
+    thickness: input.edgeToHole.thickness
   });
 
   // Bottom large bottom face
   ctx.down.fillStyle = color.dark;
   draw.bottomFace(ctx.down)({
-    left: left + thickness - 1,
-    top: input.height + thickness + input.thickness.height,
+    left: offset.left + thickness - 1,
+    top: input.height + thickness + input.edgeToHole.thickness,
     width: width + 2,
-    thickness: input.thickness.height
+    thickness: input.edgeToHole.thickness
   });
 
   // Left bottom face
   draw.bottomFace(ctx.down)({
     left: 0,
     top: input.height,
-    width: input.thickness.width,
-    thickness: input.thickness.full
+    width: input.edgeToHole.width,
+    thickness: input.thickness
   });
 
   // Right bottom face
   draw.bottomFace(ctx.top)({
-    left: width + input.thickness.width,
+    left: width + input.edgeToHole.width,
     top: input.height,
-    width: input.thickness.width,
-    thickness: input.thickness.full
+    width: input.edgeToHole.width,
+    thickness: input.thickness
   });
 
 }

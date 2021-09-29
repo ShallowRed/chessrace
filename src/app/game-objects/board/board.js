@@ -5,67 +5,76 @@ import GameObject from 'app/game-objects/game-object';
 import PlayArea from 'app/game-objects/board/models/play-area';
 import CanvasCollections from 'app/game-objects/board/models/canvas-collection';
 
-import { getSquare, isSquare } from 'app/game-objects/board/models/square';
+import {
+  getSquare,
+  isSquare
+} from 'app/game-objects/board/models/board-square';
+
 import render from 'app/game-objects/board/render/';
 
 import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
 import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
-// import { test } from "app/utils/test";
-
-const { round } = Math;
 
 export default class Board {
 
   nRenders = 0;
 
-  constructor(columns, rows) {
+  constructor({ columns, rows }) {
 
-    Object.assign(this, { columns, rows, colors },
+    Object.assign(
+      this, { columns, rows, colors },
       new CanvasCollections(canvasConfig)
     );
 
     bindObjectsMethods.call(this, { getSquare, isSquare, ...render });
-console.log(this);
+
     this.canvas.frontFaces.onClick(evt => {
 
       events.emit("CANVAS_CLICKED", evt);
     });
+  }
 
-    // this.testinit();
+  getDimensions(PlayArea) {
+
+    const { width, height, thickness, squareSize, offset } = PlayArea;
+
+    return {
+
+      gameObjectContainerDimensions: {
+        width:  width + thickness + offset.left * 2,
+        height: height + squareSize + offset.top,
+        top: 5
+      },
+
+      getCanvasDimensions: canvas => ({
+
+        canvasDimensions: canvas.getDimensions(PlayArea),
+
+        getContainerDimensions: canvas => ({
+          width: canvas.width,
+          height: canvas.height - squareSize,
+          top: offset.top
+        })
+      })
+    };
   }
 
   setDimensions() {
 
-    const { width, height, offset, squareSize } = PlayArea;
+    PlayArea.setDimensions(this.columns, this.rows);
 
-    const totalWidth = width + offset.thickness + offset.left * 2;
+    const {
+      gameObjectContainerDimensions,
+      getCanvasDimensions
+    } = this.getDimensions(PlayArea);
 
-    setStyle(GameObject.container, {
-      top: 5,
-      left: round((window.innerWidth - totalWidth) / 2),
-      width: totalWidth,
-      height: height + squareSize + offset.top,
-    });
+    setStyle(GameObject.container, gameObjectContainerDimensions);
 
     for (const canvas of this.canvas.collection) {
 
-      const { left, ...dimensions } = canvas.getDimensions(PlayArea);
-
-      canvas.setStyle({
-        ...dimensions,
-        left: !canvas.container && left || 0
-      });
-
-      canvas.setPixelRatio();
-
-      canvas.container?.setStyle({
-        left,
-        width: canvas.width,
-        top: offset.top,
-        height: canvas.height - squareSize
-      });
+      canvas.setDimensions(getCanvasDimensions(canvas));
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
@@ -75,12 +84,11 @@ console.log(this);
 
   render(model) {
 
-    if (model.lastRowRendered === model.rows - 1) {
-
-      this.finishLine.render(model.rows);
-    }
-
     this.squares.render(model.regularSquares);
+
+    if (model.lastRowRendered !== model.rows - 1) return
+
+    this.finishLine.render(model.rows);
   }
 
   clear() {
@@ -90,46 +98,4 @@ console.log(this);
       canvas.clear();
     }
   }
-  //
-  //   testinit() {
-  //
-  //     this.test = new GameObject({
-  //       domEl: document.createElement('div'),
-  //       className: `test`
-  //     });
-  //
-  //     this.test.domEl.style.position = "absolute";
-  //     this.test.domEl.style.bottom = "100%";
-  //     this.test.domEl.style.left = "0";
-  //     this.test.domEl.style.width = "100%";
-  //     this.test.domEl.style.height = "120vh";
-  //     this.test.domEl.style.zIndex = "700";
-  //     this.test.domEl.style.background = "white";
-  //
-  //   }
-  //
-  //   dotest() {
-  //
-  //     for (const canvas of [
-  //         this.canvas.inputTop, this.canvas.inputBottom
-  //       ]) {
-  //
-  //       this.test.translateY({ rows: this.rows });
-  //       canvas.translateY({ rows: this.rows });
-  //     }
-  //
-  //     setTimeout(() => {
-  //
-  //       for (const canvas of [
-  //           this.canvas.inputTop, this.canvas.inputBottom
-  //         ]) {
-  //
-  //         setTimeout(() => {
-  //           this.test.translateY({ rows: 0, duration: 1 });
-  //           canvas.translateY({ rows: 0, duration: 1 })
-  //         })
-  //
-  //       }
-  //     }, 1000);
-  //   }
 }

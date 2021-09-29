@@ -8,7 +8,7 @@ export default class Player extends Piece {
 
     super({ color, position, pieceName, className: "player" });
 
-    this.initProps = { position, pieceName };
+    this.spawn = { position, pieceName };
   }
 
   render() {
@@ -20,7 +20,7 @@ export default class Player extends Piece {
 
   reset() {
 
-    const { pieceName, position } = this.initProps;
+    const { pieceName, position } = this.spawn;
 
     this.updatePiece(pieceName);
 

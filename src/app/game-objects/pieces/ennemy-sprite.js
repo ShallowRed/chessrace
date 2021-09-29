@@ -6,7 +6,7 @@ export default class EnnemyPiece extends Piece {
 
   constructor(color, { position, pieceName }) {
 
-    super({ position, pieceName, color, className: "ennemy", zIndex: 80 });
+    super({ position, pieceName, color, className: "ennemy" });
 
     this.onClick(() => {
 
@@ -19,8 +19,6 @@ export default class EnnemyPiece extends Piece {
     super.render();
 
     this.setAbsolutePosition();
-
-    this.setZIndex();
   }
 
   setAbsolutePosition() {

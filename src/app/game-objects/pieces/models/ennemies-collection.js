@@ -45,7 +45,9 @@ export default class EnnemiesCollection {
 
     for (const ennemy of this.collection) {
 
-      this.remove(ennemy)
+      ennemy.removeSprite();
     }
+
+    this.collection = [];
   }
 }

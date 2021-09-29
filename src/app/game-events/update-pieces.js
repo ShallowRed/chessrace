@@ -31,8 +31,6 @@ export function REMOVE_ENNEMY(ennemy) {
   if (!this.on) return;
 
   this.ennemies.remove(ennemy);
-
-  this.model.square.removeEnnemy(ennemy.position);
 }
 
 export function IS_BELOW_BOARD(piece) {

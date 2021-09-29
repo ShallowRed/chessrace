@@ -7,7 +7,7 @@ export const canvasConfig = {
     zIndex: 40,
 
     getDimensions: ({ width, height, squareSize, offset }) => ({
-      width: width,
+      width,
       height: height + squareSize,
       left: offset.left
     }),
@@ -23,10 +23,10 @@ export const canvasConfig = {
     zIndex: 10,
     isColored: false,
 
-    getDimensions: ({ width, height, squareSize, offset }) => ({
-      width: width,
-      height: height + squareSize + offset.thickness + offset.depth,
-      left: offset.left + offset.thickness + offset.depth
+    getDimensions: ({ width, height, squareSize, offset, thickness }) => ({
+      width,
+      height: height + squareSize + thickness + offset.depth,
+      left: offset.left + thickness + offset.depth
     }),
 
     shape: {
@@ -40,9 +40,9 @@ export const canvasConfig = {
 
     zIndex: 20,
 
-    getDimensions: ({ width, height, squareSize, offset }) => ({
-      width: width + offset.thickness,
-      height: height + squareSize + offset.thickness,
+    getDimensions: ({ width, height, thickness, squareSize, offset }) => ({
+      width: width + thickness,
+      height: height + squareSize + thickness,
       left: offset.left
     }),
 
@@ -53,6 +53,7 @@ export const canvasConfig = {
     },
 
     filter: function(squares) {
+
       return squares
         .filter(this.isSquare.notInBottomRow)
         .filter(this.isSquare.belowHole)
@@ -63,9 +64,9 @@ export const canvasConfig = {
 
     zIndex: 30,
 
-    getDimensions: ({ width, height, squareSize, offset }) => ({
-      width: width - squareSize + offset.thickness,
-      height: height + squareSize + offset.thickness,
+    getDimensions: ({ width, height, squareSize, thickness, offset }) => ({
+      width: width - squareSize + thickness,
+      height: height + squareSize + thickness,
       left: squareSize + offset.left,
     }),
 
@@ -76,6 +77,7 @@ export const canvasConfig = {
     },
 
     filter: function(squares) {
+
       return squares.filter(this.isSquare.leftToHole);
     }
   },
@@ -85,10 +87,10 @@ export const canvasConfig = {
     zIndex: 50,
     inContainer: false,
 
-    getDimensions: ({ width, squareSize, offset }) => ({
-      width: width + offset.thickness,
-      height: offset.thickness,
-      bottom: squareSize - offset.thickness,
+    getDimensions: ({ width, squareSize, offset, thickness }) => ({
+      width: width + thickness,
+      height: thickness,
+      bottom: squareSize - thickness,
       left: offset.left,
     }),
 
@@ -99,6 +101,7 @@ export const canvasConfig = {
     },
 
     filter: function(squares) {
+
       return squares.filter(this.isSquare.inBottomRow);
     }
   },
@@ -110,9 +113,9 @@ export const canvasConfig = {
     isColored: false,
     dynamic: false,
 
-    getDimensions: ({ offset , input }) => ({
-      width: input.width + input.thickness.full,
-      height: offset.top + input.thickness.full - input.thickness.height
+    getDimensions: ({ offset, input }) => ({
+      width: input.width + input.thickness,
+      height: offset.top + input.thickness - input.edgeToHole.thickness
     }),
   },
 
@@ -124,8 +127,8 @@ export const canvasConfig = {
     dynamic: false,
 
     getDimensions: ({ offset, input }) => ({
-      width: input.width + input.thickness.full,
-      height: offset.top + input.thickness.full - input.thickness.height
+      width: input.width + input.thickness,
+      height: offset.top + input.thickness - input.edgeToHole.thickness
     })
   }
 };

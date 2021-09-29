@@ -1,6 +1,5 @@
 import LevelSquare from 'app/level/level-square';
 
-import FilterMap from 'app/utils/filter-and-map-array';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
@@ -8,11 +7,11 @@ export default class LevelModel {
 
   pieces = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook'];
 
-  constructor(levelBlueprint, columns, rows, visibleRows) {
+  constructor(blueprint, { columns, rows, visibleRows }) {
 
     Object.assign(this, { columns, rows, visibleRows });
 
-    this.blueprint = parseBlueprint(levelBlueprint, columns);
+    this.blueprint = parseBlueprint(blueprint, columns);
 
     bindObjectsMethods.call(this, { square: LevelSquare });
 
@@ -20,8 +19,6 @@ export default class LevelModel {
   }
 
   init() {
-
-    this.values = this.blueprint.map(rows => [...rows]);
 
     this.deepRegularSquares = [];
 
@@ -62,31 +59,32 @@ export default class LevelModel {
 
   parseRow(rowIndex) {
 
-    // FilterMap creates an array with the array passed as argument,
-    // which will preserve each element initial index once filtered
+    const filterableRow = this.blueprint[rowIndex]
+      .map((value, index) => ({ value, index }));
 
-    const filterableRow = new FilterMap(this.values[rowIndex]);
+    const isNotHole = ({ value }) => value > 0;
 
-    const isNotHole = value => value > 0;
+    const isEnnemy = ({ value }) => value > 1;
 
-    const isEnnemy = value => value > 1;
+    const getSquareCoords = ({ index }) => [index, rowIndex];
 
-    const getSquareCoords = (value, index) => [index, rowIndex];
+    const getPieceName = value => this.pieces[value - 2];
 
-    const getPiecePositionAndName = (value, index) => ({
-      pieceName: this.pieces[value - 2],
-      position: [index, rowIndex]
+    const getPiecePositionAndName = ({ value, index }) => ({
+      pieceName: getPieceName(value),
+      position: getSquareCoords({ index })
     });
 
     return {
 
       regularSquares: filterableRow
         .filter(isNotHole)
-        .map(getSquareCoords), // map with element's index before filter
+        .map(getSquareCoords),
 
       newEnnemies: filterableRow
         .filter(isEnnemy)
-        .map(getPiecePositionAndName) // map with element's index before filter
+        .map(getPiecePositionAndName)
+
     }
   }
 }

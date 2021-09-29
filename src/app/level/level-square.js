@@ -5,18 +5,12 @@ export default {
     return col >= 0 &&
       row >= 0 &&
       col < this.columns &&
-      row <= this.rows &&
-      row <= this.visibleRows;
+      row <= this.rows
   },
 
   get([col, row]) {
 
-    return this.values[row]?. [col];
-  },
-
-  set([col, row], value) {
-
-    this.values[row][col] = value;
+    return this.blueprint[row]?.[col];
   },
 
   removeEnnemy(squareCoords) {

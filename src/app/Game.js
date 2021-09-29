@@ -1,41 +1,50 @@
 import events from 'app/game-events/event-emitter';
+
 import GameEvents from 'app/game-events/';
 import LevelModel from 'app/level/level';
 
 import EnnemiesCollection from 'app/game-objects/pieces//models/ennemies-collection';
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
-import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { getBoundMethods } from 'app/utils/bind-methods';
+import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
 export default {
 
-  init(levelConfig, levelBlueprint) {
-
-    Object.assign(this, levelConfig);
-
-
-    const { columns, rows, visibleRows } = this;
-
-    const [color, ennemiesColor] = this.piecesColors;
+  init({
+    board: { columns, rows, visibleRows },
+    playerSpawn,
+    durations,
+    blueprint
+  }) {
 
 
-    this.model = new LevelModel(levelBlueprint, columns, rows, visibleRows);
+    Object.assign(this, { columns, rows, visibleRows, durations });
 
-    this.board = new Board(columns, visibleRows);
+
+    this.model = new LevelModel(blueprint, { columns, rows, visibleRows });
+
+    this.board = new Board({ columns, rows: visibleRows });
+
+
+    const [playerColor, ennemiesColor] = getRandomPiecesColor();
+
+    this.player = new Player(playerColor, playerSpawn);
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
 
-    this.player = new Player(color, this.playerInit);
 
-
-    this.setDimensions();
+    this.board.setDimensions();
 
     this.render();
 
     this.player.render();
 
+    this.addListeners();
+  },
+
+  addListeners() {
 
     getBoundMethods.call(this, GameEvents, (message, listener) => {
 
@@ -43,15 +52,6 @@ export default {
     });
 
     window.addEventListener("resize", () => this.resize());
-  },
-
-  setDimensions() {
-
-    PlayArea.setDimensions(this.columns, this.visibleRows);
-
-    this.board.setDimensions();
-
-    // this.board.dotest();
   },
 
   render() {
@@ -92,7 +92,7 @@ export default {
 
   resize() {
 
-    this.setDimensions();
+    this.board.setDimensions();
 
     this.board.render(this.model);
 
@@ -104,7 +104,6 @@ export default {
     this.player.moveSprite();
 
     this.ennemies.setEachPosition();
-
   },
 
   forEachPiece(callback) {
