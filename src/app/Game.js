@@ -7,6 +7,7 @@ import EnnemiesCollection from 'app/game-objects/pieces//models/ennemies-collect
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
 
+import Iterable from 'app/utils/iterable';
 import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
@@ -20,7 +21,7 @@ export default {
   }) {
 
 
-    Object.assign(this, { columns, rows, visibleRows, durations });
+    this.durations = durations;
 
 
     this.model = new LevelModel(blueprint, { columns, rows, visibleRows });
@@ -34,6 +35,8 @@ export default {
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
 
+    this.pieces = new Iterable(() => [this.player, ...this.ennemies.collection]);
+
 
     this.board.setDimensions();
 
@@ -42,6 +45,7 @@ export default {
     this.player.render();
 
     this.addListeners();
+
   },
 
   addListeners() {
@@ -75,17 +79,17 @@ export default {
 
   reset() {
 
-    this.board.nRenders = 0;
-
     events.emit("TRANSLATE_BOARD");
 
     events.emit("TRANSLATE_PIECES");
 
+    this.board.nRenders = 0;
+
     this.board.clear();
 
-    this.ennemies.empty();
+    this.ennemies.removeAll();
 
-    this.model.init();
+    this.model.reset();
 
     this.player.reset();
   },
@@ -96,18 +100,13 @@ export default {
 
     this.board.render(this.model);
 
-    this.forEachPiece(piece => {
+    for (const piece of this.pieces) {
 
       piece.setSpriteSize();
-    });
+    }
 
     this.player.moveSprite();
 
     this.ennemies.setEachPosition();
-  },
-
-  forEachPiece(callback) {
-
-    [this.player, ...this.ennemies.collection].forEach(callback);
   }
 }

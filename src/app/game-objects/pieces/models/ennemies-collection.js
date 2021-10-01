@@ -41,7 +41,7 @@ export default class EnnemiesCollection {
     }
   }
 
-  empty() {
+  removeAll() {
 
     for (const ennemy of this.collection) {
 

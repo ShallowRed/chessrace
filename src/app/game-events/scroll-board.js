@@ -51,8 +51,9 @@ export function TRANSLATE_BOARD({ rows } = {}) {
 
 export function TRANSLATE_PIECES({ rows } = {}) {
 
-  this.forEachPiece(({ container }) => {
+  for (const { container } of this.pieces) {
 
     container.translateY({ rows, duration: rows && this.durations.scroll });
-  });
+
+  }
 }

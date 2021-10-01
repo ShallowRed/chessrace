@@ -89,8 +89,8 @@ export function render() {
     width: input.edgeToHole.width,
     thickness: input.thickness
   });
-
-  drawText(ctx.top, input);
+  // 
+  // drawText(ctx.top, input);
 }
 
 function drawText(ctx, input) {
@@ -98,7 +98,7 @@ function drawText(ctx, input) {
   const text = "Chess Race";
 
   const w = input.width - 6;
-  const h = input.height - 3;
+  const h = Math.ceil(input.height / 2);
 
   const offset = 500;
 
@@ -120,7 +120,7 @@ function drawText(ctx, input) {
 
   ctx.font = `800 ${fontSize}px sans-serif`;
   ctx.textAlign = "right";
-  ctx.textBaseline = "bottom";
+  ctx.textBaseline = "middle";
 
   ctx.globalCompositeOperation = "destination-out";
   ctx.fillStyle = "black";

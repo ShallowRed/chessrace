@@ -15,10 +15,10 @@ export default class LevelModel {
 
     bindObjectsMethods.call(this, { square: LevelSquare });
 
-    this.init();
+    this.reset();
   }
 
-  init() {
+  reset() {
 
     this.deepRegularSquares = [];
 
