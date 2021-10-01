@@ -11,6 +11,8 @@ import Iterable from 'app/utils/iterable';
 import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
+import { test } from "app/utils/test";
+
 export default {
 
   init({
@@ -20,9 +22,7 @@ export default {
     blueprint
   }) {
 
-
     this.durations = durations;
-
 
     this.model = new LevelModel(blueprint, { columns, rows, visibleRows });
 
@@ -35,9 +35,6 @@ export default {
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
 
-    this.pieces = new Iterable(() => [this.player, ...this.ennemies.collection]);
-
-
     this.board.setDimensions();
 
     this.render();
@@ -46,6 +43,11 @@ export default {
 
     this.addListeners();
 
+  },
+
+  get pieces() {
+
+    return [this.player, ...this.ennemies.collection];
   },
 
   addListeners() {

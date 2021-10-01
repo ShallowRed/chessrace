@@ -1,7 +1,10 @@
 import events from 'app/game-events/event-emitter';
 
-import { isValidMove, isValidTake,
-  isLongRange } from 'app/game-objects/pieces/models/pieces-movements/';
+import {
+  isValidMove,
+  isValidTake,
+  isLongRange
+} from 'app/game-objects/pieces/models/pieces-movements/';
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
 export function CANVAS_CLICKED(evt) {
