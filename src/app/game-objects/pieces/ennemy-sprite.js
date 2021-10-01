@@ -27,4 +27,11 @@ export default class EnnemyPiece extends Piece {
 
     this.container.setStyle(offset);
   }
+
+  fall(duration) {
+
+    super.fall(duration);
+
+    events.timeout("REMOVE_ENNEMY", this, duration);
+  }
 }

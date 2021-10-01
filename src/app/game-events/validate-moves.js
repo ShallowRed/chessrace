@@ -1,10 +1,13 @@
 import events from 'app/game-events/event-emitter';
 
+import { animationTimeout } from 'app/utils/animation-timeout';
+
 import {
   isValidMove,
   isValidTake,
   isLongRange
 } from 'app/game-objects/pieces/models/pieces-movements/';
+
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
 export function CANVAS_CLICKED(evt) {
@@ -61,7 +64,11 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
 
   if (hole) {
 
-    events.emit("PLAYER_MOVE_THEN_FALL_IN_HOLE", hole);
+    events.emit("MOVE_PLAYER", hole);
+    
+    animationTimeout(() => {
+      this.player.fall(this.durations.fall)
+    }, this.durations.move);
 
   } else return true;
 }

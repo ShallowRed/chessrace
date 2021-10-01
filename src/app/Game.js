@@ -7,7 +7,6 @@ import EnnemiesCollection from 'app/game-objects/pieces//models/ennemies-collect
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
 
-import Iterable from 'app/utils/iterable';
 import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
@@ -35,6 +34,7 @@ export default {
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
 
+
     this.board.setDimensions();
 
     this.render();
@@ -48,6 +48,16 @@ export default {
   get pieces() {
 
     return [this.player, ...this.ennemies.collection];
+  },
+
+  get offBoardPieces() {
+
+    const boardLimit = this.board.nRenders - 1;
+
+    return this.pieces.filter(({ position }) => {
+
+      return position[1] < boardLimit
+    })
   },
 
   addListeners() {

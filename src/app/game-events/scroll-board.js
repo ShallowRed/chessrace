@@ -5,7 +5,7 @@ import { test } from "app/utils/test";
 
 export function SCROLL_ONE_SQUARE_DOWN() {
 
-  if (!this.on) return;
+  if (!this.on || this.player.isFalling) return;
 
   events.emit("TRANSLATE_BOARD", { rows: 1 });
 
@@ -22,19 +22,10 @@ export function INIT_NEXT_SCROLL_STEP() {
 
   this.render();
 
-  this.ennemies.collection.forEach(ennemy => {
+  for (const piece of this.offBoardPieces) {
 
-    if (events.ask("IS_BELOW_BOARD", ennemy)) {
+    piece.fall(this.durations.fall);
 
-      events.emit("ENNEMY_FALL_IN_HOLE", ennemy);
-    }
-  });
-
-  if (events.ask("IS_BELOW_BOARD", this.player)) {
-
-    events.emit("PLAYER_FALL_IN_HOLE", this.player);
-
-    return;
   }
 
   window.requestAnimationFrame(() => {
@@ -56,6 +47,11 @@ export function TRANSLATE_PIECES({ rows } = {}) {
   for (const { container } of this.pieces) {
 
     container.translateY({ rows, duration: rows && this.durations.scroll });
-
   }
+
+
+  // this.pieces.forEach(({ container }) => {
+  //
+  //   container.translateY({ rows, duration: rows && this.durations.scroll });
+  // });
 }

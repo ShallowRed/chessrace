@@ -1,3 +1,5 @@
+import events from 'app/game-events/event-emitter';
+
 import Piece from 'app/game-objects/pieces/piece-sprite';
 
 import { animationTimeout } from 'app/utils/animation-timeout';
@@ -44,7 +46,9 @@ export default class Player extends Piece {
 
     super.fall(duration);
 
-    this.setFlag("isFalling", duration)
+    this.setFlag("isFalling", duration);
+
+    events.timeout("GAME_OVER", duration);
   }
 
   setFlag(flag, duration) {
