@@ -9,7 +9,7 @@ export default class Piece extends GameObject {
       className,
       domEl: { sprite: document.createElement('div') },
       inContainer: true
-    })
+    });
 
     Object.assign(this, { className, ...props });
   }

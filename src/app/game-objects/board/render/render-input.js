@@ -7,31 +7,24 @@ export function render() {
   const { width, thickness, input, offset } = PlayArea;
 
   const ctx = {
-    top: this.ctx.inputTop,
-    down: this.ctx.inputBottom
+    front: this.ctx.inputFront,
+    rear: this.ctx.inputRear
   }
 
-  const color = {
-    light: "#babbc5",
-    medium: "#909199",
-    dark: "#67686d",
-    xDark: "#3e3e41",
-    xxDark: "#29292b"
-  }
+  const colors = this.colors.input;
 
   // Block front face
-  ctx.top.fillStyle = color.light;
-  draw.frontFace(ctx.top)({
+  ctx.front.fillStyle = colors.light;
+  draw.frontFace(ctx.front)({
     left: 0,
     top: 0,
     width: input.width,
     height: input.height
-    // height: top - input.edgeToHole.thickness
   });
 
   // front face in hole
-  ctx.down.fillStyle = color.xDark;
-  draw.frontFace(ctx.down)({
+  ctx.rear.fillStyle = colors.xDark;
+  draw.frontFace(ctx.rear)({
     left: offset.left + thickness,
     top: input.height + input.edgeToHole.thickness,
     width: width,
@@ -39,8 +32,8 @@ export function render() {
   });
 
   // Block right face
-  ctx.top.fillStyle = color.medium;
-  draw.rightFace(ctx.top)({
+  ctx.front.fillStyle = colors.medium;
+  draw.rightFace(ctx.front)({
     left: input.width,
     top: 0,
     height: input.height,
@@ -48,8 +41,8 @@ export function render() {
   });
 
   // Right face in hole
-  ctx.down.fillStyle = color.xxDark;
-  draw.rightFace(ctx.down)({
+  ctx.rear.fillStyle = colors.xxDark;
+  draw.rightFace(ctx.rear)({
     left: offset.left,
     top: input.height + input.edgeToHole.thickness - thickness,
     height: thickness,
@@ -57,8 +50,8 @@ export function render() {
   });
 
   // Top large bottom face
-  ctx.top.fillStyle = color.dark;
-  draw.bottomFace(ctx.top)({
+  ctx.front.fillStyle = colors.dark;
+  draw.bottomFace(ctx.front)({
     left: input.edgeToHole.width - 1,
     top: input.height,
     width: width + 2,
@@ -66,8 +59,8 @@ export function render() {
   });
 
   // Bottom large bottom face
-  ctx.down.fillStyle = color.dark;
-  draw.bottomFace(ctx.down)({
+  ctx.rear.fillStyle = colors.dark;
+  draw.bottomFace(ctx.rear)({
     left: offset.left + thickness - 1,
     top: input.height + thickness + input.edgeToHole.thickness,
     width: width + 2,
@@ -75,7 +68,7 @@ export function render() {
   });
 
   // Left bottom face
-  draw.bottomFace(ctx.down)({
+  draw.bottomFace(ctx.rear)({
     left: 0,
     top: input.height,
     width: input.edgeToHole.width,
@@ -83,62 +76,10 @@ export function render() {
   });
 
   // Right bottom face
-  draw.bottomFace(ctx.top)({
+  draw.bottomFace(ctx.front)({
     left: width + input.edgeToHole.width,
     top: input.height,
     width: input.edgeToHole.width,
     thickness: input.thickness
   });
-  //
-  // drawText(ctx.top, input);
 }
-
-// function drawText(ctx, input) {
-//
-//   const text = "Chess Race";
-//
-//   const w = input.width - 6;
-//   const h = Math.ceil(input.height / 2);
-//
-//   const offset = 500;
-//
-//
-//   const fontSize =
-//
-//     Math.min(
-//       30,
-//       Math.max(
-//         Math.round(input.height / 2),
-//         Math.round(input.width / 20)
-//       )
-//     );
-//
-//   const shift = Math.round(fontSize / 10);
-//   const blur = Math.round(fontSize / 5);
-//
-//   ctx.font = `800 ${fontSize}px sans-serif`;
-//   ctx.textAlign = "right";
-//   ctx.textBaseline = "middle";
-//
-//   ctx.globalCompositeOperation = "destination-out";
-//   ctx.fillStyle = "black";
-//   ctx.fillText(text, w, h);
-//
-//   ctx.globalCompositeOperation = "destination-over";
-//   ctx.shadowColor = "white";
-//   ctx.shadowBlur = blur;
-//   ctx.shadowOffsetX = offset * 2 + shift;
-//   ctx.shadowOffsetY = offset * 2 + shift;
-//   ctx.fillText(text, w - offset, h - offset);
-//
-//   ctx.globalCompositeOperation = "xor";
-//   ctx.fillStyle = "#29292b";
-//   ctx.shadowColor = "transparent";
-//   ctx.fillText(text, w, h);
-//
-//   ctx.globalCompositeOperation = "destination-over";
-//   ctx.fillStyle = "#909199";
-//   ctx.fillText(text, w, h);
-//
-//   ctx.globalCompositeOperation = "source-over";
-// }

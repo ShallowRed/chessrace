@@ -106,7 +106,7 @@ export const canvasConfig = {
     }
   },
 
-  inputTop: {
+  inputFront: {
 
     zIndex: 100,
     inContainer: false,
@@ -119,7 +119,7 @@ export const canvasConfig = {
     }),
   },
 
-  inputBottom: {
+  inputRear: {
 
     zIndex: 15,
     inContainer: false,
@@ -157,5 +157,13 @@ export const colors = {
     bottomFace: "#999",
   },
 
-  shadow: "#EEE"
+  shadow: "#EEE",
+
+  input: {
+    light: "#babbc5",
+    medium: "#909199",
+    dark: "#67686d",
+    xDark: "#3e3e41",
+    xxDark: "#29292b"
+  }
 };

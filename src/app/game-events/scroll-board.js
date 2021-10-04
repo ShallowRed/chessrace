@@ -25,7 +25,6 @@ export function INIT_NEXT_SCROLL_STEP() {
   for (const piece of this.offBoardPieces) {
 
     piece.fall(this.durations.fall);
-
   }
 
   window.requestAnimationFrame(() => {
@@ -48,10 +47,4 @@ export function TRANSLATE_PIECES({ rows } = {}) {
 
     container.translateY({ rows, duration: rows && this.durations.scroll });
   }
-
-
-  // this.pieces.forEach(({ container }) => {
-  //
-  //   container.translateY({ rows, duration: rows && this.durations.scroll });
-  // });
 }

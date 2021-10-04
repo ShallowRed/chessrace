@@ -26,6 +26,7 @@ export default class CanvasCollections {
     this.canvas.movableCollection = this.newCollection(config, "inContainer");
 
     this.canvas.coloredCollection = this.newCollection(config, "isColored");
+    console.log(this.canvas);
   }
 
   newCollection(config, condition) {

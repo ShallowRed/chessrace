@@ -45,21 +45,6 @@ export default {
 
   },
 
-  get pieces() {
-
-    return [this.player, ...this.ennemies.collection];
-  },
-
-  get offBoardPieces() {
-
-    const boardLimit = this.board.nRenders - 1;
-
-    return this.pieces.filter(({ position }) => {
-
-      return position[1] < boardLimit
-    })
-  },
-
   addListeners() {
 
     getBoundMethods.call(this, GameEvents, (message, listener) => {
@@ -120,5 +105,20 @@ export default {
     this.player.moveSprite();
 
     this.ennemies.setEachPosition();
-  }
+  },
+
+  get pieces() {
+
+    return [this.player, ...this.ennemies.collection];
+  },
+
+  get offBoardPieces() {
+
+    const boardLimit = this.board.nRenders - 1;
+
+    return this.pieces.filter(({ position }) => {
+
+      return position[1] < boardLimit
+    })
+  },
 }
