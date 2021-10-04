@@ -3,15 +3,15 @@ import PlayArea from 'app/game-objects/board/models/play-area';
 
 export default class Piece extends GameObject {
 
-  constructor({ className, ...props }) {
+  constructor(props) {
 
     super({
-      className,
+      className: props.type,
       domEl: { sprite: document.createElement('div') },
       inContainer: true
     });
 
-    Object.assign(this, { className, ...props });
+    Object.assign(this, props);
   }
 
   render() {
@@ -32,7 +32,7 @@ export default class Piece extends GameObject {
   setSpriteClassName() {
 
     this.sprite.className =
-      `piece ${this.pieceName} ${this.color} ${this.className}`;
+      `piece ${this.type} ${this.color} ${this.pieceName}`;
   }
 
   removeSprite() {

@@ -6,7 +6,7 @@ export default class EnnemyPiece extends Piece {
 
   constructor(color, { position, pieceName }) {
 
-    super({ position, pieceName, color, className: "ennemy" });
+    super({ position, pieceName, color, type: "ennemy" });
 
     this.onClick(() => {
 
@@ -26,12 +26,5 @@ export default class EnnemyPiece extends Piece {
     const offset = this.getOffset();
 
     this.container.setStyle(offset);
-  }
-
-  fall(duration) {
-
-    super.fall(duration);
-
-    events.timeout("REMOVE_ENNEMY", this, duration);
   }
 }

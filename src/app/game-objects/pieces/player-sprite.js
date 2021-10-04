@@ -2,13 +2,13 @@ import events from 'app/game-events/event-emitter';
 
 import Piece from 'app/game-objects/pieces/piece-sprite';
 
-import { animationTimeout } from 'app/utils/animation-timeout';
-
 export default class Player extends Piece {
+
+  isPlayer = true;
 
   constructor(color, { position, pieceName }) {
 
-    super({ color, position, pieceName, className: "player" });
+    super({ color, position, pieceName, type: "player" });
 
     this.spawn = { position, pieceName };
   }
@@ -55,7 +55,7 @@ export default class Player extends Piece {
 
     this[flag] = true;
 
-    animationTimeout(() => {
+    setTimeout(() => {
 
       this[flag] = false;
 

@@ -1,7 +1,4 @@
 import events from 'app/game-events/event-emitter';
-// import { animationTimeout } from 'app/utils/animation-timeout';
-
-import { test } from "app/utils/test";
 
 export function SCROLL_ONE_SQUARE_DOWN() {
 
@@ -22,10 +19,7 @@ export function INIT_NEXT_SCROLL_STEP() {
 
   this.render();
 
-  for (const piece of this.offBoardPieces) {
-
-    piece.fall(this.durations.fall);
-  }
+  events.emit("KILL_OFFBOARD_PIECES", this.offBoardPieces);
 
   window.requestAnimationFrame(() => {
 

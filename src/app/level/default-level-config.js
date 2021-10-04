@@ -4,7 +4,7 @@ const levelConfig = {
 
   board: {
     columns: 8,
-    rows: 16,
+    rows: 17,
     visibleRows: 12,
   },
 
@@ -15,7 +15,7 @@ const levelConfig = {
 
   durations: {
     move: 0.3,
-    scroll: 1.5,
+    scroll: 2,
     fall: 1
   }
 }

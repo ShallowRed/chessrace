@@ -15,10 +15,7 @@ export function GAME_OVER() {
 
   this.render();
 
-  setTimeout(() =>
-    alert("Game Over"),
-    100
-  );
+  setTimeout(() => alert("Game Over"), 100);
 }
 
 export function GAME_WON() {
@@ -26,11 +23,8 @@ export function GAME_WON() {
   this.on = false;
 
   this.reset();
-  
+
   this.render();
 
-  setTimeout(() =>
-    alert("Game won"),
-    500
-  );
+  setTimeout(() => alert("Game won"), 500);
 }

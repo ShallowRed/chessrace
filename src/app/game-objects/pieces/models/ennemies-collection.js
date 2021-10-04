@@ -18,13 +18,6 @@ export default class EnnemiesCollection {
     this.collection.push(ennemy);
   }
 
-  remove(ennemy) {
-
-    ennemy.removeSprite();
-
-    this.collection.splice(this.collection.indexOf(ennemy), 1);
-  }
-
   addEach(newEnnemyPieces) {
 
     for (const ennemyProps of newEnnemyPieces) {
@@ -33,11 +26,18 @@ export default class EnnemiesCollection {
     }
   }
 
-  setEachPosition() {
+  remove(ennemy) {
 
-    for (const ennemy of this.collection) {
+    ennemy.removeSprite();
 
-      ennemy.setAbsolutePosition();
+    this.collection.splice(this.collection.indexOf(ennemy), 1);
+  }
+
+  removeEach(ennemies) {
+
+    for (const ennemy of ennemies) {
+
+      this.remove(ennemy);
     }
   }
 
@@ -49,5 +49,13 @@ export default class EnnemiesCollection {
     }
 
     this.collection = [];
+  }
+
+  setEachPosition() {
+
+    for (const ennemy of this.collection) {
+
+      ennemy.setAbsolutePosition();
+    }
   }
 }

@@ -1,5 +1,7 @@
 import events from 'app/game-events/event-emitter';
 
+import { animationTimeout } from 'app/utils/animation-timeout';
+
 export function MOVE_PLAYER(position) {
 
   if (!this.on) {
@@ -23,12 +25,25 @@ export function EAT_PIECE(ennemy) {
 
   this.player.updatePiece(ennemy.pieceName);
 
-  events.timeout("REMOVE_ENNEMY", ennemy, this.durations.move);
+  setTimeout(() => {
+
+    this.ennemies.remove(ennemy);
+
+  }, this.durations.move * 800);
 }
 
-export function REMOVE_ENNEMY(ennemy) {
+export function KILL_OFFBOARD_PIECES(offBoardPieces) {
 
-  if (!this.on) return;
+  if (!offBoardPieces.length) return;
 
-  this.ennemies.remove(ennemy);
+  for (const piece of offBoardPieces) {
+
+    piece.fall(this.durations.fall);
+  }
+
+  setTimeout(() => {
+
+    this.ennemies.removeEach(offBoardPieces.filter(piece => !piece.isPlayer));
+
+  }, this.durations.fall * 800);
 }
