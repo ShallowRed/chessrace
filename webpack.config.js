@@ -1,142 +1,52 @@
 const path = require("path");
 
-const ESLintPlugin = require('eslint-webpack-plugin');
-const TerserPlugin = require("terser-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+const { red, green } = require('chalk');
 
-const analyse = process.env.NODE_ENV == "analyse";
-const isDevMode = process.env.NODE_ENV == "dev";
+const getWebpackConfig = require(path.resolve(__dirname, "webpack.commons.js"));
 
-console.log("-----------------------------------------");
-console.log("Dev mode :", isDevMode);
-console.log("-----------------------------------------");
+const CONFIGS = {
 
-const config = {
+  game: {
 
-  input: {
-    folder: path.resolve(__dirname, "src"),
-    entry: "index.js",
-    template: "index.ejs",
-    alias: {
-      styles: "styles",
-      app: "app"
+    input: {
+      folder: path.resolve(__dirname, "src"),
+      entry: "index.js",
+      template: "index.ejs",
+      alias: {
+        styles: "styles",
+        app: "app"
+      }
+    },
+
+    output: {
+      folder: path.resolve(__dirname, "dist"),
+      publicPath: "./",
+      html: "index.html",
+      js: "bundle.js",
+      css: "styles.css"
+      // js: "vvmap.[hash].js",
+      // css: "vvmap.[hash].css"
     }
-  },
-
-  output: {
-    folder: path.resolve(__dirname, "dist"),
-    publicPath: "./",
-    html: "index.html",
-    js: "bundle.js",
-    // js: "vvmap.[hash].js",
-    css: "styles.css"
-    // css: "vvmap.[hash].css"
   }
 }
 
-const babelLoader = {
-  test: /\.js$/,
-  exclude: /node_modules/,
-  use: "babel-loader"
-};
+const configName = process.env.WP_CONFIG;
 
-const ejsLoader = {
-  test: /\.ejs$/,
-  use: [{
-    loader: "ejs-loader",
-    options: {
-      esModule: false
-    }
-  }]
-};
+const config = CONFIGS[configName];
 
-const cssLoaders = {
-  test: /\.css$/,
-  use: [{
-      loader: MiniCssExtractPlugin.loader,
-    },
-    {
-      loader: "css-loader",
-      options: {
-        importLoaders: 1
-      }
-    },
-    {
-      loader: "postcss-loader",
-      options: {
-        postcssOptions: {
-          ident: "postcss",
-          plugins: [
-            require("postcss-normalize")(),
-            require("postcss-preset-env")({
-              stage: 3,
-              features: {
-                "nesting-rules": true
-              }
-            })
-          ]
-        }
-      }
-    }
-  ]
-}
 
-module.exports = {
-  target: "web",
-  mode: isDevMode ? "development" : "production",
-  watch: isDevMode,
-  entry: `${config.input.folder}/${config.input.entry}`,
-  resolve: {
-    alias: getAliases(config)
-  },
-  output: {
-    filename: config.output.js,
-    path: config.output.folder,
-    publicPath: config.output.publicPath
-  },
-  optimization: {
-    minimize: !isDevMode,
-    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
-  },
-  module: {
-    rules: [
-      !isDevMode && babelLoader,
-      ejsLoader,
-      cssLoaders
-    ].filter(Boolean)
-  },
-  plugins: [
+const nodeEnv = process.env.NODE_ENV;
 
-    isDevMode && new ESLintPlugin({
-      emitWarning: true,
-    }),
+const isDevMode = nodeEnv === "dev";
 
-    analyse && new BundleAnalyzerPlugin(),
+const isAnalyseMode = nodeEnv === "analyse";
 
-    new MiniCssExtractPlugin({
-      filename: config.output.css,
-    }),
 
-    new HtmlWebpackPlugin({
-      filename: config.output.html,
-      inject: config.output.inject ?? true,
-      template: `${config.input.folder}/${config.input.template}`,
-    })
+console.log(
+  green("\r\n---------------------------------\r\n\r\n"),
+  `Config : ${green(configName)} | mode : ${red(nodeEnv)}`,
+  green("\r\n\r\n---------------------------------\r\n")
+);
 
-  ].filter(Boolean),
-};
 
-function getAliases(config, output = {}) {
-
-  Object.entries(config.input.alias)
-    .forEach(([key, value]) => {
-      Object.assign(output, {
-        [key]: `${config.input.folder}/${value}/`
-      });
-    });
-
-  return output
-}
+module.exports = getWebpackConfig(config, { isAnalyseMode, isDevMode });

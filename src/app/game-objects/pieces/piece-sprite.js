@@ -48,7 +48,7 @@ export default class Piece extends GameObject {
   }
 
   get piece() {
-
+ 
     return this.pieceName;
   }
 
