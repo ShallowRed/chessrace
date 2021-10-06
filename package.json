@@ -5,8 +5,8 @@
   "scripts": {
     "serve": "npx live-server ./dist/",
     "dev": "cross-env NODE_ENV=dev WP_CONFIG=game webpack --config webpack.config.js",
-    "prod": "webpack --config webpack.config.js",
-    "analyse": "cross-env NODE_ENV=analyse webpack --config webpack.config.js"
+    "prod": "cross-env WP_CONFIG=game webpack --config webpack.config.js",
+    "analyse": "cross-env NODE_ENV=analyse WP_CONFIG=game webpack --config webpack.config.js"
   },
   "browserslist": [
     "last 3 version, > 0.5%, not dead, not ie <= 11"

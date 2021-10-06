@@ -4,6 +4,23 @@ export default {
 
   offset: {},
 
+  input: {},
+
+  squareSizeRatios: {
+
+    BOARD_THICKNESS: 1 / 6,
+    BOARD_OFFSET_DEPTH: 1 / 3,
+
+    INPUT_HEIGHT: 1 / 5,
+    INPUT_EDGETOHOLE_WIDTH: 1 / 10,
+    INPUT_EDGETOHOLE_THICKNESS: 1 / 16,
+  },
+
+  getSquareRatio(key) {
+
+    return round(this.squareSize * this.squareSizeRatios[key]);
+  },
+
   setDimensions(columns, rows) {
 
     this.squareSize = min(
@@ -16,38 +33,38 @@ export default {
 
     this.height = rows * this.squareSize;
 
-
-    this.thickness = round(this.squareSize / 6);
-
-    this.offset.depth = round(this.squareSize / 3);
+    this.thickness = this.getSquareRatio("BOARD_THICKNESS");
 
 
-    const { edgeToHole } = this.input = getInput(this);
+    this.setInputDimensions();
 
+    this.setOffsetDimensions();
+  },
 
-    this.offset.left = edgeToHole.thickness + edgeToHole.width;
+  setInputDimensions({ width, thickness, input } = this) {
 
-    this.offset.right = max(this.offset.left, this.offset.depth);
+    input.height = this.getSquareRatio("INPUT_HEIGHT");
 
-    this.offset.top = this.input.height + edgeToHole.thickness;
+    input.edgeToHole = {
+
+      width: this.getSquareRatio("INPUT_EDGETOHOLE_WIDTH"),
+
+      thickness: this.getSquareRatio("INPUT_EDGETOHOLE_THICKNESS")
+    };
+
+    input.width = width + input.edgeToHole.width * 2;
+
+    input.thickness = thickness + input.edgeToHole.thickness * 2;
+  },
+
+  setOffsetDimensions({ input, offset } = this) {
+
+    offset.depth = this.getSquareRatio("BOARD_OFFSET_DEPTH");
+
+    offset.left = input.edgeToHole.thickness + input.edgeToHole.width;
+
+    offset.right = max(offset.left, offset.depth);
+
+    offset.top = input.height + input.edgeToHole.thickness;
   }
-}
-
-function getInput({ width, thickness, squareSize }) {
-
-  const height = round(squareSize / 5);
-
-  const edgeToHole = {
-
-    width: round(squareSize / 10),
-
-    thickness: round(squareSize / 16)
-  };
-
-  return {
-    height,
-    edgeToHole,
-    width: width + edgeToHole.width * 2,
-    thickness: thickness + edgeToHole.thickness * 2
-  };
 }

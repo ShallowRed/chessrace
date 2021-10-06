@@ -28,7 +28,11 @@ export default class Canvas extends GameObject {
 
     this.pixelRatio = PIXEL_RATIO;
 
-    if (this.container) {
+    if (!this.container) {
+
+      this.style = { left };
+
+    } else {
 
       this.container.style = {
         width: this.width,
@@ -36,10 +40,6 @@ export default class Canvas extends GameObject {
         top: PlayArea.offset.top,
         left
       };
-
-    } else {
-
-      this.style = { left };
     }
   }
 
@@ -47,15 +47,13 @@ export default class Canvas extends GameObject {
 
     if (ratio === 1) return;
 
-    const { canvas, ctx, width, height } = this;
+    this.canvas.width = this.width * ratio;
+    this.canvas.height = this.height * ratio;
 
-    canvas.width = width * ratio;
-    canvas.height = height * ratio;
+    this.canvas.style.width = `${this.width}px`;
+    this.canvas.style.height = `${this.height}px`;
 
-    canvas.style.width = `${width}px`;
-    canvas.style.height = `${height}px`;
-
-    ctx.scale(ratio, ratio);
+    this.ctx.scale(ratio, ratio);
   }
 
   getShape = ({
