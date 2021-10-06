@@ -1,4 +1,4 @@
-const { min, round } = Math;
+const { max, min, round } = Math;
 
 export default {
 
@@ -27,19 +27,21 @@ export default {
 
     this.offset.left = edgeToHole.thickness + edgeToHole.width;
 
+    this.offset.right = max(this.offset.left, this.offset.depth);
+
     this.offset.top = this.input.height + edgeToHole.thickness;
   }
 }
 
 function getInput({ width, thickness, squareSize }) {
 
-  const height = round(squareSize / 1.8);
+  const height = round(squareSize / 5);
 
   const edgeToHole = {
 
-    width: round(squareSize / 5),
+    width: round(squareSize / 10),
 
-    thickness: round(squareSize / 8)
+    thickness: round(squareSize / 16)
   };
 
   return {

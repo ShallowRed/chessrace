@@ -15,9 +15,9 @@ export function INIT_NEXT_SCROLL_STEP() {
 
   if (!this.on) return;
 
-  events.emit("TRANSLATE_BOARD");
-
   this.render();
+
+  events.emit("TRANSLATE_BOARD");
 
   events.emit("KILL_OFFBOARD_PIECES", this.offBoardPieces);
 

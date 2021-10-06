@@ -1,39 +1,49 @@
 const path = require("path");
-const webpack = require("webpack");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+
+const ESLintPlugin = require('eslint-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
-const ESLintPlugin = require('eslint-webpack-plugin');
 
 const analyse = process.env.NODE_ENV == "analyse";
-const dev = process.env.NODE_ENV == "dev";
+const isDevMode = process.env.NODE_ENV == "dev";
 
-console.log("Dev mode :", dev);
+console.log("-----------------------------------------");
+console.log("Dev mode :", isDevMode);
+console.log("-----------------------------------------");
 
 const config = {
+
   input: {
-    js: "./src/index.js",
-    ejs: "./src/index.ejs"
+    folder: path.resolve(__dirname, "src"),
+    entry: "index.js",
+    template: "index.ejs",
+    alias: {
+      styles: "styles",
+      app: "app"
+    }
   },
+
   output: {
-    folder: "./dist",
-    html: "index",
-    js: "bundle",
-    // js: "vvmap.[hash]",
-    css: "styles"
-    // css: "vvmap.[hash]"
+    folder: path.resolve(__dirname, "dist"),
+    publicPath: "./",
+    html: "index.html",
+    js: "bundle.js",
+    // js: "vvmap.[hash].js",
+    css: "styles.css"
+    // css: "vvmap.[hash].css"
   }
 }
 
-const babelRules = {
+const babelLoader = {
   test: /\.js$/,
   exclude: /node_modules/,
   use: "babel-loader"
 };
 
-const ejsRules = {
+const ejsLoader = {
   test: /\.ejs$/,
   use: [{
     loader: "ejs-loader",
@@ -43,13 +53,7 @@ const ejsRules = {
   }]
 };
 
-const jsonRules = {
-  test: /\.(geo)?json$/,
-  exclude: /node_modules/,
-  loader: "json-loader"
-};
-
-const cssRules = {
+const cssLoaders = {
   test: /\.css$/,
   use: [{
       loader: MiniCssExtractPlugin.loader,
@@ -80,49 +84,59 @@ const cssRules = {
   ]
 }
 
-//////////////////////////////
 module.exports = {
   target: "web",
-  mode: dev ? "development" : "production",
-  watch: dev,
-  entry: config.input.js,
+  mode: isDevMode ? "development" : "production",
+  watch: isDevMode,
+  entry: `${config.input.folder}/${config.input.entry}`,
   resolve: {
-    alias: {
-      styles: path.resolve(__dirname, "src/styles/"),
-      app: path.resolve(__dirname, "src/app/")
-    }
+    alias: getAliases(config)
   },
   output: {
-    filename: `${config.output.js}.js`,
-    path: path.resolve(__dirname, `${config.output.folder}`),
-    publicPath: `./`
+    filename: config.output.js,
+    path: config.output.folder,
+    publicPath: config.output.publicPath
   },
   optimization: {
-    minimize: !dev,
-    minimizer: [new TerserPlugin(), new CssMinimizerPlugin({})],
+    minimize: !isDevMode,
+    minimizer: [new TerserPlugin(), new CssMinimizerPlugin()],
   },
   module: {
     rules: [
-      jsonRules,
-      // esLintRules,
-      // dev ? esLintRules : false,
-      !dev ? babelRules : false,
-      ejsRules,
-      cssRules
+      !isDevMode && babelLoader,
+      ejsLoader,
+      cssLoaders
     ].filter(Boolean)
   },
   plugins: [
-    new ESLintPlugin({
+
+    isDevMode && new ESLintPlugin({
       emitWarning: true,
     }),
-    analyse ? new BundleAnalyzerPlugin() : false,
+
+    analyse && new BundleAnalyzerPlugin(),
+
     new MiniCssExtractPlugin({
-      filename: `${config.output.css}.css`,
+      filename: config.output.css,
     }),
+
     new HtmlWebpackPlugin({
-      filename: `${config.output.html}.html`,
-      inject: true,
-      template: path.resolve(__dirname, config.input.ejs),
+      filename: config.output.html,
+      inject: config.output.inject ?? true,
+      template: `${config.input.folder}/${config.input.template}`,
     })
+
   ].filter(Boolean),
 };
+
+function getAliases(config, output = {}) {
+
+  Object.entries(config.input.alias)
+    .forEach(([key, value]) => {
+      Object.assign(output, {
+        [key]: `${config.input.folder}/${value}/`
+      });
+    });
+
+  return output
+}

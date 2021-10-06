@@ -1,4 +1,4 @@
-export function setStyle(element, styles) {
+export function setStyle({ element, styles }) {
 
   for (const [key, value] of Object.entries(styles)) {
 

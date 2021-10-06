@@ -24,16 +24,16 @@ export default class Player extends Piece {
 
     const { pieceName, position } = this.spawn;
 
-    this.updatePiece(pieceName);
+    this.piece = pieceName;
 
-    this.updatePosition(position);
+    this.position = position;
 
     this.moveSprite();
   }
 
   moveSprite({ duration = 0 } = {}) {
 
-    const { left, bottom } = this.getOffset();
+    const { left, bottom } = this.offset;
 
     this.sprite.style.transitionDuration = `${duration}s`;
 

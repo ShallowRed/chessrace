@@ -4,54 +4,85 @@ import { setStyle } from "app/utils/set-style";
 
 export default class GameObject {
 
-  static container = document.querySelector("main");
+  static container = new GameObject({
+    domEl: document.createElement('main'),
+    parent: document.querySelector("body")
+  });
 
-  constructor(props, parent = GameObject.container ) {
+  static remove({ domEl }) {
 
-    if (props.domEl instanceof HTMLElement) {
+    GameObject.container.domEl.removeChild(domEl)
+  }
 
-      this.domEl = props.domEl;
+  constructor({
+    domEl = document.createElement('div'),
+    parent = GameObject.container,
+    className,
+    inContainer
+  } = {}) {
 
-    } else if (typeof props.domEl === "object") {
+    if (inContainer) {
 
-      const [
-        [key, domEl]
-      ] = Object.entries(props.domEl);
-
-      this.domEl = this[key] = domEl;
+      this.container = parent = new GameObject();
     }
 
-    if (props.inContainer) {
+    this.domEl = domEl;
 
-      this.container = new GameObject({
-        domEl: document.createElement('div'),
-        className: `${props.className}-container`
-      });
-
-      parent = this.container.domEl;
-    }
-
-    this.domEl.className = props.className;
+    this.className = className;
 
     parent.append(this.domEl);
+  }
+
+  set domEl(domEl) {
+
+    if (domEl instanceof HTMLElement) {
+
+      this.domElement = domEl;
+
+    } else if (typeof domEl === "object") {
+
+      const [key] = Object.keys(domEl);
+
+      this.domElement = this[key] = domEl[key];
+    }
+  }
+
+  get domEl() {
+
+    return this.domElement;
+  }
+
+  set className(className) {
+
+    if (!className) return;
+
+    this.domEl.className = className;
+
+    this.container?.domEl.setAttribute("class", `${className}-container`);
+  }
+
+  append(el) {
+
+    this.domEl.append(el);
   }
 
   translateY = ({ rows = 0, duration = 0 } = {}) => {
 
     this.domEl.style.transitionDuration = `${duration}s`;
 
-    this.domEl.style.transform = `translateY(${rows * PlayArea.squareSize}px)`;
+    this.domEl.style.transform =
+      `translateY(${rows * PlayArea.squareSize}px)`;
   }
 
-  setStyle = config => {
+  set style(config) {
 
-    setStyle.call(this, this.domEl, config);
+    setStyle.call(this, { element: this.domEl, styles: config });
   }
 
-  setZIndex() {
+  set zIndex(zIndex = 0) {
 
     (this?.container || this)
-    .domEl.style.zIndex = this?.zIndex || 0;
+    .domEl.style.zIndex = zIndex;
   }
 
   onClick(callback) {

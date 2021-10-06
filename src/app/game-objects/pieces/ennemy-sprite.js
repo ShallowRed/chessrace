@@ -6,7 +6,7 @@ export default class EnnemyPiece extends Piece {
 
   constructor(color, { position, pieceName }) {
 
-    super({ position, pieceName, color, type: "ennemy" });
+    super({ color, position, pieceName, type: "ennemy" });
 
     this.onClick(() => {
 
@@ -23,8 +23,6 @@ export default class EnnemyPiece extends Piece {
 
   setAbsolutePosition() {
 
-    const offset = this.getOffset();
-
-    this.container.setStyle(offset);
+    this.container.style = this.offset;
   }
 }

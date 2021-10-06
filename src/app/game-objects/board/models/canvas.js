@@ -2,6 +2,7 @@ import GameObject from 'app/game-objects/game-object';
 import PlayArea from 'app/game-objects/board/models/play-area';
 
 import { draw } from "app/utils/draw-shapes";
+
 import { PIXEL_RATIO } from "app/utils/set-pixel-ratio";
 
 export default class Canvas extends GameObject {
@@ -21,39 +22,40 @@ export default class Canvas extends GameObject {
     this.draw = draw[this.shape?.type]?.(this.ctx);
   }
 
-  setDimensions({
-    canvasDimensions: { left, ...canvasDimensions },
-    getContainerDimensions
-  }) {
+  set dimensions({ left, ...dimensions }) {
 
-    this.setStyle(canvasDimensions);
+    this.style = dimensions;
 
-    this.setPixelRatio();
+    this.pixelRatio = PIXEL_RATIO;
 
     if (this.container) {
 
-      this.container.setStyle({ left, ...getContainerDimensions(this) });
+      this.container.style = {
+        width: this.width,
+        height: this.height - PlayArea.squareSize,
+        top: PlayArea.offset.top,
+        left
+      };
 
     } else {
 
-      this.setStyle({ left });
+      this.style = { left };
     }
-
   }
 
-  setPixelRatio() {
+  set pixelRatio(ratio) {
 
-    if (PIXEL_RATIO === 1) return;
+    if (ratio === 1) return;
 
     const { canvas, ctx, width, height } = this;
 
-    canvas.width = width * PIXEL_RATIO;
-    canvas.height = height * PIXEL_RATIO;
+    canvas.width = width * ratio;
+    canvas.height = height * ratio;
 
     canvas.style.width = `${width}px`;
     canvas.style.height = `${height}px`;
 
-    ctx.scale(PIXEL_RATIO, PIXEL_RATIO);
+    ctx.scale(ratio, ratio);
   }
 
   getShape = ({

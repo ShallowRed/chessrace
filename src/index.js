@@ -8,4 +8,6 @@ import Game from 'app/game';
 
 import levelConfig from 'app/level/default-level-config';
 
-Game.init(levelConfig);
+const game = new Game(levelConfig);
+
+game.init();

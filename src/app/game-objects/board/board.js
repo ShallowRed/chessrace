@@ -5,16 +5,11 @@ import GameObject from 'app/game-objects/game-object';
 import PlayArea from 'app/game-objects/board/models/play-area';
 import CanvasCollections from 'app/game-objects/board/models/canvas-collection';
 
-import {
-  getSquare,
-  isSquare
-} from 'app/game-objects/board/models/board-square';
-
+import * as boardSquare from 'app/game-objects/board/models/board-square';
 import render from 'app/game-objects/board/render/';
 
 import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
-import { setStyle } from "app/utils/set-style";
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
 export default class Board {
@@ -28,7 +23,7 @@ export default class Board {
       new CanvasCollections(canvasConfig)
     );
 
-    bindObjectsMethods.call(this, { getSquare, isSquare, ...render });
+    bindObjectsMethods.call(this, { ...boardSquare, ...render });
 
     this.canvas.frontFaces.onClick(evt => {
 
@@ -36,45 +31,21 @@ export default class Board {
     });
   }
 
-  getDimensions(PlayArea) {
-
-    const { width, height, thickness, squareSize, offset } = PlayArea;
-
-    return {
-
-      gameObjectContainerDimensions: {
-        width:  width + thickness + offset.left * 2,
-        height: height + squareSize + offset.top,
-        top: 5
-      },
-
-      getCanvasDimensions: canvas => ({
-
-        canvasDimensions: canvas.getDimensions(PlayArea),
-
-        getContainerDimensions: canvas => ({
-          width: canvas.width,
-          height: canvas.height - squareSize,
-          top: offset.top
-        })
-      })
-    };
-  }
-
   setDimensions() {
 
     PlayArea.setDimensions(this.columns, this.rows);
 
-    const {
-      gameObjectContainerDimensions,
-      getCanvasDimensions
-    } = this.getDimensions(PlayArea);
+    const { width, height, thickness, squareSize, offset } = PlayArea;
 
-    setStyle(GameObject.container, gameObjectContainerDimensions);
+    GameObject.container.style = {
+      width: width + thickness + offset.left + offset.right,
+      height: height + squareSize + offset.top,
+      top: 5
+    };
 
     for (const canvas of this.canvas.collection) {
 
-      canvas.setDimensions(getCanvasDimensions(canvas));
+      canvas.dimensions = canvas.getDimensions(PlayArea);
     }
 
     this.ctx.shadows.fillStyle = this.colors.shadow;
@@ -86,9 +57,10 @@ export default class Board {
 
     this.squares.render(model.regularSquares);
 
-    if (model.lastRowRendered !== model.rows - 1) return
+    if (model.lastRowRendered === model.rows - 1) {
 
-    this.finishLine.render(model.rows);
+      this.finishLine.render(model.rows);
+    }
   }
 
   clear() {

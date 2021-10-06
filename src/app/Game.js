@@ -10,18 +10,18 @@ import Player from 'app/game-objects/pieces/player-sprite';
 import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
-import { test } from "app/utils/test";
+export default class Game {
 
-export default {
-
-  init({
+  constructor({
     board: { columns, rows, visibleRows },
     playerSpawn,
     durations,
     blueprint
   }) {
 
+
     this.durations = durations;
+
 
     this.model = new LevelModel(blueprint, { columns, rows, visibleRows });
 
@@ -33,7 +33,11 @@ export default {
     this.player = new Player(playerColor, playerSpawn);
 
     this.ennemies = new EnnemiesCollection(ennemiesColor);
+  }
 
+  init() {
+
+    this.model.reset();
 
     this.board.setDimensions();
 
@@ -43,7 +47,7 @@ export default {
 
     this.addListeners();
 
-  },
+  }
 
   addListeners() {
 
@@ -53,7 +57,7 @@ export default {
     });
 
     window.addEventListener("resize", () => this.resize());
-  },
+  }
 
   render() {
 
@@ -64,15 +68,15 @@ export default {
 
     this.model.parseNextRows();
 
-    this.board.nRenders++;
-
     this.board.render(this.model);
+
+    this.board.nRenders++;
 
     if (this.model.newEnnemyPieces.length) {
 
       this.ennemies.addEach(this.model.newEnnemyPieces);
     }
-  },
+  }
 
   reset() {
 
@@ -89,7 +93,7 @@ export default {
     this.model.reset();
 
     this.player.reset();
-  },
+  }
 
   resize() {
 
@@ -105,12 +109,12 @@ export default {
     this.player.moveSprite();
 
     this.ennemies.setEachPosition();
-  },
+  }
 
   get pieces() {
 
     return [this.player, ...this.ennemies.collection];
-  },
+  }
 
   get offBoardPieces() {
 
@@ -120,5 +124,5 @@ export default {
 
       return position[1] < boardLimit
     })
-  },
+  }
 }

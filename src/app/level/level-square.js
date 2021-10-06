@@ -13,11 +13,6 @@ export default {
     return this.blueprint[row]?.[col];
   },
 
-  removeEnnemy(squareCoords) {
-
-    this.square.set(squareCoords, 1)
-  },
-
   isHole(squareCoords) {
 
     return this.square.get(squareCoords) === 0;

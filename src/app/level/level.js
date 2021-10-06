@@ -14,8 +14,6 @@ export default class LevelModel {
     this.blueprint = parseBlueprint(blueprint, columns);
 
     bindObjectsMethods.call(this, { square: LevelSquare });
-
-    this.reset();
   }
 
   reset() {
@@ -84,7 +82,6 @@ export default class LevelModel {
       newEnnemies: filterableRow
         .filter(isEnnemy)
         .map(getPiecePositionAndName)
-
     }
   }
 }

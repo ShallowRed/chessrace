@@ -16,7 +16,7 @@ export default class CanvasCollections {
 
       this.ctx[name] = canvas.ctx;
 
-      canvas.setZIndex();
+      canvas.zIndex = config[name].zIndex;
     }
 
     this.canvas.collection = Object.values(this.canvas);

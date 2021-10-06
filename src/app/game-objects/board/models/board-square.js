@@ -11,7 +11,7 @@ export const getSquare = {
 
   top(row) {
 
-    return (this.rows - row + this.nRenders - 1) * PlayArea.squareSize;
+    return (this.rows - row + this.nRenders) * PlayArea.squareSize;
   },
 
   coordsInCanvas([col, row]) {
@@ -56,12 +56,12 @@ export const isSquare = {
 
   inBottomRow(coords) {
 
-    return coords[1] === this.nRenders - 1;
+    return coords[1] === this.nRenders;
   },
 
   notInBottomRow(coords) {
 
-    return coords[1] !== this.nRenders - 1;
+    return coords[1] !== this.nRenders;
   },
 
   leftToHole([col, row]) {
