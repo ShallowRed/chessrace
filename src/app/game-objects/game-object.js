@@ -9,9 +9,9 @@ export default class GameObject {
     parent: document.querySelector("body")
   });
 
-  static remove({ domEl }) {
+  static remove(gameObject) {
 
-    GameObject.container.domEl.removeChild(domEl)
+    this.container.domEl.removeChild(gameObject.domEl);
   }
 
   constructor({
@@ -21,14 +21,17 @@ export default class GameObject {
     inContainer
   } = {}) {
 
+    this.domEl = domEl;
+
     if (inContainer) {
 
       this.container = parent = new GameObject();
     }
 
-    this.domEl = domEl;
+    if (className) {
 
-    this.className = className;
+      this.className = className;
+    }
 
     parent.append(this.domEl);
   }
@@ -53,8 +56,6 @@ export default class GameObject {
   }
 
   set className(className) {
-
-    if (!className) return;
 
     this.domEl.className = className;
 

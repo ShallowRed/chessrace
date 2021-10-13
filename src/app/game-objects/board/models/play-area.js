@@ -9,7 +9,7 @@ export default {
   squareSizeRatios: {
 
     BOARD_THICKNESS: 1 / 6,
-    BOARD_OFFSET_DEPTH: 1 / 3,
+    BOARD_OFFSET_SHADOW: 1 / 3,
 
     INPUT_HEIGHT: 1 / 5,
     INPUT_EDGETOHOLE_WIDTH: 1 / 10,
@@ -59,11 +59,11 @@ export default {
 
   setOffsetDimensions({ input, offset } = this) {
 
-    offset.depth = this.getSquareRatio("BOARD_OFFSET_DEPTH");
+    offset.shadow = this.getSquareRatio("BOARD_OFFSET_SHADOW");
 
     offset.left = input.edgeToHole.thickness + input.edgeToHole.width;
 
-    offset.right = max(offset.left, offset.depth);
+    offset.right = max(offset.left, offset.shadow);
 
     offset.top = input.height + input.edgeToHole.thickness;
   }

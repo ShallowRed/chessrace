@@ -25,14 +25,14 @@ export const canvasConfig = {
 
     getDimensions: ({ width, height, squareSize, offset, thickness }) => ({
       width,
-      height: height + squareSize + thickness + offset.depth,
-      left: offset.left + thickness + offset.depth
+      height: height + squareSize + thickness + offset.shadow,
+      left: offset.left + thickness + offset.shadow
     }),
 
     shape: {
       type: "frontFace",
-      getProps: ({ top, depth, thickness, ...props }) =>
-        ({ top: top + thickness + depth, ...props })
+      getProps: ({ top, offsetShadow, thickness, ...props }) =>
+        ({ top: top + thickness + offsetShadow, ...props })
     }
   },
 

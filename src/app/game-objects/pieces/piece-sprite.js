@@ -6,8 +6,8 @@ export default class Piece extends GameObject {
   constructor({ color, position, pieceName, type }) {
 
     super({
-      className: type,
       domEl: { sprite: document.createElement('div') },
+      className: type,
       inContainer: true
     });
 
@@ -48,7 +48,7 @@ export default class Piece extends GameObject {
   }
 
   get piece() {
- 
+
     return this.pieceName;
   }
 

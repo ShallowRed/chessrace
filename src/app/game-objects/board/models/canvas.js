@@ -62,10 +62,17 @@ export default class Canvas extends GameObject {
     width = PlayArea.squareSize,
     height = PlayArea.squareSize,
     thickness = PlayArea.thickness,
-    depth = PlayArea.offset.depth
+    offsetShadow = PlayArea.offset.shadow
   }) => {
 
-    return this.shape.getProps({ left, top, width, height, thickness, depth })
+    return this.shape.getProps({
+      left,
+      top,
+      width,
+      height,
+      thickness,
+      offsetShadow
+    })
   }
 
   clear() {
