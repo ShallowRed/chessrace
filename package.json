@@ -12,7 +12,8 @@
     "last 3 version, > 0.5%, not dead, not ie <= 11"
   ],
   "dependencies": {
-    "core-js": "^3.6.5"
+    "core-js": "^3.6.5",
+    "npm": "^8.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.10.5",

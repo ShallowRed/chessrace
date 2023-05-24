@@ -10,6 +10,7 @@ const CONFIGS = {
 
     input: {
       folder: path.resolve(__dirname, "src"),
+      // folder: path.resolve(__dirname, "src2"),
       entry: "index.js",
       template: "index.ejs",
       alias: {
