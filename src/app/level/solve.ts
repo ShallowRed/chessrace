@@ -10,9 +10,10 @@ import { PIECE_NAMES } from 'app/types';
 
 import type { Coords, PieceName, PiecePlacement } from 'app/types';
 
-interface State {
-  position: Coords;
-  pieceName: PieceName;
+export interface Solution {
+  moves: Coords[];
+  forms: PieceName[];
+  captures: number;
 }
 
 export function isBeatable(
@@ -20,6 +21,15 @@ export function isBeatable(
   columns: number,
   spawn: PiecePlacement
 ): boolean {
+
+  return solve(blueprint, columns, spawn) !== null;
+}
+
+export function solve(
+  blueprint: number[][],
+  columns: number,
+  spawn: PiecePlacement
+): Solution | null {
 
   const rows = blueprint.length;
 
@@ -35,36 +45,62 @@ export function isBeatable(
   const isInBoard = ([col, row]: Coords) =>
     col >= 0 && row >= 0 && col < columns && row <= rows;
 
-  const key = ({ position: [col, row], pieceName }: State) =>
+  const key = ({ position: [col, row], pieceName }: PiecePlacement) =>
     `${col}_${row}_${pieceName}`;
 
-  const start: State = { position: spawn.position, pieceName: spawn.pieceName };
+  const start: PiecePlacement = {
+    position: spawn.position,
+    pieceName: spawn.pieceName
+  };
 
-  const queue: State[] = [start];
+  const queue: PiecePlacement[] = [start];
 
-  const seen = new Set([key(start)]);
+  const cameFrom = new Map<string, PiecePlacement | null>([[key(start), null]]);
 
   while (queue.length) {
 
-    const state = queue.shift() as State;
+    const state = queue.shift() as PiecePlacement;
 
-    if (state.position[1] === rows) return true;
+    if (state.position[1] === rows) return pathTo(state);
 
     for (const next of movesFrom(state)) {
 
-      if (seen.has(key(next))) continue;
+      if (cameFrom.has(key(next))) continue;
 
-      seen.add(key(next));
+      cameFrom.set(key(next), state);
 
       queue.push(next);
     }
   }
 
-  return false;
+  return null;
 
-  function movesFrom(state: State): State[] {
+  function pathTo(end: PiecePlacement): Solution {
 
-    const reached: State[] = [];
+    const path: PiecePlacement[] = [];
+
+    for (
+      let step: PiecePlacement | null | undefined = end;
+      step;
+      step = cameFrom.get(key(step))
+    ) {
+      path.unshift(step);
+    }
+
+    const forms = path
+      .map(({ pieceName }) => pieceName)
+      .filter((pieceName, index, all) => pieceName !== all[index - 1]);
+
+    return {
+      moves: path.slice(1).map(({ position }) => position),
+      forms,
+      captures: forms.length - 1
+    };
+  }
+
+  function movesFrom(state: PiecePlacement): PiecePlacement[] {
+
+    const reached: PiecePlacement[] = [];
 
     for (let row = 0; row <= rows; row++) {
 
@@ -84,7 +120,7 @@ export function isBeatable(
     return reached;
   }
 
-  function isReachable(state: State, target: Coords): boolean {
+  function isReachable(state: PiecePlacement, target: Coords): boolean {
 
     const legal = isEnemy(target)
       ? isValidTake(state, target)
