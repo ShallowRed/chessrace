@@ -11,7 +11,7 @@
 Chessrace est un jeu d'arcade dans un navigateur : un échiquier défile vers le bas,
 on y monte case par case en se déplaçant selon les règles d'une pièce d'échecs,
 les trous tuent, et **manger une pièce ennemie transforme le joueur en cette pièce**.
-1 286 lignes de JS vanilla, zéro dépendance à l'exécution, 6,9 ko gzip.
+1 286 lignes de JS vanilla, zéro dépendance tierce à l'exécution, 11,7 ko gzip.
 Le rendu pseudo-3D est fait à la main sur 7 canvas superposés, un par « face »
 de l'extrusion, et le défilement est délégué au compositeur CSS — il n'y a
 aucune boucle de rendu par frame dans ce jeu.
@@ -117,8 +117,8 @@ qu'un projet récent et lisse. Ce document peut servir de base à ce récit.
 | Fichiers source JS | 39 |
 | Lignes de JS | 1 286 |
 | Lignes de CSS | 160 (dont 46 de SVG base64) |
-| Dépendances à l'exécution | **0** (aucun polyfill core-js n'est réellement injecté) |
-| Bundle produit | 21 ko JS (6,9 ko gzip) + 17,3 ko CSS (7,9 ko gzip) |
+| Dépendances tierces à l'exécution | **0** (mais des polyfills core-js sont injectés, voir §4.4) |
+| Bundle produit | 34,3 ko JS (11,7 ko gzip) + 17,3 ko CSS (7,9 ko gzip) |
 | Couches canvas | 7 |
 | Tests | 0 |
 | CI | aucune |
@@ -244,7 +244,7 @@ présentable.
 ## 5. État de santé : le build ne passe plus
 
 `npm install && npm run prod` échoue aujourd'hui sur une machine Linux avec
-Node 22. Trois causes indépendantes, toutes triviales :
+Node 22. Quatre causes indépendantes, toutes triviales :
 
 **1. `cross-env` n'est pas déclaré.** Les quatre scripts npm l'utilisent
 (`cross-env NODE_ENV=dev ...`) mais il n'apparaît ni dans `dependencies` ni dans
@@ -261,8 +261,13 @@ casse) et **échoue sur Linux et donc sur toute CI**.
 `Error: error:0308010C digital envelope routines::unsupported`. Corrigé en
 amont dans webpack 5.54.
 
-Une fois ces trois points levés, **le build passe et le jeu fonctionne
-parfaitement** : 21 ko de bundle, aucune erreur console, boucle de jeu,
+**4. terser-webpack-plugin 2.** Une fois les trois premiers points levés,
+terser 4 ne sait pas analyser le chaînage optionnel `?.` utilisé dans les
+sources. Le problème restait masqué tant que des données caniuse périmées
+faisaient transpiler cette syntaxe par Babel.
+
+Une fois ces quatre points levés, **le build passe et le jeu fonctionne
+parfaitement** : 34 ko de bundle, aucune erreur console, boucle de jeu,
 défilement, capture-transformation, chute, victoire — tout marche. Le projet
 n'est pas mort, il est juste inaccessible.
 
@@ -322,7 +327,7 @@ chacun suppose le précédent.
 
 Le meilleur rapport valeur/effort, et de loin. Rien à réécrire.
 
-- Corriger les trois causes du build (§5) : ajouter `cross-env`,
+- Corriger les quatre causes du build (§5) : ajouter `cross-env`,
   renommer l'import en `app/Game`, passer webpack à `^5.54`.
 - Retirer `npm` des dépendances, décider du sort de `package-lock.json`.
 - `git revert 73fc7be` pour retrouver le code lisible.
@@ -413,7 +418,7 @@ Par ordre décroissant de rapport plaisir/effort :
 
 | Ordre | Tâche | Effort | Effet |
 |---|---|---|---|
-| 1 | Réparer le build (3 correctifs, §5) | 30 min | Le projet redevient exécutable par quelqu'un d'autre |
+| 1 | Réparer le build (4 correctifs, §5) | 30 min | Le projet redevient exécutable par quelqu'un d'autre |
 | 2 | `git revert 73fc7be` | 2 min | Le code redevient lisible |
 | 3 | Déployer sur Pages/Netlify + lien dans le dépôt | 30 min | Le projet devient jouable en un clic |
 | 4 | README avec GIF + licence + topics | 2 h | Le projet devient compréhensible |
@@ -440,3 +445,25 @@ Tout ce qui est affirmé ici a été vérifié sur la machine, pas déduit :
 - Redimensionnement testé à l'arrêt et pendant le défilement.
 - ESLint exécuté avec la configuration du dépôt : aucune remontée.
 - Métriques de bundle mesurées sur la sortie réelle, brute et gzip.
+
+---
+
+## Ce que cette analyse a produit
+
+Ce document est un état des lieux daté du 28/07/2026. Ce qui suit a été fait
+depuis, sur la même branche :
+
+- **Le build est réparé** (§5), le dernier commit de mise en forme est
+  reverté, et la chaîne est passée à Vite, ESLint 10, Vitest et TypeScript
+  strict. La CI enchaîne lint, typecheck, tests et build, et sert de barrière
+  au déploiement.
+- **Les bugs du §6 sont corrigés** : le verrou de déplacement, le coup nul et
+  la `RangeError` qu'il entraînait, le prédicat `isPlayer` inversé, la
+  recherche linéaire des cases rendues. L'anglicisme `ennemy` est renommé.
+- **Le jeu a pris de l'ampleur** : dix niveaux écrits à la main sur un
+  vocabulaire de patterns nommés, un solveur qui prouve chacun franchissable
+  et sert de barème, un menu, une progression, un écran de fin noté, du son.
+
+Les pistes du §7 restent valables pour ce qui n'a pas été fait, à commencer
+par l'accessibilité : le plateau est toujours un canvas sans commande au
+clavier.
