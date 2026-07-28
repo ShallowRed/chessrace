@@ -2,20 +2,31 @@ const { abs } = Math;
 
 export function isValidMove({ position, pieceName }, targetPosition) {
 
-  return Pieces[pieceName].isValidMove(position, targetPosition);
+  return (
+    !isSameSquare(position, targetPosition) &&
+    Pieces[pieceName].isValidMove(position, targetPosition)
+  );
 }
 
 export function isValidTake({ position, pieceName }, ennemyPosition) {
 
   return (
-    Pieces[pieceName].isValidTake ||
-    Pieces[pieceName].isValidMove
-  )(position, ennemyPosition);
+    !isSameSquare(position, ennemyPosition) &&
+    (
+      Pieces[pieceName].isValidTake ||
+      Pieces[pieceName].isValidMove
+    )(position, ennemyPosition)
+  );
 }
 
 export function isLongRange(pieceName) {
 
-  return Pieces[pieceName].isLongRange;
+  return Pieces[pieceName].isLongRange === true;
+}
+
+function isSameSquare([x1, y1], [x2, y2]) {
+
+  return x1 === x2 && y1 === y2;
 }
 
 const Pieces = {

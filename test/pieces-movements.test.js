@@ -121,24 +121,21 @@ describe("isLongRange", () => {
     expect(isLongRange("queen")).toBe(true);
   });
 
-  it("is falsy for the pieces that travel across nothing", () => {
-    expect(isLongRange("pawn")).toBeFalsy();
-    expect(isLongRange("king")).toBeFalsy();
-    expect(isLongRange("knight")).toBeFalsy();
+  it("is false for the pieces that travel across nothing", () => {
+    expect(isLongRange("pawn")).toBe(false);
+    expect(isLongRange("king")).toBe(false);
+    expect(isLongRange("knight")).toBe(false);
   });
 });
 
 describe("null move", () => {
 
-  it("is accepted by the king and the long range pieces", () => {
-    for (const pieceName of ["king", "bishop", "rook", "queen"]) {
-      expect(isValidMove(at(pieceName, [3, 3]), [3, 3])).toBe(true);
-    }
-  });
+  it("is rejected by every piece", () => {
+    const pieceNames = ["pawn", "king", "knight", "bishop", "rook", "queen"];
 
-  it("is rejected by the pawn and the knight", () => {
-    for (const pieceName of ["pawn", "knight"]) {
+    for (const pieceName of pieceNames) {
       expect(isValidMove(at(pieceName, [3, 3]), [3, 3])).toBe(false);
+      expect(isValidTake(at(pieceName, [3, 3]), [3, 3])).toBe(false);
     }
   });
 });
