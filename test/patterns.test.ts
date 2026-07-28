@@ -1,28 +1,19 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLevelGrid } from "app/level/level-notation";
 import { mirror, patterns, shift, stack } from "app/level/patterns";
-import { solve } from "app/level/solve";
-import { parseBlueprint } from "app/utils/parse-blueprint";
 
 import { PIECE_NAMES } from "app/types";
 
-import type { Solution } from "app/level/solve";
+import { solveGridFromAnywhere } from "./support";
+
 import type { PieceName } from "app/types";
 
 const SPAWN_ROW = "........";
 
 const COLUMNS = 8;
 
-const crossings = (grid: string, pieceName: PieceName): Solution[] => {
-
-  const blueprint = parseBlueprint(parseLevelGrid(stack(grid, SPAWN_ROW)), COLUMNS);
-
-  return Array
-    .from({ length: COLUMNS }, (_none, column) =>
-      solve(blueprint, COLUMNS, { position: [column, 0], pieceName }))
-    .filter((solution): solution is Solution => solution !== null);
-};
+const crossings = (grid: string, pieceName: PieceName) =>
+  solveGridFromAnywhere(stack(grid, SPAWN_ROW), pieceName);
 
 describe.each(patterns)("$name", (subject) => {
 

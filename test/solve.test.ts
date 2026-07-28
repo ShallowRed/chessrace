@@ -1,19 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { isBeatable, solve } from "app/level/solve";
-import { parseLevelGrid } from "app/level/level-notation";
-import { parseBlueprint } from "app/utils/parse-blueprint";
+import { solveGrid } from "./support";
 
 import type { PieceName } from "app/types";
 
-const beatable = (grid: string, pieceName: PieceName, column = 0) => {
-
-  const columns = (grid.trim().split("\n")[0] ?? "").trim().length;
-
-  const blueprint = parseBlueprint(parseLevelGrid(grid), columns);
-
-  return isBeatable(blueprint, columns, { position: [column, 0], pieceName });
-};
+const beatable = (grid: string, pieceName: PieceName, column = 0) =>
+  solveGrid(grid, pieceName, column) !== null;
 
 describe("isBeatable", () => {
 
@@ -90,16 +82,6 @@ describe("isBeatable", () => {
 });
 
 describe("solve", () => {
-
-  const solveGrid = (grid: string, pieceName: PieceName, column = 0) => {
-
-    const columns = (grid.trim().split("\n")[0] ?? "").trim().length;
-
-    return solve(parseBlueprint(parseLevelGrid(grid), columns), columns, {
-      position: [column, 0],
-      pieceName
-    });
-  };
 
   it("returns the squares the player lands on, finish line included", () => {
     const solution = solveGrid(`

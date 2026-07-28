@@ -1,5 +1,6 @@
 import { TEMPO } from 'app/config';
 import { parseLevelGrid } from 'app/level/level-notation';
+import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { pattern, shift, stack } from 'app/level/patterns';
 import { generateLevelBlueprint } from 'app/utils/level-generator';
 
@@ -19,6 +20,11 @@ export interface Level {
   rows: number;
   spawn: { position: Coords; pieceName: PieceName };
   blueprint: string;
+}
+
+export function blueprintOf(level: Level): number[][] {
+
+  return parseBlueprint(level.blueprint, level.columns);
 }
 
 export function slugOf(name: string): string {

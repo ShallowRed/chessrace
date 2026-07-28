@@ -1,6 +1,6 @@
 import { NEAR_ENOUGH } from 'app/config';
+import { blueprintOf } from 'app/level/levels';
 import { solve } from 'app/level/solve';
-import { parseBlueprint } from 'app/utils/parse-blueprint';
 
 import type { Level } from 'app/level/levels';
 
@@ -14,11 +14,7 @@ export function par(level: Level): number {
 
   if (known !== undefined) return known;
 
-  const solution = solve(
-    parseBlueprint(level.blueprint, level.columns),
-    level.columns,
-    level.spawn
-  );
+  const solution = solve(blueprintOf(level), level.columns, level.spawn);
 
   const moves = solution?.moves.length ?? 0;
 

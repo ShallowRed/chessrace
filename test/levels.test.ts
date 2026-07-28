@@ -1,15 +1,15 @@
 import { describe, expect, it } from "vitest";
 
-import { isBeatable, solve } from "app/level/solve";
-import { levelBySlug, levels, randomLevel, slugOf } from "app/level/levels";
-import { parseBlueprint } from "app/utils/parse-blueprint";
+import { blueprintOf, levelBySlug, levels, randomLevel, slugOf } from "app/level/levels";
+import { isBeatable } from "app/level/solve";
+
+import { solveLevel } from "./support";
 
 import type { Level } from "app/level/levels";
-import type { PiecePlacement } from "app/types";
 
 describe.each(levels)("$name", (level) => {
 
-  const blueprint = parseBlueprint(level.blueprint, level.columns);
+  const blueprint = blueprintOf(level);
 
   it("declares dimensions matching its grid", () => {
     expect(blueprint).toHaveLength(level.rows);
@@ -55,7 +55,7 @@ describe("randomLevel", () => {
     const level = randomLevel({ columns: 8, rows: 17 });
 
     expect(isBeatable(
-      parseBlueprint(level.blueprint, level.columns),
+      blueprintOf(level),
       level.columns,
       level.spawn
     )).toBe(true);
@@ -64,9 +64,6 @@ describe("randomLevel", () => {
 
 const named = (name: string) =>
   levels.find(level => level.name === name) as Level;
-
-const solveLevel = (level: Level, from: PiecePlacement = level.spawn) =>
-  solve(parseBlueprint(level.blueprint, level.columns), level.columns, from);
 
 describe("what the opening levels teach", () => {
 
