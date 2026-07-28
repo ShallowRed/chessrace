@@ -3,6 +3,8 @@ import LevelSquare from 'app/level/level-square';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
+import { PIECE_NAMES } from 'app/types';
+
 import type {
   Bound,
   BoardDimensions,
@@ -18,7 +20,7 @@ interface FilterableSquare {
 
 export default class LevelModel {
 
-  pieces: PieceName[] = ['bishop', 'king', 'knight', 'pawn', 'queen', 'rook'];
+  pieces: readonly PieceName[] = PIECE_NAMES;
 
   declare columns: number;
 

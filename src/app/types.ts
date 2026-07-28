@@ -1,7 +1,11 @@
 export type Coords = [col: number, row: number];
 
-export type PieceName =
-  "bishop" | "king" | "knight" | "pawn" | "queen" | "rook";
+// Order matters: a blueprint stores a piece as its index here, offset by 2.
+export const PIECE_NAMES = [
+  "bishop", "king", "knight", "pawn", "queen", "rook"
+] as const;
+
+export type PieceName = typeof PIECE_NAMES[number];
 
 export type PieceColor = "white" | "black";
 
