@@ -1,10 +1,12 @@
 import LevelSquare from 'app/level/square';
 
+import { readThreat, withTaken } from 'app/level/threat';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
 import { PIECE_NAMES } from 'app/types';
 
+import type { Held } from 'app/level/threat';
 import type {
   Bound,
   BoardDimensions,
@@ -42,11 +44,17 @@ export default class LevelModel {
 
   rowToRenderUpTo = 0;
 
+  taken = "";
+
+  private readonly threat: Held;
+
   constructor(blueprint: string, { columns, rows, visibleRows }: BoardDimensions) {
 
     Object.assign(this, { columns, rows, visibleRows });
 
     this.blueprint = parseBlueprint(blueprint, columns);
+
+    this.threat = readThreat(this.blueprint, columns);
 
     bindObjectsMethods.call(
       this as unknown as Record<string, unknown>,
@@ -61,6 +69,18 @@ export default class LevelModel {
     this.lastRowRendered = -1;
 
     this.rowToRenderUpTo = this.visibleRows + 1;
+
+    this.taken = "";
+  }
+
+  get heldSquares(): ReadonlySet<string> {
+
+    return this.threat(this.taken);
+  }
+
+  capture(square: Coords): void {
+
+    this.taken = withTaken(this.taken, square);
   }
 
   parseNextRows(): void {

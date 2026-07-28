@@ -55,6 +55,34 @@ describe("reading the board", () => {
   });
 });
 
+describe("what the enemies hold", () => {
+
+  it("closes the squares the knight covers", () => {
+    const model = newModel();
+
+    expect(model.square.isHeld([0, 1])).toBe(true);
+    expect(model.square.isHeld([3, 0])).toBe(true);
+    expect(model.square.isHeld([2, 2])).toBe(false);
+  });
+
+  it("reopens them once the knight is taken", () => {
+    const model = newModel();
+
+    model.capture([2, 2]);
+
+    expect(model.square.isHeld([0, 1])).toBe(false);
+  });
+
+  it("puts the enemies back on a reset", () => {
+    const model = newModel();
+
+    model.capture([2, 2]);
+    model.reset();
+
+    expect(model.square.isHeld([0, 1])).toBe(true);
+  });
+});
+
 describe("producing rows", () => {
 
   it("yields solid squares only, never holes", () => {

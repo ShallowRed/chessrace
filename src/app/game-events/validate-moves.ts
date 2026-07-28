@@ -21,6 +21,7 @@ export function CANVAS_CLICKED(this: Game, evt: MouseEvent): void {
   if (
     isValidMove(this.player, targetSquare) &&
     this.model.square.isInBoard(targetSquare) &&
+    !this.model.square.isHeld(targetSquare) &&
     events.ask("IS_ALLOWED_MOVING") &&
     events.ask("IS_VALID_TRAJECTORY", targetSquare)
   ) {
@@ -29,6 +30,7 @@ export function CANVAS_CLICKED(this: Game, evt: MouseEvent): void {
   }
 }
 
+// An enemy never holds its own square, so a capture needs no threat check.
 export function ENEMY_CLICKED(this: Game, enemy: EnemyPiece): void {
 
   if (

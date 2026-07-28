@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest";
 
-import { attacks, heldSquares } from "app/level/threat";
+import { parseLevelGrid } from "app/level/notation";
+import { attacks, heldSquares, readThreat, withTaken } from "app/level/threat";
+import { parseBlueprint } from "app/utils/parse-blueprint";
+
+import { solveGrid, widthOf } from "./support";
 
 import type { Coords, PiecePlacement } from "app/types";
 
@@ -8,6 +12,12 @@ const nothingBlocks = () => false;
 
 const at = (pieceName: PiecePlacement["pieceName"], position: Coords) =>
   ({ pieceName, position });
+
+const threatOf = (grid: string) => {
+  const columns = widthOf(grid);
+
+  return readThreat(parseBlueprint(parseLevelGrid(grid), columns), columns);
+};
 
 describe("attacks", () => {
 
@@ -69,5 +79,70 @@ describe("heldSquares", () => {
 
   it("gathers nothing from an empty board", () => {
     expect(heldSquares([], nothingBlocks, 8, 6).size).toBe(0);
+  });
+});
+
+describe("readThreat", () => {
+
+  const grid = `
+    ....
+    .R..
+    ....
+  `;
+
+  it("reads the enemies off a blueprint", () => {
+    const held = threatOf(grid)();
+
+    expect(held.has("1_0")).toBe(true);
+    expect(held.has("3_1")).toBe(true);
+    expect(held.has("0_0")).toBe(false);
+  });
+
+  it("frees what a captured enemy was holding", () => {
+    const held = threatOf(grid)(withTaken("", [1, 1]));
+
+    expect(held.size).toBe(0);
+  });
+
+  it("leaves holes out of it, since falling in one is punishment enough", () => {
+    const held = threatOf(`
+      ._..
+      .R..
+      ....
+    `)();
+
+    expect(held.has("1_2")).toBe(false);
+  });
+});
+
+describe("what the threat rule does to a route", () => {
+
+  it("walls off a corridor the enemy rakes", () => {
+    expect(solveGrid(`
+      __.__
+      __.__
+      R..__
+      __.__
+    `, "king", 2)).toBeNull();
+  });
+
+  it("opens the way again once the holder is taken", () => {
+    const solution = solveGrid(`
+      __._____
+      __._____
+      _N______
+      __._____
+    `, "king", 2);
+
+    expect(solution?.forms).toEqual(["king", "knight"]);
+    expect(solution?.captures).toBe(1);
+  });
+
+  it("refuses to start on a square the enemies already hold", () => {
+    expect(solveGrid(`
+      ....
+      ....
+      R...
+    `, "king", 3)).toBeNull();
   });
 });

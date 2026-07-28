@@ -96,7 +96,7 @@ describe("solve", () => {
     const solution = solveGrid(`
       ..._
       _...
-      ...R
+      ....
     `, "king", 0);
 
     expect(solution?.moves).toHaveLength(3);

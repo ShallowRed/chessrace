@@ -109,12 +109,60 @@ export const patterns: Pattern[] = [
   {
     name: "gate",
     kind: "pieces",
-    intent: "An enemy plugging the only corridor: a long range piece is stopped by it and has to take it to pass.",
-    crossableBy: ["king", "knight", "queen", "rook"],
+    intent: "An enemy plugging the only corridor. A knight holds no square in line with itself, so it is the one gate that can be taken head on.",
+    crossableBy: ["king", "queen", "rook"],
+    grid: `
+      ___.____
+      ___N____
+      ___.____
+    `
+  },
+
+  {
+    name: "portcullis",
+    kind: "pieces",
+    intent: "A rook owning the corridor it stands in. Nothing walks up to it, and only the knight can jump the squares it holds.",
+    crossableBy: ["knight"],
     grid: `
       ___.____
       ___R____
       ___.____
+    `
+  },
+
+  {
+    name: "shoulder",
+    kind: "pieces",
+    intent: "A rook holding its own corridor, with just enough room beside it. Nothing walks up to it in line, so it has to be taken on the diagonal.",
+    crossableBy: ["bishop", "king", "knight", "pawn", "queen"],
+    grid: `
+      __...___
+      ___R____
+      __...___
+    `
+  },
+
+  {
+    name: "crossfire",
+    kind: "pieces",
+    intent: "Two rooks holding the rank between them. The rank cannot be walked, only jumped or bought with a capture.",
+    crossableBy: ["bishop", "knight", "queen", "rook"],
+    grid: `
+      ........
+      R......R
+      ........
+    `
+  },
+
+  {
+    name: "shadow",
+    kind: "pieces",
+    intent: "A hole cuts the queen's line, and everything past it is safe. The terrain that kills is also the terrain that shelters.",
+    crossableBy: ["bishop", "king", "knight", "queen", "rook"],
+    grid: `
+      ......._
+      ....Q_..
+      ......._
     `
   },
 
@@ -134,7 +182,7 @@ export const patterns: Pattern[] = [
     name: "ladder",
     kind: "pieces",
     intent: "A chain of captures where each form is only good enough to reach the next one. The rungs are spaced so the form a rung grants cannot skip ahead to the one after it.",
-    crossableBy: ["bishop", "king", "knight", "pawn", "queen", "rook"],
+    crossableBy: ["bishop", "king", "pawn", "queen", "rook"],
     grid: `
       __._____
       __R_____

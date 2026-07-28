@@ -2,7 +2,7 @@ import { FAST_TEMPO, TEMPO } from 'app/config';
 import { parseLevelGrid } from 'app/level/notation';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { pattern, shift, stack } from 'app/level/patterns';
-import { generateLevelBlueprint } from 'app/utils/level-generator';
+import { generateLevelBlueprint, RANDOM_SPAWN } from 'app/utils/level-generator';
 
 import type { Coords, PieceName } from 'app/types';
 
@@ -171,25 +171,17 @@ const tradeRoutes: Level[] = [
     ........
   `),
 
-  level("Pawn's promise", { position: [3, 0], pieceName: "pawn" }, `
-    ...__...
-    ..____..
-    ._..__..
-    ..____..
-    ..____.Q
-    __..__..
-    .__.__..
-    ..____..
-    ._____..
-    ..____..
-    __.__._R
-    .__.__..
-    __.__...
-    ..__B...
-    ..N_....
-    ........
-    ........
-  `)
+  level("Pawn's promise", { position: [0, 0], pieceName: "pawn" }, stack(
+    OPEN_ROW,
+    pattern("laneChasm"),
+    pattern("shoulder"),
+    pattern("checkerVoid"),
+    "..B.....",
+    OPEN_ROW,
+    pattern("steppingStones"),
+    ".N......",
+    OPEN_ROW
+  ))
 ];
 
 const longFall: Level[] = [
@@ -267,13 +259,13 @@ const endgame: Level[] = [
     ._______
   `),
 
-  level("The gauntlet", { position: [3, 0], pieceName: "queen" }, stack(
+  level("The gauntlet", { position: [1, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
     shift(pattern("checkerVoid"), 1),
     ".....B..",
     pattern("steppingStones"),
     "...N....",
-    pattern("gate"),
+    pattern("shoulder"),
     OPEN_ROW
   ), { speedUp: TEMPO }),
 
@@ -330,7 +322,7 @@ export function randomLevel(
     world: "",
     columns,
     rows,
-    spawn: { position: [3, 0], pieceName: "queen" },
+    spawn: RANDOM_SPAWN,
     blueprint: generateLevelBlueprint({ columns, rows })
   };
 }

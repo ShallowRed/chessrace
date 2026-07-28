@@ -32,6 +32,8 @@ export function EAT_PIECE(this: Game, enemy: EnemyPiece): void {
 
   this.player.piece = enemy.piece;
 
+  this.model.capture(enemy.position);
+
   setTimeout(() => {
 
     this.enemies.remove(enemy);

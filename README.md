@@ -19,6 +19,8 @@ standing still is fatal: fall off the bottom and the run is over.
 - A hole kills you, and a long range piece dies crossing one.
 - An enemy piece blocks the line of a bishop, rook or queen. The knight is the
   only piece that jumps over anything.
+- **An enemy holds every square it could take on**, and you may not end a move
+  on one — though you may cross one, and taking the enemy gives them all back.
 - Capturing turns you into the piece you took, which is the only way to change
   how you move — and the only way to make yourself worse.
 - Reach the row past the top of the board to win.
@@ -71,8 +73,9 @@ Levels are grids, read top down the way the board is played:
 the digit blueprint the engine stores, so a whole level is a short string.
 
 Levels are assembled from a vocabulary of named patterns — `laneChasm`,
-`checkerVoid`, `steppingStones`, `gate`, `bait`, `ladder` and friends — each
-declaring which pieces can cross it. A test checks that claim against the
+`checkerVoid`, `steppingStones`, `gate`, `portcullis`, `shoulder`, `crossfire`,
+`shadow`, `bait`, `ladder` and friends — each declaring which pieces can cross
+it. A test checks that claim against the
 solver from every entry column, so a pattern cannot quietly stop meaning what
 it says.
 
