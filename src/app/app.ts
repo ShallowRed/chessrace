@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import Game from 'app/Game';
+import Game from 'app/game';
 import PlayArea from 'app/game-objects/board/models/play-area';
 import Hud from 'app/ui/hud';
 import Menu from 'app/ui/menu';

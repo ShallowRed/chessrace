@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import type Game from 'app/Game';
+import type Game from 'app/game';
 
 export function GAME_ON(this: Game): void {
 

@@ -10,7 +10,7 @@ import {
 
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
-import type Game from 'app/Game';
+import type Game from 'app/game';
 import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
 import type { Coords } from 'app/types';
 

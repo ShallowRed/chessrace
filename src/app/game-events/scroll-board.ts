@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import type Game from 'app/Game';
+import type Game from 'app/game';
 import type { TranslateOptions } from 'app/game-objects/game-object';
 
 export function SCROLL_ONE_SQUARE_DOWN(this: Game): void {

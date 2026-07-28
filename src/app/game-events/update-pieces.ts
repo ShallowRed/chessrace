@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import type Game from 'app/Game';
+import type Game from 'app/game';
 import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
 import type Piece from 'app/game-objects/pieces/piece-sprite';
 import type { Coords } from 'app/types';

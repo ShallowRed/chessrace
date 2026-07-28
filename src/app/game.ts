@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import GameEvents from 'app/game-events';
+import { handlers } from 'app/game-events';
 import LevelModel from 'app/level/level';
 
 import GameObject from 'app/game-objects/game-object';
@@ -8,11 +8,10 @@ import EnemiesCollection from 'app/game-objects/pieces/models/enemies-collection
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
 
-import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 import { scrollDuration } from 'app/level/tempo';
 
-import type { EventListener, EventName } from 'app/game-events/event-emitter';
+import type { EventName } from 'app/game-events/event-emitter';
 import type Piece from 'app/game-objects/pieces/piece-sprite';
 import type { Durations, LevelConfig, RunResult } from 'app/types';
 
@@ -73,17 +72,10 @@ export default class Game {
 
   addListeners(): void {
 
-    getBoundMethods.call(
-      this,
-      GameEvents,
-      (message, listener) => {
+    for (const message of Object.keys(handlers) as EventName[]) {
 
-        events.on(
-          message as EventName,
-          listener as EventListener<EventName>
-        );
-      }
-    );
+      events.register(message, handlers[message].bind(this));
+    }
 
     window.addEventListener("resize", this.onResize);
   }

@@ -39,7 +39,14 @@ export default new class Events {
 
   on = <K extends EventName>(message: K, listener: EventListener<K>): void => {
 
-    const listeners = (this.listeners[message] ??= []) as StoredListener[];
+    this.register(message, listener);
+  }
+
+  // The door for registration driven by data rather than by a literal event
+  // name, where the tie between the two cannot be kept.
+  register(message: EventName, listener: StoredListener): void {
+
+    const listeners = (this.listeners[message] ??= []);
 
     listeners.push(listener);
   }
