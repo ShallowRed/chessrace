@@ -1,5 +1,6 @@
 import { blueprintOf, worlds } from 'app/level/catalogue';
 import { levelConfig } from 'app/level/config';
+import { score } from 'app/level/fitness';
 import { par } from 'app/level/par';
 import { playthroughs, slack } from 'app/level/personas';
 import { countRoutes } from 'app/level/solve';
@@ -23,7 +24,8 @@ function row(level: Level): string {
 
   const survivors = runs.filter(({ outcome }) => outcome === "won");
 
-  const { choices, tempting, worstCost, worstRegret, decisions } = tension(blueprint, columns, spawn);
+  const { choices, tempting, worstCost, worstRegret, decisions } =
+    tension(blueprint, columns, spawn);
 
   const widest = Math.max(0, ...decisions.map(({ options }) => options));
 
@@ -38,12 +40,14 @@ function row(level: Level): string {
     rpad(worstCost, 5),
     rpad(worstRegret, 5),
     rpad(slack(blueprint, columns, spawn, durations), 6),
-    "  " + pad(`${survivors.length}/${runs.length}`, 5)
+    rpad(`${survivors.length}/${runs.length}`, 6),
+    rpad(score(level, blueprint).total, 6)
   ].join(" ");
 }
 
 process.stdout.write(
-  `\n  ${pad("level", 18)} ${pad("piece", 7)} par  routes  costly  wide  tempt  cost  regr   s/mv  alive\n`
+  `\n  ${pad("level", 18)} ${pad("piece", 7)} par  routes` +
+  `  costly  wide  tempt  cost  regr   s/mv  alive  score\n`
 );
 
 for (const world of worlds) {
@@ -53,4 +57,6 @@ for (const world of worlds) {
   for (const level of world.levels) process.stdout.write(`${row(level)}\n`);
 }
 
+// The metric only ever looks at legal moves, and stepping into a hole is not
+// one. Every level in The long fall is tenser in the hand than it reads here.
 process.stdout.write("\n");
