@@ -1,7 +1,8 @@
 import js from "@eslint/js";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
-export default [
+export default tseslint.config(
 
   {
     ignores: ["dist/"]
@@ -9,21 +10,36 @@ export default [
 
   js.configs.recommended,
 
+  tseslint.configs.recommendedTypeChecked,
+
   {
-    files: ["src/**/*.js"],
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
+      parserOptions: {
+        projectService: true,
+        tsconfigRootDir: import.meta.dirname
+      }
+    }
+  },
+
+  {
+    files: ["src/**/*.ts"],
+    languageOptions: {
       globals: globals.browser
     }
   },
 
   {
-    files: ["test/**/*.js", "*.config.js"],
+    files: ["test/**/*.ts", "*.config.ts"],
     languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
+      globals: globals.node
+    }
+  },
+
+  {
+    files: ["eslint.config.js"],
+    extends: [tseslint.configs.disableTypeChecked],
+    languageOptions: {
       globals: globals.node
     }
   }
-];
+);

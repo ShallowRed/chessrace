@@ -1,0 +1,29 @@
+import { generateLevelBlueprint } from 'app/utils/level-generator';
+
+import type { LevelConfig } from 'app/types';
+
+const levelConfig = {
+
+  board: {
+    columns: 8,
+    rows: 17,
+    visibleRows: 12,
+  },
+
+  playerSpawn: {
+    position: [3, 0],
+    pieceName: "queen"
+  },
+
+  durations: {
+    move: 0.3,
+    scroll: 2,
+    fall: 1
+  }
+
+} satisfies Omit<LevelConfig, "blueprint">;
+
+export default {
+  ...levelConfig,
+  blueprint: generateLevelBlueprint(levelConfig.board)
+} satisfies LevelConfig;
