@@ -1,19 +1,15 @@
 import type { Level } from 'app/level/levels';
+import type { KeyValueStore } from 'app/storage';
 
 export interface Progress {
   best: Record<string, number>;
-}
-
-export interface ProgressStorage {
-  getItem(key: string): string | null;
-  setItem(key: string, value: string): void;
 }
 
 const KEY = "chessrace.progress";
 
 export const noProgress: Progress = { best: {} };
 
-export function loadProgress(storage: ProgressStorage): Progress {
+export function loadProgress(storage: KeyValueStore): Progress {
 
   const stored = storage.getItem(KEY);
 
@@ -39,7 +35,7 @@ export function loadProgress(storage: ProgressStorage): Progress {
   }
 }
 
-export function saveProgress(storage: ProgressStorage, progress: Progress): void {
+export function saveProgress(storage: KeyValueStore, progress: Progress): void {
 
   storage.setItem(KEY, JSON.stringify(progress));
 }

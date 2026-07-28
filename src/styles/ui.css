@@ -219,8 +219,24 @@ button {
   display: none;
 }
 
-.hud .to-menu {
+.hud-buttons {
+  display: flex;
+  flex-shrink: 0;
+  gap: 0.35rem;
+}
+
+.hud-buttons button {
   padding: 0.3rem 0.7rem;
   border-radius: 0.4rem;
   background: rgb(245 219 194 / 12%);
+}
+
+.hud .to-sound {
+  min-width: 2.1rem;
+  font-size: 1rem;
+  line-height: 1;
+}
+
+.hud .to-sound.muted {
+  opacity: 0.35;
 }

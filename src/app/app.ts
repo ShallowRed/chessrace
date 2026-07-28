@@ -1,10 +1,14 @@
+import events from 'app/game-events/event-emitter';
+
 import Game from 'app/Game';
 import PlayArea from 'app/game-objects/board/models/play-area';
 import Hud from 'app/ui/hud';
 import Menu from 'app/ui/menu';
 import Result from 'app/ui/result';
+import Sound from 'app/ui/sound';
 
 import { levelConfig } from 'app/level/default-level-config';
+import { loadMuted, saveMuted } from 'app/settings';
 import { levelBySlug, levels } from 'app/level/levels';
 import { par, rate } from 'app/level/par';
 
@@ -17,7 +21,8 @@ import {
 } from 'app/progress';
 
 import type { Level } from 'app/level/levels';
-import type { Progress, ProgressStorage } from 'app/progress';
+import type { Progress } from 'app/progress';
+import type { KeyValueStore } from 'app/storage';
 import type { RunResult } from 'app/types';
 
 export default class App {
@@ -28,19 +33,29 @@ export default class App {
 
   private readonly result: Result;
 
+  private readonly sound: Sound;
+
   private progress: Progress;
 
   private game: Game | undefined;
 
   private level: Level | undefined;
 
-  constructor(private readonly storage: ProgressStorage) {
+  constructor(private readonly storage: KeyValueStore) {
 
     this.progress = loadProgress(storage);
 
+    this.sound = new Sound(
+      () => new AudioContext(),
+      loadMuted(storage)
+    );
+
     this.menu = new Menu(levels, level => this.play(level));
 
-    this.hud = new Hud(() => this.openMenu());
+    this.hud = new Hud({
+      onMenu: () => this.openMenu(),
+      onToggleSound: () => this.toggleSound()
+    }, this.sound.isMuted);
 
     this.result = new Result({
       onNext: () => this.playNext(),
@@ -91,6 +106,28 @@ export default class App {
     this.game.onOutcome = result => this.report(level, result);
 
     this.game.init();
+
+    this.listenForCues();
+  }
+
+  private listenForCues(): void {
+
+    events.on("MOVE_PLAYER", () => this.sound.play("move"));
+
+    events.on("EAT_PIECE", () => this.sound.play("capture"));
+
+    events.on("GAME_OVER", () => this.sound.play("fall"));
+
+    events.on("GAME_WON", () => this.sound.play("win"));
+  }
+
+  private toggleSound(): boolean {
+
+    const muted = this.sound.toggle();
+
+    saveMuted(this.storage, muted);
+
+    return muted;
   }
 
   private playNext(): void {

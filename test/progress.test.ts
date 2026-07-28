@@ -12,9 +12,9 @@ import {
   saveProgress
 } from "app/progress";
 
-import type { ProgressStorage } from "app/progress";
+import type { KeyValueStore } from "app/storage";
 
-const fakeStorage = (): ProgressStorage & { store: Map<string, string> } => {
+const fakeStorage = (): KeyValueStore & { store: Map<string, string> } => {
 
   const store = new Map<string, string>();
 
