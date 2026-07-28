@@ -10,6 +10,7 @@ import Player from 'app/game-objects/pieces/player-sprite';
 
 import { getBoundMethods } from 'app/utils/bind-methods';
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
+import { scrollDuration } from 'app/level/tempo';
 
 import type { EventListener, EventName } from 'app/game-events/event-emitter';
 import type Piece from 'app/game-objects/pieces/piece-sprite';
@@ -165,6 +166,11 @@ export default class Game {
     this.player.moveSprite();
 
     this.enemies.setEachPosition();
+  }
+
+  get scrollDuration(): number {
+
+    return scrollDuration(this.durations, this.board.nRenders);
   }
 
   get pieces(): Piece[] {
