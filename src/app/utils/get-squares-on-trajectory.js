@@ -12,7 +12,7 @@ export function getSquaresOnTrajectory([x1, y1], [x2, y2]) {
     y1 + sign(y2 - y1) * (i + 1)
   ]);
 
-  return new Array(deltaLength - 1)
+  return new Array(max(deltaLength - 1, 0))
     .fill()
     .map(getSquareOnTrajectory)
 }

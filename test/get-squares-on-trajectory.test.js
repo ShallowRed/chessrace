@@ -38,8 +38,7 @@ describe("getSquaresOnTrajectory", () => {
     expect(squares).toHaveLength(4);
   });
 
-  it("throws on a zero length move", () => {
-    expect(() => getSquaresOnTrajectory([3, 3], [3, 3]))
-      .toThrow(RangeError);
+  it("returns nothing for a zero length move", () => {
+    expect(getSquaresOnTrajectory([3, 3], [3, 3])).toEqual([]);
   });
 });
