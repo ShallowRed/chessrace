@@ -51,7 +51,7 @@ export default class Player extends Piece {
     events.timeout("GAME_OVER", duration);
   }
 
-  setFlag(flag, duration) {
+  setFlag(flag, durationInSeconds) {
 
     this[flag] = true;
 
@@ -59,6 +59,6 @@ export default class Player extends Piece {
 
       this[flag] = false;
 
-    }, duration)
+    }, durationInSeconds * 1000)
   }
 }
