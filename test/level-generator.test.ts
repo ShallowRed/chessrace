@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { isBeatable } from "app/level/is-beatable";
+import { isBeatable } from "app/level/solve";
 import { generateLevelBlueprint } from "app/utils/level-generator";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
