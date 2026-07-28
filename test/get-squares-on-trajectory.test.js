@@ -4,7 +4,7 @@ import { getSquaresOnTrajectory } from "app/utils/get-squares-on-trajectory";
 
 describe("getSquaresOnTrajectory", () => {
 
-  it("liste les cases traversées par une tour", () => {
+  it("lists the squares a rook travels across", () => {
     expect(getSquaresOnTrajectory([3, 0], [3, 4]))
       .toEqual([[3, 1], [3, 2], [3, 3]]);
 
@@ -12,12 +12,12 @@ describe("getSquaresOnTrajectory", () => {
       .toEqual([[1, 2], [2, 2], [3, 2]]);
   });
 
-  it("liste les cases traversées par un fou", () => {
+  it("lists the squares a bishop travels across", () => {
     expect(getSquaresOnTrajectory([0, 0], [3, 3]))
       .toEqual([[1, 1], [2, 2]]);
   });
 
-  it("fonctionne dans les quatre directions", () => {
+  it("works in all four directions", () => {
     expect(getSquaresOnTrajectory([4, 4], [1, 1]))
       .toEqual([[3, 3], [2, 2]]);
 
@@ -25,12 +25,12 @@ describe("getSquaresOnTrajectory", () => {
       .toEqual([[3, 5], [2, 6]]);
   });
 
-  it("ne renvoie rien entre deux cases adjacentes", () => {
+  it("returns nothing between two adjacent squares", () => {
     expect(getSquaresOnTrajectory([3, 0], [3, 1])).toEqual([]);
     expect(getSquaresOnTrajectory([3, 0], [4, 1])).toEqual([]);
   });
 
-  it("exclut toujours la case de départ et la case d'arrivée", () => {
+  it("excludes both the origin and the destination", () => {
     const squares = getSquaresOnTrajectory([0, 0], [5, 5]);
 
     expect(squares).not.toContainEqual([0, 0]);
@@ -38,11 +38,7 @@ describe("getSquaresOnTrajectory", () => {
     expect(squares).toHaveLength(4);
   });
 
-  // Piège connu : `new Array(deltaLength - 1)` avec deltaLength à 0 lève une
-  // RangeError. Le cas n'est pas atteignable en jeu (le sprite du joueur
-  // intercepte le clic sur sa propre case), mais la fonction est publique et
-  // n'importe quel appelant futur tomberait dedans.
-  it("lève sur un déplacement de longueur nulle (comportement actuel)", () => {
+  it("throws on a zero length move", () => {
     expect(() => getSquaresOnTrajectory([3, 3], [3, 3]))
       .toThrow(RangeError);
   });

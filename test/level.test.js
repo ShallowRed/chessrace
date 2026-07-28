@@ -2,16 +2,13 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import LevelModel from "app/level/level";
 
-// 4 colonnes x 3 rangées.
-//   rangée 0 : ....      (que des cases pleines)
-//   rangée 1 : .O..      (un trou en colonne 1)
-//   rangée 2 : ..N.      (un cavalier en colonne 2 — valeur 4)
+// row 0: no hole - row 1: hole in column 1 - row 2: knight in column 2
 const BLUEPRINT = "1111" + "1011" + "1141";
 
 const newModel = ({ visibleRows = 2 } = {}) =>
   new LevelModel(BLUEPRINT, { columns: 4, rows: 3, visibleRows });
 
-describe("LevelModel — lecture du plateau", () => {
+describe("reading the board", () => {
 
   let model;
 
@@ -19,7 +16,7 @@ describe("LevelModel — lecture du plateau", () => {
     model = newModel();
   });
 
-  it("expose le niveau comme une grille de nombres", () => {
+  it("exposes the level as a grid of numbers", () => {
     expect(model.blueprint).toEqual([
       [1, 1, 1, 1],
       [1, 0, 1, 1],
@@ -27,25 +24,23 @@ describe("LevelModel — lecture du plateau", () => {
     ]);
   });
 
-  it("reconnaît un trou", () => {
+  it("recognises a hole", () => {
     expect(model.square.isHole([1, 1])).toBe(true);
     expect(model.square.isHole([0, 1])).toBe(false);
   });
 
-  it("reconnaît une case occupée par un ennemi", () => {
+  it("recognises a square held by an ennemy", () => {
     expect(model.square.isEnnemy([2, 2])).toBe(true);
     expect(model.square.isEnnemy([0, 0])).toBe(false);
   });
 
-  it("considère trous et ennemis comme des obstacles", () => {
+  it("treats holes and ennemies as obstacles", () => {
     expect(model.square.isObstacle([1, 1])).toBe(true);
     expect(model.square.isObstacle([2, 2])).toBe(true);
     expect(model.square.isObstacle([0, 0])).toBe(false);
   });
 
-  it("place la ligne d'arrivée juste au-delà de la dernière rangée", () => {
-    // `rows` vaut 3, donc les rangées du plateau vont de 0 à 2 ; la rangée 3
-    // est la ligne d'arrivée, dans le plateau mais hors du blueprint.
+  it("puts the finishing line one row past the last one", () => {
     expect(model.square.isInBoard([0, 3])).toBe(true);
     expect(model.square.isInBoard([0, 4])).toBe(false);
 
@@ -53,16 +48,16 @@ describe("LevelModel — lecture du plateau", () => {
     expect(model.square.isEnnemy([0, 3])).toBe(false);
   });
 
-  it("rejette ce qui sort du plateau par les côtés ou par le bas", () => {
+  it("rejects anything off the board", () => {
     expect(model.square.isInBoard([-1, 0])).toBe(false);
     expect(model.square.isInBoard([4, 0])).toBe(false);
     expect(model.square.isInBoard([0, -1])).toBe(false);
   });
 });
 
-describe("LevelModel — production des rangées", () => {
+describe("producing rows", () => {
 
-  it("ne renvoie que les cases pleines, jamais les trous", () => {
+  it("yields solid squares only, never holes", () => {
     const model = newModel();
 
     model.reset();
@@ -73,7 +68,7 @@ describe("LevelModel — production des rangées", () => {
     expect(model.regularSquares).toContainEqual([1, 0]);
   });
 
-  it("extrait les ennemis avec leur nom de pièce et leur position", () => {
+  it("extracts ennemies with their piece name and position", () => {
     const model = newModel();
 
     model.reset();
@@ -84,7 +79,7 @@ describe("LevelModel — production des rangées", () => {
     ]);
   });
 
-  it("garde la case d'un ennemi parmi les cases pleines", () => {
+  it("keeps the square an ennemy stands on among the solid ones", () => {
     const model = newModel();
 
     model.reset();
@@ -93,7 +88,7 @@ describe("LevelModel — production des rangées", () => {
     expect(model.regularSquares).toContainEqual([2, 2]);
   });
 
-  it("ne signale un ennemi qu'une fois", () => {
+  it("reports an ennemy once only", () => {
     const model = newModel();
 
     model.reset();
@@ -103,7 +98,7 @@ describe("LevelModel — production des rangées", () => {
     expect(model.newEnnemyPieces).toEqual([]);
   });
 
-  it("s'arrête à la dernière rangée du niveau", () => {
+  it("stops at the last row of the level", () => {
     const model = newModel();
 
     model.reset();
@@ -116,14 +111,13 @@ describe("LevelModel — production des rangées", () => {
     expect(model.lastRowRendered).toBe(2);
   });
 
-  it("fait glisser sa fenêtre au fil du défilement", () => {
+  it("slides its window as the board scrolls", () => {
     const tall = new LevelModel("11".repeat(5), { columns: 2, rows: 5, visibleRows: 1 });
 
     tall.reset();
     tall.parseNextRows();
 
-    const rowsOf = () => tall.deepRegularSquares
-      .map(([[, row]]) => row);
+    const rowsOf = () => tall.deepRegularSquares.map(([[, row]]) => row);
 
     expect(rowsOf()).toEqual([0, 1, 2]);
 
@@ -136,7 +130,7 @@ describe("LevelModel — production des rangées", () => {
     expect(rowsOf()).toEqual([2, 3, 4]);
   });
 
-  it("repart de zéro après un reset", () => {
+  it("starts over after a reset", () => {
     const model = newModel();
 
     model.reset();
