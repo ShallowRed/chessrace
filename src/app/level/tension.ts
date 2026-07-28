@@ -76,8 +76,14 @@ export function tension(
       worst: Math.max(0, ...regrets)
     });
 
-    state = options.find(({ position: [col, row] }) =>
-      col === square[0] && row === square[1]) ?? state;
+    const stepped = options.find(({ position: [col, row] }) =>
+      col === square[0] && row === square[1]);
+
+    // Falling back to the previous state here would keep walking and quietly
+    // report a route the player never takes.
+    if (!stepped) throw new Error(`route left the board at ${square.join(",")}`);
+
+    state = stepped;
   }
 
   return {
