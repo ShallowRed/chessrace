@@ -83,7 +83,7 @@ const firstMoves: Level[] = [
     "..___...",
     pattern("openGround"),
     pattern("openGround"),
-    OPEN_ROW
+    "__...___"
   ), { hint: "Click a square your piece can reach. The board starts scrolling on your first move." }),
 
   level("Mind the gap", { position: [3, 0], pieceName: "queen" }, stack(
@@ -123,7 +123,7 @@ const firstMoves: Level[] = [
     pattern("openGround"),
     pattern("checkerVoid"),
     pattern("bait"),
-    OPEN_ROW
+    "__...___"
   ), { hint: "Nothing forces you to take. A weaker piece is a worse form." }),
 
 ];
@@ -247,7 +247,7 @@ const longFall: Level[] = [
     __...___
     ...N....
     ........
-  `, { speedUp: TEMPO })
+  `, {})
 ];
 
 const endgame: Level[] = [
@@ -265,7 +265,7 @@ const endgame: Level[] = [
     ._______
     ._______
     ._______
-  `, { speedUp: TEMPO }),
+  `),
 
   level("The gauntlet", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),

@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "levels:report": "vite-node tools/levels-report.ts"
   },
   "browserslist": [
     "defaults and fully supports es6-module"

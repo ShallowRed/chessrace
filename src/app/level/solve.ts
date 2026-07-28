@@ -20,7 +20,7 @@ export interface Solution {
 // count saturates: past this, the level is a stroll whatever the exact figure.
 export const TOO_MANY_ROUTES = 999;
 
-interface Board {
+export interface Board {
   rows: number;
   key: (state: PiecePlacement) => string;
   isEnemy: (square: Coords) => boolean;
@@ -150,7 +150,7 @@ const capped = (routes: number) => Math.min(routes, TOO_MANY_ROUTES);
 const spawned = ({ position, pieceName }: PiecePlacement): PiecePlacement =>
   ({ position, pieceName });
 
-function readBoard(blueprint: number[][], columns: number): Board {
+export function readBoard(blueprint: number[][], columns: number): Board {
 
   const rows = blueprint.length;
 
