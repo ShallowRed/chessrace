@@ -145,8 +145,8 @@ export const patterns: Pattern[] = [
   {
     name: "crossfire",
     kind: "pieces",
-    intent: "Two rooks holding the rank between them. The rank cannot be walked, only jumped or bought with a capture.",
-    crossableBy: ["bishop", "knight", "queen", "rook"],
+    intent: "Two rooks holding the rank between them. A held square cannot be crossed either, so the rank is a wall and the knight is the only thing that clears it.",
+    crossableBy: ["knight"],
     grid: `
       ........
       R......R
@@ -158,7 +158,7 @@ export const patterns: Pattern[] = [
     name: "shadow",
     kind: "pieces",
     intent: "A hole cuts the queen's line, and everything past it is safe. The terrain that kills is also the terrain that shelters.",
-    crossableBy: ["bishop", "king", "knight", "queen", "rook"],
+    crossableBy: ["bishop", "king", "knight", "queen"],
     grid: `
       ......._
       ....Q_..

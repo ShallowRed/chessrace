@@ -194,12 +194,14 @@ export function readBoard(blueprint: number[][], columns: number): Board {
 
     if (!legal || isHole(target)) return false;
 
-    if (heldFor(state.taken).has(squareKey(target))) return false;
+    const held = heldFor(state.taken);
+
+    if (held.has(squareKey(target))) return false;
 
     if (!isLongRange(state.pieceName)) return true;
 
-    return !getSquaresOnTrajectory(state.position, target)
-      .some(square => isHole(square) || isEnemyLeft(state, square));
+    return !getSquaresOnTrajectory(state.position, target).some(square =>
+      isHole(square) || isEnemyLeft(state, square) || held.has(squareKey(square)));
   };
 
   return {

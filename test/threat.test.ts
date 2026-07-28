@@ -138,6 +138,19 @@ describe("what the threat rule does to a route", () => {
     expect(solution?.captures).toBe(1);
   });
 
+  it("stops a slider crossing a held square, not only landing on one", () => {
+    const wall = `
+      ......
+      ......
+      ...R..
+      ......
+      ......
+    `;
+
+    expect(solveGrid(wall, "rook", 0)).toBeNull();
+    expect(solveGrid(wall, "knight", 0)?.forms).toEqual(["knight"]);
+  });
+
   it("refuses to start on a square the enemies already hold", () => {
     expect(solveGrid(`
       ....

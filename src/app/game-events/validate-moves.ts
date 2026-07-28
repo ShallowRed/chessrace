@@ -55,7 +55,7 @@ export function IS_VALID_TRAJECTORY(this: Game, targetSquare: Coords): boolean |
 
   const squaresOnTrajectory: Coords[] = [];
 
-  const { isEnemy, isHole } = this.model.square;
+  const { isEnemy, isHeld, isHole } = this.model.square;
 
   if (isLongRange(this.player.pieceName)) {
 
@@ -63,7 +63,7 @@ export function IS_VALID_TRAJECTORY(this: Game, targetSquare: Coords): boolean |
       ...getSquaresOnTrajectory(this.player.position, targetSquare)
     );
 
-    if (squaresOnTrajectory.some(isEnemy)) return;
+    if (squaresOnTrajectory.some(square => isEnemy(square) || isHeld(square))) return;
   }
 
   const hole = [...squaresOnTrajectory, targetSquare].find(isHole);

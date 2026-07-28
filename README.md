@@ -20,8 +20,8 @@ standing still is fatal: fall off the bottom and the run is over.
 - An enemy piece blocks the line of a bishop, rook or queen. The knight is the
   only piece that jumps over anything.
 - **An enemy holds every square it could take on.** Held squares are marked in
-  red and you may not end a move on one — though you may cross one, and taking
-  the enemy gives them all back.
+  red, and you may neither stop on one nor cross one: an enemy's line is a wall.
+  Taking the enemy gives every square it held back.
 - Capturing turns you into the piece you took, which is the only way to change
   how you move — and the only way to make yourself worse.
 - Reach the row past the top of the board to win.
