@@ -8,14 +8,14 @@ export function isValidMove({ position, pieceName }, targetPosition) {
   );
 }
 
-export function isValidTake({ position, pieceName }, ennemyPosition) {
+export function isValidTake({ position, pieceName }, enemyPosition) {
 
   return (
-    !isSameSquare(position, ennemyPosition) &&
+    !isSameSquare(position, enemyPosition) &&
     (
       Pieces[pieceName].isValidTake ||
       Pieces[pieceName].isValidMove
-    )(position, ennemyPosition)
+    )(position, enemyPosition)
   );
 }
 

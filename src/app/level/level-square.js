@@ -18,7 +18,7 @@ export default {
     return this.square.get(squareCoords) === 0;
   },
 
-  isEnnemy(squareCoords) {
+  isEnemy(squareCoords) {
 
     return this.square.get(squareCoords) > 1;
   },
@@ -26,6 +26,6 @@ export default {
   isObstacle(squareCoords) {
 
     return this.square.isHole(squareCoords) ||
-      this.square.isEnnemy(squareCoords)
+      this.square.isEnemy(squareCoords)
   }
 }
