@@ -8,12 +8,16 @@ export default class Hud {
 
   private readonly name: HTMLElement;
 
+  private readonly hint: HTMLElement;
+
   constructor(onMenu: () => void) {
 
     this.name = el("span", { className: "level-name" });
 
+    this.hint = el("p", { className: "hint" });
+
     this.domEl = el("div", { className: "hud" }, [
-      this.name,
+      el("div", { className: "hud-text" }, [this.name, this.hint]),
       el("button", { className: "to-menu", text: "Menu", onClick: onMenu })
     ]);
 
@@ -25,6 +29,10 @@ export default class Hud {
   show(level: Level): void {
 
     this.name.textContent = level.name;
+
+    this.hint.textContent = level.hint ?? "";
+
+    this.hint.hidden = !level.hint;
 
     show(this.domEl);
   }

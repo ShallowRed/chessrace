@@ -7,6 +7,7 @@ import type { Coords, PieceName } from 'app/types';
 export interface Level {
   name: string;
   slug: string;
+  hint?: string | undefined;
   columns: number;
   rows: number;
   spawn: { position: Coords; pieceName: PieceName };
@@ -24,7 +25,8 @@ export function slugOf(name: string): string {
 const level = (
   name: string,
   spawn: { position: Coords; pieceName: PieceName },
-  grid: string
+  grid: string,
+  hint?: string
 ): Level => {
 
   const rows = grid.split("\n").map(row => row.trim()).filter(Boolean);
@@ -32,6 +34,7 @@ const level = (
   return {
     name,
     slug: slugOf(name),
+    hint,
     columns: (rows[0] as string).length,
     rows: rows.length,
     spawn,
@@ -51,7 +54,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("openGround"),
     OPEN_ROW
-  )),
+  ), "Click a square your piece can reach. The board starts scrolling on your first move."),
 
   level("Mind the gap", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -59,7 +62,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("laneChasm"),
     pattern("openGround")
-  )),
+  ), "A hole is fatal, and a long range piece dies crossing one."),
 
   level("Take to become", { position: [2, 0], pieceName: "pawn" }, stack(
     pattern("openGround"),
@@ -67,7 +70,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("ladder"),
     OPEN_ROW
-  )),
+  ), "Take a piece and you become it. A pawn only takes on the diagonal."),
 
   level("Leap", { position: [3, 0], pieceName: "knight" }, stack(
     pattern("openGround"),
@@ -75,7 +78,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("steppingStones"),
     OPEN_ROW
-  )),
+  ), "The knight is the only piece that jumps over holes."),
 
   level("Blocked line", { position: [3, 0], pieceName: "rook" }, stack(
     pattern("openGround"),
@@ -83,7 +86,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("gate"),
     OPEN_ROW
-  )),
+  ), "A piece in the way stops a rook. Take it to get through."),
 
   level("Bad trade", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -91,7 +94,7 @@ export const levels: Level[] = [
     pattern("checkerVoid"),
     pattern("bait"),
     OPEN_ROW
-  )),
+  ), "Nothing forces you to take. A weaker piece is a worse form."),
 
   level("Switchback", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
