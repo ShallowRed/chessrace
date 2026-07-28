@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
 import { parseLevelGrid } from "app/level/level-notation";
-import { patterns, stack } from "app/level/patterns";
+import { mirror, patterns, shift, stack } from "app/level/patterns";
 import { solve } from "app/level/solve";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
@@ -58,5 +58,24 @@ describe("stack", () => {
 
   it("lays fragments out top down and trims the indentation", () => {
     expect(stack("\n  ab\n  cd\n", "  ef  ")).toBe("ab\ncd\nef");
+  });
+});
+
+describe("shift", () => {
+
+  it("slides a fragment sideways and backfills with holes", () => {
+    expect(shift("...\n.R.", 1)).toBe("_..\n_.R");
+    expect(shift("...\n.R.", -1)).toBe(".._\nR._");
+  });
+
+  it("leaves a fragment alone at offset zero", () => {
+    expect(shift("._.\nR..", 0)).toBe("._.\nR..");
+  });
+});
+
+describe("mirror", () => {
+
+  it("flips a fragment left to right", () => {
+    expect(mirror("__.\n.R_")).toBe(".__\n_R.");
   });
 });

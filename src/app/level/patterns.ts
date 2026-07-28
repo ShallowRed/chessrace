@@ -1,3 +1,5 @@
+import { HOLE } from 'app/level/level-notation';
+
 import type { PieceName } from 'app/types';
 
 export interface Pattern {
@@ -16,6 +18,27 @@ export function stack(...fragments: string[]): string {
       .map(row => row.trim())
       .filter(Boolean)
       .join("\n"))
+    .join("\n");
+}
+
+const rowsOf = (fragment: string) => fragment
+  .split("\n")
+  .map(row => row.trim())
+  .filter(Boolean);
+
+export function shift(fragment: string, offset: number): string {
+
+  return rowsOf(fragment)
+    .map(row => Array
+      .from(row, (_square, column) => row[column - offset] ?? HOLE)
+      .join(""))
+    .join("\n");
+}
+
+export function mirror(fragment: string): string {
+
+  return rowsOf(fragment)
+    .map(row => [...row].reverse().join(""))
     .join("\n");
 }
 
@@ -103,7 +126,7 @@ export const patterns: Pattern[] = [
     grid: `
       ........
       ........
-      ___P____
+      ...P....
     `
   },
 
