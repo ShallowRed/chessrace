@@ -1,14 +1,24 @@
 import { parseLevelGrid } from 'app/level/level-notation';
+import { pattern, shift, stack } from 'app/level/patterns';
 import { generateLevelBlueprint } from 'app/utils/level-generator';
 
 import type { Coords, PieceName } from 'app/types';
 
 export interface Level {
   name: string;
+  slug: string;
   columns: number;
   rows: number;
   spawn: { position: Coords; pieceName: PieceName };
   blueprint: string;
+}
+
+export function slugOf(name: string): string {
+
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
 }
 
 const level = (
@@ -21,6 +31,7 @@ const level = (
 
   return {
     name,
+    slug: slugOf(name),
     columns: (rows[0] as string).length,
     rows: rows.length,
     spawn,
@@ -28,27 +39,69 @@ const level = (
   };
 };
 
+const OPEN_ROW = "........";
+
 export const levels: Level[] = [
 
-  level("First steps", { position: [3, 0], pieceName: "queen" }, `
-    ...__...
-    ..____..
-    .._N__..
-    ..____..
-    ...__...
-    ...RR...
-    ..____..
-    ...__...
-    ..B__Q..
-    ...__...
-    ..____..
-    ...__...
-    ....N...
-    ...__...
-    ........
-    ........
-    ........
-  `),
+  level("Climb", { position: [3, 0], pieceName: "queen" }, stack(
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("openGround"),
+    "..___...",
+    pattern("openGround"),
+    pattern("openGround"),
+    OPEN_ROW
+  )),
+
+  level("Mind the gap", { position: [3, 0], pieceName: "queen" }, stack(
+    pattern("openGround"),
+    shift(pattern("laneChasm"), 2),
+    pattern("openGround"),
+    pattern("laneChasm"),
+    pattern("openGround")
+  )),
+
+  level("Take to become", { position: [2, 0], pieceName: "pawn" }, stack(
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("ladder"),
+    OPEN_ROW
+  )),
+
+  level("Leap", { position: [3, 0], pieceName: "knight" }, stack(
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("steppingStones"),
+    OPEN_ROW
+  )),
+
+  level("Blocked line", { position: [3, 0], pieceName: "rook" }, stack(
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("gate"),
+    OPEN_ROW
+  )),
+
+  level("Bad trade", { position: [3, 0], pieceName: "queen" }, stack(
+    pattern("openGround"),
+    pattern("openGround"),
+    pattern("checkerVoid"),
+    pattern("bait"),
+    OPEN_ROW
+  )),
+
+  level("Switchback", { position: [3, 0], pieceName: "queen" }, stack(
+    pattern("openGround"),
+    pattern("comb"),
+    pattern("openGround"),
+    shift(pattern("comb"), 1),
+    pattern("openGround"),
+    pattern("comb"),
+    OPEN_ROW
+  )),
 
   level("Knight school", { position: [3, 0], pieceName: "knight" }, `
     __.__.__
@@ -90,28 +143,24 @@ export const levels: Level[] = [
     ........
   `),
 
-  level("The gauntlet", { position: [3, 0], pieceName: "queen" }, `
-    _._.R._.
-    .__..__.
-    _.R._.N.
-    .__..__.
-    _._.B._.
-    .__..__.
-    Q._._.N.
-    .__..__.
-    _.B._.R.
-    .__..__.
-    _._.N._.
-    .__..__.
-    _.R._.B.
-    ........
-    ........
-    ........
-    ........
-  `)
+  level("The gauntlet", { position: [3, 0], pieceName: "queen" }, stack(
+    pattern("openGround"),
+    shift(pattern("checkerVoid"), 1),
+    ".....B..",
+    pattern("steppingStones"),
+    "...N....",
+    pattern("gate"),
+    OPEN_ROW
+  ))
+
 ];
 
 export const defaultLevel = levels[0] as Level;
+
+export function levelBySlug(slug: string | null): Level {
+
+  return levels.find(level => level.slug === slug) ?? defaultLevel;
+}
 
 export function randomLevel(
   { columns, rows }: { columns: number; rows: number }
@@ -119,6 +168,7 @@ export function randomLevel(
 
   return {
     name: "Random",
+    slug: "random",
     columns,
     rows,
     spawn: { position: [3, 0], pieceName: "queen" },

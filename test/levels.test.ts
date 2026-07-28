@@ -1,8 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { isBeatable } from "app/level/solve";
-import { levels, randomLevel } from "app/level/levels";
+import { isBeatable, solve } from "app/level/solve";
+import { levelBySlug, levels, randomLevel, slugOf } from "app/level/levels";
 import { parseBlueprint } from "app/utils/parse-blueprint";
+
+import type { Level } from "app/level/levels";
+import type { PiecePlacement } from "app/types";
 
 describe.each(levels)("$name", (level) => {
 
@@ -56,5 +59,104 @@ describe("randomLevel", () => {
       level.columns,
       level.spawn
     )).toBe(true);
+  });
+});
+
+const named = (name: string) =>
+  levels.find(level => level.name === name) as Level;
+
+const solveLevel = (level: Level, from: PiecePlacement = level.spawn) =>
+  solve(parseBlueprint(level.blueprint, level.columns), level.columns, from);
+
+describe("what the opening levels teach", () => {
+
+  it("Climb asks for nothing but a move or two", () => {
+    const solution = solveLevel(named("Climb"));
+
+    expect(solution?.captures).toBe(0);
+    expect(solution?.moves.length).toBeLessThanOrEqual(3);
+  });
+
+  it("Mind the gap cannot be rushed in a straight line", () => {
+    const solution = solveLevel(named("Mind the gap"));
+
+    expect(solution?.captures).toBe(0);
+    expect(solution?.moves.length).toBeGreaterThanOrEqual(3);
+  });
+
+  it("Take to become cannot be finished in the spawning form", () => {
+    const solution = solveLevel(named("Take to become"));
+
+    expect(solution?.captures).toBeGreaterThanOrEqual(2);
+    expect(solution?.forms[0]).toBe("pawn");
+    expect(solution?.forms.length).toBeGreaterThan(1);
+  });
+
+  it("Leap needs the knight, and only the knight", () => {
+    const leap = named("Leap");
+
+    expect(solveLevel(leap)?.forms).toEqual(["knight"]);
+
+    for (const pieceName of ["queen", "rook", "bishop", "king", "pawn"] as const) {
+      expect(solveLevel(leap, { position: leap.spawn.position, pieceName }))
+        .toBeNull();
+    }
+  });
+
+  it("Blocked line has to be opened by a capture", () => {
+    expect(solveLevel(named("Blocked line"))?.captures)
+      .toBeGreaterThanOrEqual(1);
+  });
+
+  it("Bad trade is won by leaving the pawn alone, and lost by taking it", () => {
+    const badTrade = named("Bad trade");
+
+    expect(solveLevel(badTrade)?.captures).toBe(0);
+
+    expect(solveLevel(badTrade, { position: [3, 1], pieceName: "pawn" }))
+      .toBeNull();
+  });
+});
+
+describe("the later levels", () => {
+
+  const later = levels.slice(6);
+
+  it.each(later)("$name asks for a real route", (level) => {
+    expect(solveLevel(level)?.moves.length).toBeGreaterThanOrEqual(5);
+  });
+
+  it("walks the gauntlet through every form it hands out", () => {
+    expect(solveLevel(named("The gauntlet"))?.forms)
+      .toEqual(["queen", "rook", "knight", "bishop"]);
+  });
+});
+
+describe("picking a level by slug", () => {
+
+  it("gives every level a distinct slug", () => {
+    const slugs = levels.map(({ slug }) => slug);
+
+    expect(new Set(slugs).size).toBe(slugs.length);
+  });
+
+  it("slugifies a name", () => {
+    expect(slugOf("Pawn's promise")).toBe("pawn-s-promise");
+  });
+
+  it("finds a level by its slug", () => {
+    expect(levelBySlug("blocked-line").name).toBe("Blocked line");
+  });
+
+  it("falls back to the first level when the slug is unknown or missing", () => {
+    expect(levelBySlug("nope")).toBe(levels[0]);
+    expect(levelBySlug(null)).toBe(levels[0]);
+  });
+});
+
+describe("the catalogue as a whole", () => {
+
+  it.each(levels)("$name is never won in a single move", (level) => {
+    expect(solveLevel(level)?.moves.length).toBeGreaterThan(1);
   });
 });
