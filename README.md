@@ -3,6 +3,8 @@
 An endless runner played with the movement rules of chess. The board scrolls
 down, you climb it. Holes kill. **Take a piece and you become it.**
 
+**[Play it](https://shallowred.github.io/chessrace/)**
+
 <p>
   <img src="docs/menu.png" alt="The level menu" width="300">
   <img src="docs/level.png" alt="A level in play" width="300">
