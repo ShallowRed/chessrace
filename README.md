@@ -83,6 +83,13 @@ it says.
 `npm run levels:view` prints any level as it really is: holes blank, held
 squares `×`, and the solver's own route drawn through it.
 
+`npm run levels:tune` searches for a better one. `src/app/level/fitness.ts`
+states what a level is being asked for — how long the route should be, how many
+of its moves should carry a price, how much a wrong one should cost, how much
+of the board should arrive after the run has started — and the tuner mutates a
+grid, measures it and keeps what scores higher. A level cannot be argued into
+being good, only measured, and a hand cannot try three thousand placements.
+
 That same solver walks the state space of `(square, piece)` with the real move,
 trajectory and capture rules. It proves every shipped level is winnable, sets
 the par a run is rated against, and counts the distinct shortest routes through
