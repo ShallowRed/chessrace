@@ -125,6 +125,13 @@ export default class Game {
     }
   }
 
+  repaint(): void {
+
+    this.board.clear();
+
+    this.board.render(this.model);
+  }
+
   reset(): void {
 
     events.emit("TRANSLATE_BOARD");

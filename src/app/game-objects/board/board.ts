@@ -85,7 +85,7 @@ export default class Board {
 
   render(model: LevelModel): void {
 
-    this.squares.render(model.regularSquares);
+    this.squares.render(model.regularSquares, model.square.isHeld);
 
     if (model.lastRowRendered === model.rows - 1) {
 

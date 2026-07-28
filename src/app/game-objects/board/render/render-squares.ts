@@ -5,13 +5,13 @@ import type Board from 'app/game-objects/board/board';
 import type { SquareColor } from 'app/game-objects/board/board-config';
 import type { Coords, FaceType } from 'app/types';
 
-export function render(this: Board, regularSquares: Coords[]): void {
+export function render(this: Board, regularSquares: Coords[], isHeld: Held): void {
 
   this.squares.includes = arrayIncludesArray(regularSquares);
 
   this.squares.renderSquaresSet(regularSquares, this.canvas.shadows);
 
-  this.squares.renderColoredSquares(regularSquares);
+  this.squares.renderColoredSquares(regularSquares, isHeld);
 }
 
 export function renderSquaresSet(this: Board, squares: Coords[], canvas: Canvas): void {
@@ -23,15 +23,27 @@ export function renderSquaresSet(this: Board, squares: Coords[], canvas: Canvas)
 
 const SQUARE_COLORS_KEYS: SquareColor[] = ["light", "dark"];
 
-export function renderColoredSquares(this: Board, squares: Coords[]): void {
+export type Held = (square: Coords) => boolean;
+
+export function renderColoredSquares(
+  this: Board,
+  squares: Coords[],
+  isHeld: Held
+): void {
 
   for (const color of SQUARE_COLORS_KEYS) {
 
     const sameColorSquares = squares.filter(this.isSquare[color]);
 
-    const colorShades = this.colors.squares[color];
+    this.squares.renderSquaresOfColor(
+      sameColorSquares.filter(square => !isHeld(square)),
+      this.colors.squares[color]
+    );
 
-    this.squares.renderSquaresOfColor(sameColorSquares, colorShades)
+    this.squares.renderSquaresOfColor(
+      sameColorSquares.filter(isHeld),
+      this.colors.held[color]
+    );
   }
 }
 

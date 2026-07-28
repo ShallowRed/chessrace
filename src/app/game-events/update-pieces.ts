@@ -38,6 +38,8 @@ export function EAT_PIECE(this: Game, enemy: EnemyPiece): void {
 
     this.enemies.remove(enemy);
 
+    this.repaint();
+
   }, beforeTheEndOf(this.durations.move));
 }
 

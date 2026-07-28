@@ -169,6 +169,21 @@ export const colors = {
     }
   },
 
+  held: {
+
+    dark: {
+      frontFace: "#9c5a52",
+      rightFace: "#7d4842",
+      bottomFace: "#643a35"
+    },
+
+    light: {
+      frontFace: "#e0a49a",
+      rightFace: "#b4837c",
+      bottomFace: "#8f6963"
+    }
+  },
+
   finishLine: {
     squares: "#333",
     frontFace: "#f0f0f0",
@@ -188,6 +203,7 @@ export const colors = {
 
 } satisfies {
   squares: Record<"dark" | "light", Record<FaceType, string>>;
+  held: Record<"dark" | "light", Record<FaceType, string>>;
   finishLine: Record<FaceType | "squares", string>;
   shadow: string;
   input: Record<string, string>;
