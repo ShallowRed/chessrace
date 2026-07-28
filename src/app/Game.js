@@ -1,9 +1,9 @@
 import events from 'app/game-events/event-emitter';
 
-import GameEvents from 'app/game-events/';
+import GameEvents from 'app/game-events';
 import LevelModel from 'app/level/level';
 
-import EnnemiesCollection from 'app/game-objects/pieces//models/ennemies-collection';
+import EnnemiesCollection from 'app/game-objects/pieces/models/ennemies-collection';
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
 
