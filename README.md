@@ -41,6 +41,21 @@ Vanilla TypeScript, no runtime dependency. The board is drawn on seven stacked
 canvases, one per face of the pseudo-3D extrusion, and scrolling is a CSS
 transform on their containers — there is no render loop.
 
+## Deploying
+
+`checks.yml` runs lint, typecheck, tests and build. It runs on its own for
+pull requests and side branches, and is called as a gate by the deploy, so
+nothing reaches either site without passing it first.
+
+| Branch    | Site                                                  |
+|-----------|-------------------------------------------------------|
+| `staging` | <https://shallowred.github.io/chessrace/staging/>     |
+| `master`  | <https://shallowred.github.io/chessrace/>             |
+
+Both publish to the `gh-pages` branch, production at the root and staging under
+`staging/`, each replacing only its own files. Pages must be set to serve from
+the `gh-pages` branch for this to work.
+
 ## Writing a level
 
 Levels are grids, read top down the way the board is played:

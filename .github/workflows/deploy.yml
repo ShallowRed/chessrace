@@ -1,0 +1,59 @@
+name: Deploy
+
+on:
+  push:
+    branches: [staging, master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Both branches publish to the same gh-pages branch, so they must not push at
+# the same time. Queue rather than cancel: a deploy already under way is the
+# one that matters.
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    uses: ./.github/workflows/checks.yml
+
+  publish:
+    needs: checks
+    runs-on: ubuntu-latest
+
+    environment:
+      name: ${{ github.ref_name == 'master' && 'production' || 'staging' }}
+      url: ${{ github.ref_name == 'master' && 'https://shallowred.github.io/chessrace/' || 'https://shallowred.github.io/chessrace/staging/' }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run build
+
+      - id: target
+        run: |
+          if [ "$GITHUB_REF_NAME" = "master" ]; then
+            echo "dir=." >> "$GITHUB_OUTPUT"
+            echo "name=production" >> "$GITHUB_OUTPUT"
+          else
+            echo "dir=staging" >> "$GITHUB_OUTPUT"
+            echo "name=staging" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Publish
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          sh scripts/publish-pages.sh dist "${{ steps.target.outputs.dir }}" \
+            "deploy ${{ steps.target.outputs.name }} from ${GITHUB_SHA:0:7}"
