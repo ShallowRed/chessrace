@@ -3,6 +3,7 @@ import events from 'app/game-events/event-emitter';
 import GameEvents from 'app/game-events';
 import LevelModel from 'app/level/level';
 
+import GameObject from 'app/game-objects/game-object';
 import EnemiesCollection from 'app/game-objects/pieces/models/enemies-collection';
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
@@ -12,11 +13,15 @@ import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 
 import type { EventListener, EventName } from 'app/game-events/event-emitter';
 import type Piece from 'app/game-objects/pieces/piece-sprite';
-import type { Durations, LevelConfig } from 'app/types';
+import type { Durations, LevelConfig, RunResult } from 'app/types';
 
 export default class Game {
 
   on = false;
+
+  moves = 0;
+
+  onOutcome?: (result: RunResult) => void;
 
   durations: Durations;
 
@@ -79,8 +84,34 @@ export default class Game {
       }
     );
 
-    window.addEventListener("resize", () => this.resize());
+    window.addEventListener("resize", this.onResize);
   }
+
+  destroy(): void {
+
+    this.on = false;
+
+    events.reset();
+
+    window.removeEventListener("resize", this.onResize);
+
+    GameObject.container.empty();
+  }
+
+  finish(outcome: RunResult["outcome"]): void {
+
+    this.on = false;
+
+    const { moves } = this;
+
+    this.reset();
+
+    this.render();
+
+    this.onOutcome?.({ outcome, moves });
+  }
+
+  private readonly onResize = () => this.resize();
 
   render(): void {
 
@@ -116,6 +147,8 @@ export default class Game {
     this.model.reset();
 
     this.player.reset();
+
+    this.moves = 0;
   }
 
   resize(): void {

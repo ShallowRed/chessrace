@@ -91,6 +91,11 @@ export default class GameObject {
     this.domEl.append(el);
   }
 
+  empty(): void {
+
+    this.domEl.replaceChildren();
+  }
+
   translateY = ({ rows = 0, duration = 0 }: TranslateOptions = {}): void => {
 
     this.domEl.style.transitionDuration = `${duration}s`;

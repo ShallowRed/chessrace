@@ -59,3 +59,10 @@ export type Bound<T> = {
     ? OmitThisParameter<T[K]>
     : Bound<T[K]>;
 };
+
+export type RunOutcome = "won" | "lost";
+
+export interface RunResult {
+  outcome: RunOutcome;
+  moves: number;
+}

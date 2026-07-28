@@ -67,6 +67,11 @@ export default new class Events {
     return results.length === validResults.length;
   }
 
+  reset(): void {
+
+    this.listeners = {};
+  }
+
   timeout(message: SilentEvent, delay: number): void {
 
     animationTimeout(() =>
