@@ -6,30 +6,26 @@ describe("arrayIncludesArray", () => {
 
   const includes = arrayIncludesArray([[0, 0], [1, 2], [3, 4]]);
 
-  it("reconnaît une coordonnée présente, quelle que soit l'identité du tableau", () => {
+  it("matches on coordinates rather than array identity", () => {
     expect(includes([1, 2])).toBe(true);
     expect(includes([3, 4])).toBe(true);
   });
 
-  it("rejette une coordonnée absente", () => {
+  it("rejects absent coordinates", () => {
     expect(includes([2, 1])).toBe(false);
     expect(includes([9, 9])).toBe(false);
   });
 
-  it("distingue [1, 2] de [2, 1]", () => {
+  it("tells [1, 2] and [2, 1] apart", () => {
     expect(includes([1, 2])).toBe(true);
     expect(includes([2, 1])).toBe(false);
   });
 
-  it("gère une liste vide", () => {
+  it("handles an empty list", () => {
     expect(arrayIncludesArray([])([0, 0])).toBe(false);
   });
 
-  // La comparaison passe par `join('_')`, donc une valeur contenant déjà un
-  // souligné se confond avec une paire. Sans conséquence ici (les coordonnées
-  // sont toujours des nombres), mais c'est l'argument pour passer un jour à un
-  // Set de clés : ce serait à la fois plus sûr et en O(1) au lieu de O(n).
-  it("confond deux clés qui s'aplatissent en la même chaîne", () => {
+  it("conflates two keys that flatten to the same string", () => {
     expect(arrayIncludesArray([[1, 2, 3]])(["1_2", 3])).toBe(true);
   });
 });
