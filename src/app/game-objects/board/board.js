@@ -6,7 +6,7 @@ import PlayArea from 'app/game-objects/board/models/play-area';
 import CanvasCollections from 'app/game-objects/board/models/canvas-collection';
 
 import * as boardSquare from 'app/game-objects/board/models/board-square';
-import render from 'app/game-objects/board/render/';
+import render from 'app/game-objects/board/render';
 
 import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
