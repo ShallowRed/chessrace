@@ -87,14 +87,14 @@ export function solve(
       path.unshift(step);
     }
 
-    const forms = path
-      .map(({ pieceName }) => pieceName)
-      .filter((pieceName, index, all) => pieceName !== all[index - 1]);
+    const moves = path.slice(1).map(({ position }) => position);
 
     return {
-      moves: path.slice(1).map(({ position }) => position),
-      forms,
-      captures: forms.length - 1
+      moves,
+      forms: path
+        .map(({ pieceName }) => pieceName)
+        .filter((pieceName, index, all) => pieceName !== all[index - 1]),
+      captures: moves.filter(isEnemy).length
     };
   }
 
