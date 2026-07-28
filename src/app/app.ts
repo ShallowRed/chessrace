@@ -9,6 +9,7 @@ import { levelBySlug, levels } from 'app/level/levels';
 import { par, rate } from 'app/level/par';
 
 import {
+  isUnlocked,
   loadProgress,
   nextLevel,
   recordRun,
@@ -50,7 +51,12 @@ export default class App {
 
   start(slug: string | null): void {
 
-    if (slug) return this.play(levelBySlug(slug));
+    const asked = slug === null ? undefined : levelBySlug(slug);
+
+    if (asked && isUnlocked(this.progress, levels, asked.slug)) {
+
+      return this.play(asked);
+    }
 
     this.openMenu();
   }
