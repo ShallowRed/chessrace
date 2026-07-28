@@ -2,15 +2,15 @@ import events from 'app/game-events/event-emitter';
 
 import Piece from 'app/game-objects/pieces/piece-sprite';
 
-export default class EnnemyPiece extends Piece {
+export default class EnemyPiece extends Piece {
 
   constructor(color, { position, pieceName }) {
 
-    super({ color, position, pieceName, type: "ennemy" });
+    super({ color, position, pieceName, type: "enemy" });
 
     this.onClick(() => {
 
-      events.emit("ENNEMY_CLICKED", this);
+      events.emit("ENEMY_CLICKED", this);
     });
   }
 

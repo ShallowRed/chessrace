@@ -27,7 +27,7 @@ export default class LevelModel {
 
   parseNextRows() {
 
-    this.newEnnemyPieces = [];
+    this.newEnemyPieces = [];
 
     let rowIndex = this.lastRowRendered + 1;
 
@@ -36,11 +36,11 @@ export default class LevelModel {
 
     for (rowIndex; isVisible(rowIndex); rowIndex++) {
 
-      const { regularSquares, newEnnemies } = this.parseRow(rowIndex);
+      const { regularSquares, newEnemies } = this.parseRow(rowIndex);
 
       this.deepRegularSquares.push(regularSquares);
 
-      this.newEnnemyPieces.push(...newEnnemies);
+      this.newEnemyPieces.push(...newEnemies);
 
       this.lastRowRendered = rowIndex;
     }
@@ -62,7 +62,7 @@ export default class LevelModel {
 
     const isNotHole = ({ value }) => value > 0;
 
-    const isEnnemy = ({ value }) => value > 1;
+    const isEnemy = ({ value }) => value > 1;
 
     const getSquareCoords = ({ index }) => [index, rowIndex];
 
@@ -79,8 +79,8 @@ export default class LevelModel {
         .filter(isNotHole)
         .map(getSquareCoords),
 
-      newEnnemies: filterableRow
-        .filter(isEnnemy)
+      newEnemies: filterableRow
+        .filter(isEnemy)
         .map(getPiecePositionAndName)
     }
   }

@@ -29,12 +29,12 @@ describe("reading the board", () => {
     expect(model.square.isHole([0, 1])).toBe(false);
   });
 
-  it("recognises a square held by an ennemy", () => {
-    expect(model.square.isEnnemy([2, 2])).toBe(true);
-    expect(model.square.isEnnemy([0, 0])).toBe(false);
+  it("recognises a square held by an enemy", () => {
+    expect(model.square.isEnemy([2, 2])).toBe(true);
+    expect(model.square.isEnemy([0, 0])).toBe(false);
   });
 
-  it("treats holes and ennemies as obstacles", () => {
+  it("treats holes and enemies as obstacles", () => {
     expect(model.square.isObstacle([1, 1])).toBe(true);
     expect(model.square.isObstacle([2, 2])).toBe(true);
     expect(model.square.isObstacle([0, 0])).toBe(false);
@@ -45,7 +45,7 @@ describe("reading the board", () => {
     expect(model.square.isInBoard([0, 4])).toBe(false);
 
     expect(model.square.isHole([0, 3])).toBe(false);
-    expect(model.square.isEnnemy([0, 3])).toBe(false);
+    expect(model.square.isEnemy([0, 3])).toBe(false);
   });
 
   it("rejects anything off the board", () => {
@@ -68,18 +68,18 @@ describe("producing rows", () => {
     expect(model.regularSquares).toContainEqual([1, 0]);
   });
 
-  it("extracts ennemies with their piece name and position", () => {
+  it("extracts enemies with their piece name and position", () => {
     const model = newModel();
 
     model.reset();
     model.parseNextRows();
 
-    expect(model.newEnnemyPieces).toEqual([
+    expect(model.newEnemyPieces).toEqual([
       { pieceName: "knight", position: [2, 2] }
     ]);
   });
 
-  it("keeps the square an ennemy stands on among the solid ones", () => {
+  it("keeps the square an enemy stands on among the solid ones", () => {
     const model = newModel();
 
     model.reset();
@@ -88,14 +88,14 @@ describe("producing rows", () => {
     expect(model.regularSquares).toContainEqual([2, 2]);
   });
 
-  it("reports an ennemy once only", () => {
+  it("reports an enemy once only", () => {
     const model = newModel();
 
     model.reset();
     model.parseNextRows();
     model.parseNextRows();
 
-    expect(model.newEnnemyPieces).toEqual([]);
+    expect(model.newEnemyPieces).toEqual([]);
   });
 
   it("stops at the last row of the level", () => {

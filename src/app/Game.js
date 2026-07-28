@@ -3,7 +3,7 @@ import events from 'app/game-events/event-emitter';
 import GameEvents from 'app/game-events';
 import LevelModel from 'app/level/level';
 
-import EnnemiesCollection from 'app/game-objects/pieces/models/ennemies-collection';
+import EnemiesCollection from 'app/game-objects/pieces/models/enemies-collection';
 import Board from 'app/game-objects/board/board';
 import Player from 'app/game-objects/pieces/player-sprite';
 
@@ -28,11 +28,11 @@ export default class Game {
     this.board = new Board({ columns, rows: visibleRows });
 
 
-    const [playerColor, ennemiesColor] = getRandomPiecesColor();
+    const [playerColor, enemiesColor] = getRandomPiecesColor();
 
     this.player = new Player(playerColor, playerSpawn);
 
-    this.ennemies = new EnnemiesCollection(ennemiesColor);
+    this.enemies = new EnemiesCollection(enemiesColor);
   }
 
   init() {
@@ -72,9 +72,9 @@ export default class Game {
 
     this.board.nRenders++;
 
-    if (this.model.newEnnemyPieces.length) {
+    if (this.model.newEnemyPieces.length) {
 
-      this.ennemies.addEach(this.model.newEnnemyPieces);
+      this.enemies.addEach(this.model.newEnemyPieces);
     }
   }
 
@@ -88,7 +88,7 @@ export default class Game {
 
     this.board.clear();
 
-    this.ennemies.removeAll();
+    this.enemies.removeAll();
 
     this.model.reset();
 
@@ -108,12 +108,12 @@ export default class Game {
 
     this.player.moveSprite();
 
-    this.ennemies.setEachPosition();
+    this.enemies.setEachPosition();
   }
 
   get pieces() {
 
-    return [this.player, ...this.ennemies.collection];
+    return [this.player, ...this.enemies.collection];
   }
 
   get offBoardPieces() {

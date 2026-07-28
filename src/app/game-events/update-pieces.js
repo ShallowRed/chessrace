@@ -17,15 +17,15 @@ export function MOVE_PLAYER(position) {
   }
 }
 
-export function EAT_PIECE(ennemy) {
+export function EAT_PIECE(enemy) {
 
-  events.emit("MOVE_PLAYER", ennemy.position);
+  events.emit("MOVE_PLAYER", enemy.position);
 
-  this.player.piece = ennemy.piece;
+  this.player.piece = enemy.piece;
 
   setTimeout(() => {
 
-    this.ennemies.remove(ennemy);
+    this.enemies.remove(enemy);
 
   }, this.durations.move * 800);
 }
@@ -41,9 +41,9 @@ export function KILL_OFFBOARD_PIECES(offBoardPieces) {
 
   setTimeout(() => {
 
-    this.ennemies.removeEach(offBoardPieces.filter(isPlayer));
+    this.enemies.removeEach(offBoardPieces.filter(isEnemy));
 
   }, this.durations.fall * 800);
 }
 
-function isPlayer(piece) { return !piece.isPlayer }
+function isEnemy(piece) { return !piece.isPlayer }

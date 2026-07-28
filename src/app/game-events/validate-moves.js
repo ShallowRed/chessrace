@@ -25,15 +25,15 @@ export function CANVAS_CLICKED(evt) {
   }
 }
 
-export function ENNEMY_CLICKED(ennemy) {
+export function ENEMY_CLICKED(enemy) {
 
   if (
-    isValidTake(this.player, ennemy.position) &&
+    isValidTake(this.player, enemy.position) &&
     events.ask("IS_ALLOWED_MOVING") &&
-    events.ask("IS_VALID_TRAJECTORY", ennemy.position)
+    events.ask("IS_VALID_TRAJECTORY", enemy.position)
   ) {
 
-    events.emit("EAT_PIECE", ennemy);
+    events.emit("EAT_PIECE", enemy);
   }
 }
 
@@ -49,7 +49,7 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
 
   const squaresOnTrajectory = [];
 
-  const { isEnnemy, isHole } = this.model.square;
+  const { isEnemy, isHole } = this.model.square;
 
   if (isLongRange(this.player.pieceName)) {
 
@@ -57,7 +57,7 @@ export function IS_VALID_TRAJECTORY(targetSquare) {
       ...getSquaresOnTrajectory(this.player.position, targetSquare)
     );
 
-    if (squaresOnTrajectory.some(isEnnemy)) return;
+    if (squaresOnTrajectory.some(isEnemy)) return;
   }
 
   const hole = [...squaresOnTrajectory, targetSquare].find(isHole);
