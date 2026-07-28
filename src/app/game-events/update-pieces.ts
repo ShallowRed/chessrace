@@ -12,6 +12,8 @@ export function MOVE_PLAYER(this: Game, position: Coords): void {
     events.emit("GAME_ON");
   }
 
+  this.moves++;
+
   this.player.position = position;
 
   this.player.moveSprite({ duration: this.durations.move });

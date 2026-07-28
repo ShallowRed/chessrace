@@ -11,22 +11,10 @@ export function GAME_ON(this: Game): void {
 
 export function GAME_OVER(this: Game): void {
 
-  this.on = false;
-
-  this.reset();
-
-  this.render();
-
-  setTimeout(() => alert("Game Over"), 100);
+  this.finish("lost");
 }
 
 export function GAME_WON(this: Game): void {
 
-  this.on = false;
-
-  this.reset();
-
-  this.render();
-
-  setTimeout(() => alert("Game won"), 500);
+  this.finish("won");
 }
