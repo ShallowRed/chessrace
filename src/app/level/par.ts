@@ -1,3 +1,4 @@
+import { NEAR_ENOUGH } from 'app/config';
 import { solve } from 'app/level/solve';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 
@@ -30,7 +31,7 @@ export function rate(moves: number, shortest: number): Rating {
 
   if (moves <= shortest) return 3;
 
-  if (moves <= shortest + 2) return 2;
+  if (moves <= shortest + NEAR_ENOUGH) return 2;
 
   return 1;
 }

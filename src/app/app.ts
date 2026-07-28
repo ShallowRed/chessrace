@@ -7,7 +7,7 @@ import Menu from 'app/ui/menu';
 import Result from 'app/ui/result';
 import Sound from 'app/ui/sound';
 
-import { levelConfig } from 'app/level/default-level-config';
+import { levelConfig } from 'app/level/level-config';
 import { loadMuted, saveMuted } from 'app/settings';
 import { levelBySlug, levels } from 'app/level/levels';
 import { par, rate } from 'app/level/par';

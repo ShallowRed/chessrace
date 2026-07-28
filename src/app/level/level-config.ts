@@ -1,17 +1,7 @@
-import { defaultLevel } from 'app/level/levels';
+import { DURATIONS, VISIBLE_ROWS } from 'app/config';
 
 import type { Level } from 'app/level/levels';
-import type { Durations, LevelConfig } from 'app/types';
-
-const VISIBLE_ROWS = 12;
-
-const DURATIONS: Durations = {
-  move: 0.3,
-  scroll: 2,
-  fall: 1,
-  speedUp: 1,
-  minScroll: 0.9
-};
+import type { LevelConfig } from 'app/types';
 
 export function levelConfig(level: Level): LevelConfig {
 
@@ -33,5 +23,3 @@ export function levelConfig(level: Level): LevelConfig {
     durations: { ...DURATIONS, speedUp: level.speedUp ?? DURATIONS.speedUp }
   };
 }
-
-export default levelConfig(defaultLevel);

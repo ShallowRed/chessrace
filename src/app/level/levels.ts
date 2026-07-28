@@ -1,3 +1,4 @@
+import { TEMPO } from 'app/config';
 import { parseLevelGrid } from 'app/level/level-notation';
 import { pattern, shift, stack } from 'app/level/patterns';
 import { generateLevelBlueprint } from 'app/utils/level-generator';
@@ -50,8 +51,6 @@ const level = (
 };
 
 const OPEN_ROW = "........";
-
-const TEMPO = 0.93;
 
 export const levels: Level[] = [
 
