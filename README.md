@@ -80,6 +80,9 @@ it. A test checks that claim against the
 solver from every entry column, so a pattern cannot quietly stop meaning what
 it says.
 
+`npm run levels:view` prints any level as it really is: holes blank, held
+squares `×`, and the solver's own route drawn through it.
+
 That same solver walks the state space of `(square, piece)` with the real move,
 trajectory and capture rules. It proves every shipped level is winnable, sets
 the par a run is rated against, and counts the distinct shortest routes through
