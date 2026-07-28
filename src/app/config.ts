@@ -16,5 +16,8 @@ export const DURATIONS: Durations = {
 // ask for it.
 export const TEMPO = 0.93;
 
+// For a short level, where the board can afford to close in harder.
+export const FAST_TEMPO = 0.88;
+
 // Moves over the shortest route still worth two stars. Beyond that, one.
 export const NEAR_ENOUGH = 2;

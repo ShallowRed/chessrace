@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { blueprintOf, levelBySlug, levels, randomLevel, slugOf } from "app/level/catalogue";
+import { blueprintOf, levelBySlug, levels, randomLevel, slugOf, worlds } from "app/level/catalogue";
 import { isBeatable } from "app/level/solve";
 
-import { solveLevel } from "./support";
+import { routesThroughLevel, solveLevel } from "./support";
 
 import type { Level } from "app/level/catalogue";
 
@@ -115,31 +115,49 @@ describe("what the opening levels teach", () => {
   });
 });
 
-describe("the later levels", () => {
+describe("past the teaching world", () => {
 
-  const later = levels.slice(6);
+  const later = worlds.slice(1).flatMap(({ levels }) => levels);
 
-  it.each(later)("$name asks for a real route", (level) => {
+  // The catalogue used to look hard and play loose: its widest level admitted
+  // 999 shortest routes. A level earns its place by being both long enough to
+  // plan and narrow enough that the plan matters.
+  it.each(later)("$name asks for a route worth planning", (level) => {
     expect(solveLevel(level)?.moves.length).toBeGreaterThanOrEqual(5);
+    expect(routesThroughLevel(level)).toBeLessThanOrEqual(24);
   });
 
   it("walks the gauntlet through every form it hands out", () => {
     expect(solveLevel(named("The gauntlet"))?.forms)
       .toEqual(["queen", "rook", "knight", "bishop"]);
   });
+
+  it("makes Toll spend the queen it starts with", () => {
+    expect(solveLevel(named("Toll"))?.forms)
+      .toEqual(["queen", "pawn", "knight"]);
+  });
+
+  it("strands the player who takes the wrong queen", () => {
+    const level = named("The wrong queen");
+
+    expect(solveLevel(level)?.captures).toBe(0);
+    expect(solveLevel(level, { position: [4, 2], pieceName: "queen" })).toBeNull();
+  });
 });
 
 describe("guidance", () => {
 
   it("gives each opening level a hint naming what it teaches", () => {
-    for (const level of levels.slice(0, 6)) {
+    for (const level of worlds[0]!.levels) {
       expect(level.hint).toBeTruthy();
     }
   });
 
-  it("leaves the later levels unhinted", () => {
-    for (const level of levels.slice(6)) {
-      expect(level.hint).toBeUndefined();
+  it("leaves the later worlds unhinted", () => {
+    for (const world of worlds.slice(1)) {
+      for (const level of world.levels) {
+        expect(level.hint).toBeUndefined();
+      }
     }
   });
 });
@@ -157,7 +175,7 @@ describe("picking a level by slug", () => {
   });
 
   it("finds a level by its slug", () => {
-    expect(levelBySlug("blocked-line").name).toBe("Blocked line");
+    expect(levelBySlug("blind-corner").name).toBe("Blind corner");
   });
 
   it("falls back to the first level when the slug is unknown or missing", () => {

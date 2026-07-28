@@ -23,8 +23,9 @@ standing still is fatal: fall off the bottom and the run is over.
   how you move — and the only way to make yourself worse.
 - Reach the row past the top of the board to win.
 
-Ten levels, opened in order. The first six each teach one rule; the last four
-speed up as you climb.
+Sixteen levels across four worlds, opened in order. The first world teaches one
+rule per level; the others each turn a single screw — the capture economy, the
+cost of reach, then everything at once with the board in a hurry.
 
 ## Running it
 
@@ -76,9 +77,10 @@ solver from every entry column, so a pattern cannot quietly stop meaning what
 it says.
 
 That same solver walks the state space of `(square, piece)` with the real move,
-trajectory and capture rules. It is what proves every shipped level is
-winnable, what sets the par a run is rated against, and what caught a
-supposedly hard level that turned out to be a one move walk.
+trajectory and capture rules. It proves every shipped level is winnable, sets
+the par a run is rated against, and counts the distinct shortest routes through
+a level — which is how a level earns its place: long enough to plan, narrow
+enough that the plan matters.
 
 ## Layout
 

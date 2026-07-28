@@ -1,4 +1,4 @@
-import { TEMPO } from 'app/config';
+import { FAST_TEMPO, TEMPO } from 'app/config';
 import { parseLevelGrid } from 'app/level/notation';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { pattern, shift, stack } from 'app/level/patterns';
@@ -128,36 +128,49 @@ const firstMoves: Level[] = [
 
 ];
 
-const deepWater: Level[] = [
+const tradeRoutes: Level[] = [
 
-  level("Switchback", { position: [3, 0], pieceName: "queen" }, stack(
-    pattern("openGround"),
-    pattern("comb"),
-    pattern("openGround"),
-    shift(pattern("comb"), 1),
-    pattern("openGround"),
-    pattern("comb"),
-    OPEN_ROW
-  ), { speedUp: TEMPO }),
-  level("Knight school", { position: [3, 0], pieceName: "knight" }, `
-    __.__.__
-    _______.
-    __.__.__
-    .______.
-    __.__.__
-    _______.
-    __.__.__
-    ._____._
-    __.__.__
-    _______.
-    __.__.__
-    ._____._
-    __.__.__
-    _______.
-    __...___
-    ...N....
+  level("Small change", { position: [3, 0], pieceName: "pawn" }, `
+    ___.____
+    ___P____
+    ____P___
+    ___P____
+    ____P___
+    ___P____
+    ____P___
+    ___P____
+    ____P___
+    ___.____
+  `),
+
+  level("Toll", { position: [3, 0], pieceName: "queen" }, `
+    _____.__
+    ________
+    ____.___
+    ________
+    _____.__
+    ________
+    ____N___
+    ___P____
+    ____P___
+    ___P____
+    ___.____
+  `),
+
+  level("The wrong queen", { position: [3, 0], pieceName: "knight" }, `
+    ____.___
+    ________
+    ___.____
+    ________
+    ____.___
+    ________
+    ___.____
+    ________
+    __._Q___
+    ________
     ........
-  `, { speedUp: TEMPO }),
+  `),
+
   level("Pawn's promise", { position: [3, 0], pieceName: "pawn" }, `
     ...__...
     ..____..
@@ -176,7 +189,84 @@ const deepWater: Level[] = [
     ..N_....
     ........
     ........
+  `)
+];
+
+const longFall: Level[] = [
+
+  level("Tightrope", { position: [0, 0], pieceName: "bishop" }, `
+    ______._
+    _____.__
+    ____.___
+    ___.____
+    ____.___
+    _____.__
+    ____.___
+    ___.____
+    __._____
+    _.______
+    __._____
+    ___.____
+    __._____
+    _.______
+    ._______
   `, { speedUp: TEMPO }),
+
+  level("Blind corner", { position: [0, 0], pieceName: "rook" }, `
+    __._____
+    __._____
+    __._____
+    __......
+    _______.
+    _______.
+    ____....
+    ____.___
+    ____.___
+    ____.___
+    .....___
+    ._______
+    ._______
+    ._______
+  `, { speedUp: TEMPO }),
+
+  level("Knight school", { position: [3, 0], pieceName: "knight" }, `
+    __.__.__
+    _______.
+    __.__.__
+    .______.
+    __.__.__
+    _______.
+    __.__.__
+    ._____._
+    __.__.__
+    _______.
+    __.__.__
+    ._____._
+    __.__.__
+    _______.
+    __...___
+    ...N....
+    ........
+  `, { speedUp: TEMPO })
+];
+
+const endgame: Level[] = [
+
+  level("Down to a pawn", { position: [0, 0], pieceName: "rook" }, `
+    ____.___
+    ____P___
+    _____P__
+    ____P___
+    _____P__
+    ____P___
+    _____P__
+    ____P___
+    .....___
+    ._______
+    ._______
+    ._______
+  `, { speedUp: TEMPO }),
+
   level("The gauntlet", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
     shift(pattern("checkerVoid"), 1),
@@ -185,14 +275,35 @@ const deepWater: Level[] = [
     "...N....",
     pattern("gate"),
     OPEN_ROW
-  ), { speedUp: TEMPO })
+  ), { speedUp: TEMPO }),
+
+  level("Last light", { position: [0, 0], pieceName: "bishop" }, `
+    _______.
+    _______.
+    _______.
+    ___.....
+    ___.____
+    ___.____
+    ___R____
+    __._____
+    _.______
+    ._______
+    _.______
+    __._____
+    _.______
+    ._______
+  `, { speedUp: FAST_TEMPO })
 ];
 
 export const worlds: World[] = [
 
   world("First moves", "One rule at a time.", firstMoves),
 
-  world("Deep water", "No more hints. The board starts pulling.", deepWater)
+  world("Trade routes", "What you take is what you become.", tradeRoutes),
+
+  world("The long fall", "Reach is a liability. Every line ends in a hole.", longFall),
+
+  world("Endgame", "Everything at once, and the board is in a hurry.", endgame)
 ];
 
 export const levels: Level[] = worlds.flatMap(({ levels }) => levels);
