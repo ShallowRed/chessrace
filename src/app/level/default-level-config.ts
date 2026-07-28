@@ -8,7 +8,9 @@ const VISIBLE_ROWS = 12;
 const DURATIONS: Durations = {
   move: 0.3,
   scroll: 2,
-  fall: 1
+  fall: 1,
+  speedUp: 1,
+  minScroll: 0.9
 };
 
 export function levelConfig(level: Level): LevelConfig {
@@ -28,7 +30,7 @@ export function levelConfig(level: Level): LevelConfig {
       pieceName: level.spawn.pieceName
     },
 
-    durations: DURATIONS
+    durations: { ...DURATIONS, speedUp: level.speedUp ?? DURATIONS.speedUp }
   };
 }
 

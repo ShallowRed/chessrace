@@ -11,7 +11,7 @@ export function SCROLL_ONE_SQUARE_DOWN(this: Game): void {
 
   events.emit("TRANSLATE_PIECES", { rows: this.board.nRenders });
 
-  events.timeout("INIT_NEXT_SCROLL_STEP", this.durations.scroll);
+  events.timeout("INIT_NEXT_SCROLL_STEP", this.scrollDuration);
 }
 
 export function INIT_NEXT_SCROLL_STEP(this: Game): void {
@@ -34,7 +34,7 @@ export function TRANSLATE_BOARD(this: Game, { rows }: TranslateOptions = {}): vo
 
   for (const canvas of this.board.canvas.movableCollection) {
 
-    canvas.translateY({ rows, duration: rows && this.durations.scroll });
+    canvas.translateY({ rows, duration: rows && this.scrollDuration });
   }
 }
 
@@ -42,6 +42,6 @@ export function TRANSLATE_PIECES(this: Game, { rows }: TranslateOptions = {}): v
 
   for (const { container } of this.pieces) {
 
-    container?.translateY({ rows, duration: rows && this.durations.scroll });
+    container?.translateY({ rows, duration: rows && this.scrollDuration });
   }
 }

@@ -4,10 +4,16 @@ import { generateLevelBlueprint } from 'app/utils/level-generator';
 
 import type { Coords, PieceName } from 'app/types';
 
+export interface LevelOptions {
+  hint?: string;
+  speedUp?: number;
+}
+
 export interface Level {
   name: string;
   slug: string;
   hint?: string | undefined;
+  speedUp?: number | undefined;
   columns: number;
   rows: number;
   spawn: { position: Coords; pieceName: PieceName };
@@ -26,7 +32,7 @@ const level = (
   name: string,
   spawn: { position: Coords; pieceName: PieceName },
   grid: string,
-  hint?: string
+  { hint, speedUp }: LevelOptions = {}
 ): Level => {
 
   const rows = grid.split("\n").map(row => row.trim()).filter(Boolean);
@@ -35,6 +41,7 @@ const level = (
     name,
     slug: slugOf(name),
     hint,
+    speedUp,
     columns: (rows[0] as string).length,
     rows: rows.length,
     spawn,
@@ -43,6 +50,8 @@ const level = (
 };
 
 const OPEN_ROW = "........";
+
+const TEMPO = 0.93;
 
 export const levels: Level[] = [
 
@@ -54,7 +63,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("openGround"),
     OPEN_ROW
-  ), "Click a square your piece can reach. The board starts scrolling on your first move."),
+  ), { hint: "Click a square your piece can reach. The board starts scrolling on your first move." }),
 
   level("Mind the gap", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -62,7 +71,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("laneChasm"),
     pattern("openGround")
-  ), "A hole is fatal, and a long range piece dies crossing one."),
+  ), { hint: "A hole is fatal, and a long range piece dies crossing one." }),
 
   level("Take to become", { position: [2, 0], pieceName: "pawn" }, stack(
     pattern("openGround"),
@@ -70,7 +79,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("ladder"),
     OPEN_ROW
-  ), "Take a piece and you become it. A pawn only takes on the diagonal."),
+  ), { hint: "Take a piece and you become it. A pawn only takes on the diagonal." }),
 
   level("Leap", { position: [3, 0], pieceName: "knight" }, stack(
     pattern("openGround"),
@@ -78,7 +87,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("steppingStones"),
     OPEN_ROW
-  ), "The knight is the only piece that jumps over holes."),
+  ), { hint: "The knight is the only piece that jumps over holes." }),
 
   level("Blocked line", { position: [3, 0], pieceName: "rook" }, stack(
     pattern("openGround"),
@@ -86,7 +95,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("gate"),
     OPEN_ROW
-  ), "A piece in the way stops a rook. Take it to get through."),
+  ), { hint: "A piece in the way stops a rook. Take it to get through." }),
 
   level("Bad trade", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -94,7 +103,7 @@ export const levels: Level[] = [
     pattern("checkerVoid"),
     pattern("bait"),
     OPEN_ROW
-  ), "Nothing forces you to take. A weaker piece is a worse form."),
+  ), { hint: "Nothing forces you to take. A weaker piece is a worse form." }),
 
   level("Switchback", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -104,8 +113,7 @@ export const levels: Level[] = [
     pattern("openGround"),
     pattern("comb"),
     OPEN_ROW
-  )),
-
+  ), { speedUp: TEMPO }),
   level("Knight school", { position: [3, 0], pieceName: "knight" }, `
     __.__.__
     _______.
@@ -124,8 +132,7 @@ export const levels: Level[] = [
     __...___
     ...N....
     ........
-  `),
-
+  `, { speedUp: TEMPO }),
   level("Pawn's promise", { position: [3, 0], pieceName: "pawn" }, `
     ...__...
     ..____..
@@ -144,8 +151,7 @@ export const levels: Level[] = [
     ..N_....
     ........
     ........
-  `),
-
+  `, { speedUp: TEMPO }),
   level("The gauntlet", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
     shift(pattern("checkerVoid"), 1),
@@ -154,8 +160,7 @@ export const levels: Level[] = [
     "...N....",
     pattern("gate"),
     OPEN_ROW
-  ))
-
+  ), { speedUp: TEMPO })
 ];
 
 export const defaultLevel = levels[0] as Level;

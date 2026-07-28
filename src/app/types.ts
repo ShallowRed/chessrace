@@ -20,6 +20,8 @@ export interface Durations {
   move: number;
   scroll: number;
   fall: number;
+  speedUp: number;
+  minScroll: number;
 }
 
 export interface BoardDimensions {
