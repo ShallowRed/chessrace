@@ -11,9 +11,17 @@ export interface LevelOptions {
   speedUp?: number;
 }
 
+export interface World {
+  name: string;
+  slug: string;
+  blurb: string;
+  levels: Level[];
+}
+
 export interface Level {
   name: string;
   slug: string;
+  world: string;
   hint?: string | undefined;
   speedUp?: number | undefined;
   columns: number;
@@ -47,6 +55,7 @@ const level = (
   return {
     name,
     slug: slugOf(name),
+    world: "",
     hint,
     speedUp,
     columns: (rows[0] as string).length,
@@ -56,9 +65,16 @@ const level = (
   };
 };
 
+const world = (name: string, blurb: string, levels: Level[]): World => {
+
+  const slug = slugOf(name);
+
+  return { name, slug, blurb, levels: levels.map(l => ({ ...l, world: slug })) };
+};
+
 const OPEN_ROW = "........";
 
-export const levels: Level[] = [
+const firstMoves: Level[] = [
 
   level("Climb", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -109,6 +125,10 @@ export const levels: Level[] = [
     pattern("bait"),
     OPEN_ROW
   ), { hint: "Nothing forces you to take. A weaker piece is a worse form." }),
+
+];
+
+const deepWater: Level[] = [
 
   level("Switchback", { position: [3, 0], pieceName: "queen" }, stack(
     pattern("openGround"),
@@ -168,7 +188,21 @@ export const levels: Level[] = [
   ), { speedUp: TEMPO })
 ];
 
+export const worlds: World[] = [
+
+  world("First moves", "One rule at a time.", firstMoves),
+
+  world("Deep water", "No more hints. The board starts pulling.", deepWater)
+];
+
+export const levels: Level[] = worlds.flatMap(({ levels }) => levels);
+
 export const defaultLevel = levels[0] as Level;
+
+export function worldOf(level: Level): World {
+
+  return worlds.find(({ slug }) => slug === level.world) as World;
+}
 
 export function levelBySlug(slug: string | null): Level {
 
@@ -182,6 +216,7 @@ export function randomLevel(
   return {
     name: "Random",
     slug: "random",
+    world: "",
     columns,
     rows,
     spawn: { position: [3, 0], pieceName: "queen" },

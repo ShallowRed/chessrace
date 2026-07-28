@@ -1,10 +1,13 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { levels } from "app/level/catalogue";
+import { levels, worlds } from "app/level/catalogue";
 
 import {
+  clearedCount,
   isCompleted,
   isUnlocked,
+  isWorldCleared,
+  isWorldUnlocked,
   loadProgress,
   nextLevel,
   noProgress,
@@ -53,20 +56,48 @@ describe("recording a run", () => {
 
 describe("unlocking", () => {
 
+  const clear = (...slugs: string[]) =>
+    slugs.reduce((progress, slug) => recordRun(progress, slug, 3), noProgress);
+
   it("opens the first level to everyone", () => {
-    expect(isUnlocked(noProgress, levels, levels[0]!.slug)).toBe(true);
+    expect(isUnlocked(noProgress, worlds, levels[0]!.slug)).toBe(true);
   });
 
   it("keeps the second level shut until the first is done", () => {
     const second = levels[1]!.slug;
 
-    expect(isUnlocked(noProgress, levels, second)).toBe(false);
-    expect(isUnlocked(recordRun(noProgress, levels[0]!.slug, 3), levels, second))
-      .toBe(true);
+    expect(isUnlocked(noProgress, worlds, second)).toBe(false);
+    expect(isUnlocked(clear(levels[0]!.slug), worlds, second)).toBe(true);
   });
 
   it("does not unlock a level whose slug is unknown", () => {
-    expect(isUnlocked(noProgress, levels, "nope")).toBe(false);
+    expect(isUnlocked(noProgress, worlds, "nope")).toBe(false);
+  });
+
+  it("keeps the next world shut until this one is cleared", () => {
+    const [first, second] = worlds;
+
+    const nearlyThere = clear(...first!.levels.slice(0, -1).map(l => l.slug));
+
+    expect(isWorldUnlocked(nearlyThere, worlds, second!.slug)).toBe(false);
+    expect(isUnlocked(nearlyThere, worlds, second!.levels[0]!.slug)).toBe(false);
+
+    const cleared = clear(...first!.levels.map(l => l.slug));
+
+    expect(isWorldUnlocked(cleared, worlds, second!.slug)).toBe(true);
+    expect(isUnlocked(cleared, worlds, second!.levels[0]!.slug)).toBe(true);
+  });
+
+  it("counts what is cleared in a world", () => {
+    const world = worlds[0]!;
+
+    expect(clearedCount(noProgress, world)).toBe(0);
+    expect(isWorldCleared(noProgress, world)).toBe(false);
+
+    const cleared = clear(...world.levels.map(l => l.slug));
+
+    expect(clearedCount(cleared, world)).toBe(world.levels.length);
+    expect(isWorldCleared(cleared, world)).toBe(true);
   });
 });
 

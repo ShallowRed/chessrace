@@ -1,4 +1,4 @@
-import type { Level } from 'app/level/catalogue';
+import type { Level, World } from 'app/level/catalogue';
 import type { KeyValueStore } from 'app/storage';
 
 export interface Progress {
@@ -54,17 +54,46 @@ export function isCompleted(progress: Progress, slug: string): boolean {
   return progress.best[slug] !== undefined;
 }
 
-export function isUnlocked(
+export function isWorldUnlocked(
   progress: Progress,
-  levels: Level[],
+  worlds: World[],
   slug: string
 ): boolean {
 
-  const index = levels.findIndex(level => level.slug === slug);
+  const index = worlds.findIndex(world => world.slug === slug);
 
   if (index <= 0) return index === 0;
 
-  return isCompleted(progress, levels[index - 1]?.slug ?? "");
+  return isWorldCleared(progress, worlds[index - 1] as World);
+}
+
+export function isWorldCleared(progress: Progress, world: World): boolean {
+
+  return world.levels.every(({ slug }) => isCompleted(progress, slug));
+}
+
+export function clearedCount(progress: Progress, world: World): number {
+
+  return world.levels.filter(({ slug }) => isCompleted(progress, slug)).length;
+}
+
+// A level opens once the one before it in its world is done, and the world
+// itself opens once the world before it is cleared.
+export function isUnlocked(
+  progress: Progress,
+  worlds: World[],
+  slug: string
+): boolean {
+
+  const world = worlds.find(w => w.levels.some(level => level.slug === slug));
+
+  if (!world || !isWorldUnlocked(progress, worlds, world.slug)) return false;
+
+  const index = world.levels.findIndex(level => level.slug === slug);
+
+  if (index === 0) return true;
+
+  return isCompleted(progress, world.levels[index - 1]?.slug ?? "");
 }
 
 export function nextLevel(levels: Level[], slug: string): Level | undefined {

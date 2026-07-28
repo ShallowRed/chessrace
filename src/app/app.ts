@@ -9,7 +9,7 @@ import Sound from 'app/ui/sound';
 
 import { levelConfig } from 'app/level/config';
 import { loadMuted, saveMuted } from 'app/settings';
-import { levelBySlug, levels } from 'app/level/catalogue';
+import { levelBySlug, levels, worlds } from 'app/level/catalogue';
 import { par, rate } from 'app/level/par';
 
 import {
@@ -50,7 +50,7 @@ export default class App {
       loadMuted(storage)
     );
 
-    this.menu = new Menu(levels, level => this.play(level));
+    this.menu = new Menu(worlds, level => this.play(level));
 
     this.hud = new Hud({
       onMenu: () => this.openMenu(),
@@ -68,7 +68,7 @@ export default class App {
 
     const asked = slug === null ? undefined : levelBySlug(slug);
 
-    if (asked && isUnlocked(this.progress, levels, asked.slug)) {
+    if (asked && isUnlocked(this.progress, worlds, asked.slug)) {
 
       return this.play(asked);
     }
