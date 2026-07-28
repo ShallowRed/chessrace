@@ -26,6 +26,8 @@ export interface Offset {
 
 export default {
 
+  reservedBottom: 0,
+
   squareSize: 0,
 
   width: 0,
@@ -67,11 +69,16 @@ export default {
     return round(this.squareSize * this.squareSizeRatios[key]);
   },
 
-  setDimensions(columns: number, rows: number): void {
+  setDimensions(
+    columns: number,
+    rows: number,
+    width = window.innerWidth,
+    height = window.innerHeight
+  ): void {
 
     this.squareSize = min(
-      round(window.innerWidth / (columns + 1)),
-      round(window.innerHeight / (rows + 2))
+      round(width / (columns + 1)),
+      round((height - this.reservedBottom) / (rows + 2))
     );
 
 

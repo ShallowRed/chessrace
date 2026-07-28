@@ -1,4 +1,5 @@
 import Game from 'app/Game';
+import PlayArea from 'app/game-objects/board/models/play-area';
 import Hud from 'app/ui/hud';
 import Menu from 'app/ui/menu';
 import Result from 'app/ui/result';
@@ -74,6 +75,8 @@ export default class App {
     this.result.hide();
 
     this.hud.show(level);
+
+    PlayArea.reservedBottom = this.hud.height;
 
     this.level = level;
 

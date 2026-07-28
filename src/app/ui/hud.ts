@@ -26,6 +26,11 @@ export default class Hud {
     document.body.append(this.domEl);
   }
 
+  get height(): number {
+
+    return this.domEl.offsetHeight;
+  }
+
   show(level: Level): void {
 
     this.name.textContent = level.name;
