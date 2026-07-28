@@ -26,9 +26,10 @@ standing still is fatal: fall off the bottom and the run is over.
   how you move — and the only way to make yourself worse.
 - Reach the row past the top of the board to win.
 
-Sixteen levels across four worlds, opened in order. The first world teaches one
+Twenty levels across five worlds, opened in order. The first world teaches one
 rule per level; the others each turn a single screw — the capture economy, the
-cost of reach, then everything at once with the board in a hurry.
+cost of reach, the squares the enemies hold, then everything at once with the
+board in a hurry.
 
 ## Running it
 

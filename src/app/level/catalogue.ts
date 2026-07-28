@@ -126,22 +126,31 @@ const firstMoves: Level[] = [
     "__...___"
   ), { hint: "Nothing forces you to take. A weaker piece is a worse form." }),
 
+  level("Held ground", { position: [3, 0], pieceName: "queen" }, stack(
+    OPEN_ROW,
+    OPEN_ROW,
+    "R.._....",
+    OPEN_ROW,
+    OPEN_ROW,
+    "...._..R",
+    OPEN_ROW,
+    OPEN_ROW
+  ), { hint: "An enemy owns every square it could take on, and you may not even cross one. A hole cuts its line: the way through is past the gap." })
+
 ];
 
 const tradeRoutes: Level[] = [
 
-  level("Small change", { position: [3, 0], pieceName: "pawn" }, `
-    ___.____
-    ___P____
-    ____P___
-    ___P____
-    ____P___
-    ___P____
-    ____P___
-    ___P____
-    ____P___
-    ___.____
-  `),
+  level("First choice", { position: [3, 0], pieceName: "pawn" }, stack(
+    OPEN_ROW,
+    OPEN_ROW,
+    OPEN_ROW,
+    OPEN_ROW,
+    pattern("steppingStones"),
+    OPEN_ROW,
+    "..N.P...",
+    OPEN_ROW
+  )),
 
   level("Toll", { position: [3, 0], pieceName: "queen" }, `
     _____.__
@@ -242,6 +251,56 @@ const longFall: Level[] = [
   `, {})
 ];
 
+const underFire: Level[] = [
+
+  level("Crossfire", { position: [3, 0], pieceName: "queen" }, stack(
+    OPEN_ROW,
+    OPEN_ROW,
+    OPEN_ROW,
+    pattern("crossfire"),
+    "...N....",
+    OPEN_ROW,
+    OPEN_ROW
+  )),
+
+  level("Every angle", { position: [3, 0], pieceName: "queen" }, `
+    ........
+    .K.....K
+    ........
+    ....B...
+    ........
+    ........
+    ......B.
+    ........
+    ........
+    ........
+    ........
+    ........
+    ........
+    .B......
+    ......N.
+  `),
+
+  level("The long way", { position: [3, 0], pieceName: "knight" }, `
+    N.......
+    ........
+    ........
+    ........
+    ........
+    ........
+    .......P
+    ........
+    ....P...
+    ........
+    ........
+    ........
+    .......R
+    ........
+    ........
+    ........
+  `)
+];
+
 const endgame: Level[] = [
 
   level("Down to a pawn", { position: [0, 0], pieceName: "rook" }, `
@@ -294,6 +353,8 @@ export const worlds: World[] = [
   world("Trade routes", "What you take is what you become.", tradeRoutes),
 
   world("The long fall", "Reach is a liability. Every line ends in a hole.", longFall),
+
+  world("Under fire", "Nothing here is walled off. It is watched.", underFire),
 
   world("Endgame", "Everything at once, and the board is in a hurry.", endgame)
 ];
