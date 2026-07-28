@@ -132,6 +132,21 @@ describe("the later levels", () => {
   });
 });
 
+describe("guidance", () => {
+
+  it("gives each opening level a hint naming what it teaches", () => {
+    for (const level of levels.slice(0, 6)) {
+      expect(level.hint).toBeTruthy();
+    }
+  });
+
+  it("leaves the later levels unhinted", () => {
+    for (const level of levels.slice(6)) {
+      expect(level.hint).toBeUndefined();
+    }
+  });
+});
+
 describe("picking a level by slug", () => {
 
   it("gives every level a distinct slug", () => {
