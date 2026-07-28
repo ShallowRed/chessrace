@@ -2,7 +2,8 @@ import { blueprintOf, worlds } from 'app/level/catalogue';
 import { levelConfig } from 'app/level/config';
 import { par } from 'app/level/par';
 import { playthroughs, slack } from 'app/level/personas';
-import { countRoutes, solve } from 'app/level/solve';
+import { countRoutes } from 'app/level/solve';
+import { tension } from 'app/level/tension';
 
 import type { Level } from 'app/level/catalogue';
 
@@ -18,27 +19,30 @@ function row(level: Level): string {
 
   const { durations } = levelConfig(level);
 
-  const solution = solve(blueprint, columns, spawn);
-
   const runs = playthroughs(blueprint, columns, spawn, durations);
 
   const survivors = runs.filter(({ outcome }) => outcome === "won");
+
+  const { choices, tempting, worstRegret, decisions } = tension(blueprint, columns, spawn);
+
+  const widest = Math.max(0, ...decisions.map(({ options }) => options));
 
   return [
     "  " + pad(level.name, 18),
     pad(spawn.pieceName, 7),
     rpad(par(level), 3),
-    rpad(solution?.captures ?? "-", 7),
     rpad(countRoutes(blueprint, columns, spawn), 7),
+    rpad(`${choices}/${decisions.length}`, 8),
+    rpad(widest, 6),
+    rpad(tempting, 6),
+    rpad(worstRegret, 5),
     rpad(slack(blueprint, columns, spawn, durations), 6),
-    "  " + pad(`${survivors.length}/${runs.length}`, 5),
-    runs.map(({ persona, outcome }) =>
-      `${persona}:${outcome}`).join(" ")
+    "  " + pad(`${survivors.length}/${runs.length}`, 5)
   ].join(" ");
 }
 
 process.stdout.write(
-  `\n  ${pad("level", 18)} ${pad("piece", 7)} par captures  routes  s/mv  alive  personas\n`
+  `\n  ${pad("level", 18)} ${pad("piece", 7)} par  routes  costly  wide  tempt  regr   s/mv  alive\n`
 );
 
 for (const world of worlds) {
