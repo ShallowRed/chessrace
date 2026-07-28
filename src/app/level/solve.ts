@@ -16,6 +16,17 @@ export interface Solution {
   captures: number;
 }
 
+// Counting every route of a wide open board is pointless and slow, so the
+// count saturates: past this, the level is a stroll whatever the exact figure.
+export const TOO_MANY_ROUTES = 999;
+
+interface Board {
+  rows: number;
+  key: (state: PiecePlacement) => string;
+  isEnemy: (square: Coords) => boolean;
+  movesFrom: (state: PiecePlacement) => PiecePlacement[];
+}
+
 export function isBeatable(
   blueprint: number[][],
   columns: number,
@@ -31,43 +42,27 @@ export function solve(
   spawn: PiecePlacement
 ): Solution | null {
 
-  const rows = blueprint.length;
+  const board = readBoard(blueprint, columns);
 
-  const valueAt = ([col, row]: Coords) => blueprint[row]?.[col];
-
-  const isHole = (square: Coords) => valueAt(square) === 0;
-
-  const isEnemy = (square: Coords) => (valueAt(square) ?? 0) > 1;
-
-  const enemyAt = (square: Coords) =>
-    PIECE_NAMES[(valueAt(square) ?? 0) - 2] as PieceName;
-
-  const isInBoard = ([col, row]: Coords) =>
-    col >= 0 && row >= 0 && col < columns && row <= rows;
-
-  const key = ({ position: [col, row], pieceName }: PiecePlacement) =>
-    `${col}_${row}_${pieceName}`;
-
-  const start: PiecePlacement = {
-    position: spawn.position,
-    pieceName: spawn.pieceName
-  };
+  const start = spawned(spawn);
 
   const queue: PiecePlacement[] = [start];
 
-  const cameFrom = new Map<string, PiecePlacement | null>([[key(start), null]]);
+  const cameFrom = new Map<string, PiecePlacement | null>([
+    [board.key(start), null]
+  ]);
 
   while (queue.length) {
 
     const state = queue.shift() as PiecePlacement;
 
-    if (state.position[1] === rows) return pathTo(state);
+    if (state.position[1] === board.rows) return pathTo(state);
 
-    for (const next of movesFrom(state)) {
+    for (const next of board.movesFrom(state)) {
 
-      if (cameFrom.has(key(next))) continue;
+      if (cameFrom.has(board.key(next))) continue;
 
-      cameFrom.set(key(next), state);
+      cameFrom.set(board.key(next), state);
 
       queue.push(next);
     }
@@ -82,7 +77,7 @@ export function solve(
     for (
       let step: PiecePlacement | null | undefined = end;
       step;
-      step = cameFrom.get(key(step))
+      step = cameFrom.get(board.key(step))
     ) {
       path.unshift(step);
     }
@@ -94,33 +89,84 @@ export function solve(
       forms: path
         .map(({ pieceName }) => pieceName)
         .filter((pieceName, index, all) => pieceName !== all[index - 1]),
-      captures: moves.filter(isEnemy).length
+      captures: moves.filter(board.isEnemy).length
     };
   }
+}
 
-  function movesFrom(state: PiecePlacement): PiecePlacement[] {
+// How forced the play is: the number of distinct shortest routes to the
+// finishing line. One route is a tightrope, forty is a stroll.
+export function countRoutes(
+  blueprint: number[][],
+  columns: number,
+  spawn: PiecePlacement
+): number {
 
-    const reached: PiecePlacement[] = [];
+  const board = readBoard(blueprint, columns);
 
-    for (let row = 0; row <= rows; row++) {
+  const start = spawned(spawn);
 
-      for (let col = 0; col < columns; col++) {
+  let frontier = new Map([[board.key(start), { state: start, routes: 1 }]]);
 
-        const target: Coords = [col, row];
+  const seen = new Set(frontier.keys());
 
-        if (!isInBoard(target) || !isReachable(state, target)) continue;
+  while (frontier.size) {
 
-        reached.push({
-          position: target,
-          pieceName: isEnemy(target) ? enemyAt(target) : state.pieceName
+    const won = [...frontier.values()]
+      .filter(({ state }) => state.position[1] === board.rows);
+
+    if (won.length) {
+
+      return capped(won.reduce((total, { routes }) => total + routes, 0));
+    }
+
+    const next = new Map<string, { state: PiecePlacement; routes: number }>();
+
+    for (const { state, routes } of frontier.values()) {
+
+      for (const reached of board.movesFrom(state)) {
+
+        const id = board.key(reached);
+
+        if (seen.has(id)) continue;
+
+        next.set(id, {
+          state: reached,
+          routes: capped((next.get(id)?.routes ?? 0) + routes)
         });
       }
     }
 
-    return reached;
+    for (const id of next.keys()) seen.add(id);
+
+    frontier = next;
   }
 
-  function isReachable(state: PiecePlacement, target: Coords): boolean {
+  return 0;
+}
+
+const capped = (routes: number) => Math.min(routes, TOO_MANY_ROUTES);
+
+const spawned = ({ position, pieceName }: PiecePlacement): PiecePlacement =>
+  ({ position, pieceName });
+
+function readBoard(blueprint: number[][], columns: number): Board {
+
+  const rows = blueprint.length;
+
+  const valueAt = ([col, row]: Coords) => blueprint[row]?.[col];
+
+  const isHole = (square: Coords) => valueAt(square) === 0;
+
+  const isEnemy = (square: Coords) => (valueAt(square) ?? 0) > 1;
+
+  const enemyAt = (square: Coords) =>
+    PIECE_NAMES[(valueAt(square) ?? 0) - 2] as PieceName;
+
+  const isInBoard = ([col, row]: Coords) =>
+    col >= 0 && row >= 0 && col < columns && row <= rows;
+
+  const isReachable = (state: PiecePlacement, target: Coords) => {
 
     const legal = isEnemy(target)
       ? isValidTake(state, target)
@@ -132,5 +178,36 @@ export function solve(
 
     return !getSquaresOnTrajectory(state.position, target)
       .some(square => isHole(square) || isEnemy(square));
-  }
+  };
+
+  return {
+
+    rows,
+
+    isEnemy,
+
+    key: ({ position: [col, row], pieceName }) => `${col}_${row}_${pieceName}`,
+
+    movesFrom: (state) => {
+
+      const reached: PiecePlacement[] = [];
+
+      for (let row = 0; row <= rows; row++) {
+
+        for (let col = 0; col < columns; col++) {
+
+          const target: Coords = [col, row];
+
+          if (!isInBoard(target) || !isReachable(state, target)) continue;
+
+          reached.push({
+            position: target,
+            pieceName: isEnemy(target) ? enemyAt(target) : state.pieceName
+          });
+        }
+      }
+
+      return reached;
+    }
+  };
 }

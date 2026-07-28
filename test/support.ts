@@ -1,6 +1,6 @@
 import { blueprintOf } from "app/level/catalogue";
 import { parseLevelGrid } from "app/level/notation";
-import { solve } from "app/level/solve";
+import { countRoutes, solve } from "app/level/solve";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
 import type { Level } from "app/level/catalogue";
@@ -33,6 +33,25 @@ export function solveGridFromAnywhere(
     .from({ length: widthOf(grid) }, (_none, column) =>
       solveGrid(grid, pieceName, column))
     .filter((solution): solution is Solution => solution !== null);
+}
+
+export function routesThroughGrid(
+  grid: string,
+  pieceName: PieceName,
+  column = 0
+): number {
+
+  const columns = widthOf(grid);
+
+  return countRoutes(parseBlueprint(parseLevelGrid(grid), columns), columns, {
+    position: [column, 0],
+    pieceName
+  });
+}
+
+export function routesThroughLevel(level: Level): number {
+
+  return countRoutes(blueprintOf(level), level.columns, level.spawn);
 }
 
 export function solveLevel(
