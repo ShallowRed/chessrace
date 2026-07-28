@@ -23,7 +23,7 @@ function row(level: Level): string {
 
   const survivors = runs.filter(({ outcome }) => outcome === "won");
 
-  const { choices, tempting, worstRegret, decisions } = tension(blueprint, columns, spawn);
+  const { choices, tempting, worstCost, worstRegret, decisions } = tension(blueprint, columns, spawn);
 
   const widest = Math.max(0, ...decisions.map(({ options }) => options));
 
@@ -35,6 +35,7 @@ function row(level: Level): string {
     rpad(`${choices}/${decisions.length}`, 8),
     rpad(widest, 6),
     rpad(tempting, 6),
+    rpad(worstCost, 5),
     rpad(worstRegret, 5),
     rpad(slack(blueprint, columns, spawn, durations), 6),
     "  " + pad(`${survivors.length}/${runs.length}`, 5)
@@ -42,7 +43,7 @@ function row(level: Level): string {
 }
 
 process.stdout.write(
-  `\n  ${pad("level", 18)} ${pad("piece", 7)} par  routes  costly  wide  tempt  regr   s/mv  alive\n`
+  `\n  ${pad("level", 18)} ${pad("piece", 7)} par  routes  costly  wide  tempt  cost  regr   s/mv  alive\n`
 );
 
 for (const world of worlds) {

@@ -64,12 +64,12 @@ describe("score", () => {
     expect(flat.reasons.join(" ")).toContain("par 1");
   });
 
-  // A level where every wrong move ends the run scores as if none of them did:
-  // the point of the metric is the price of a mistake, not its finality.
-  it("ignores a regret that is only ever fatal", () => {
+  // The point of the metric is the price of a mistake, not its finality: a
+  // level whose only real mistake ends the run has nothing to weigh.
+  it("prices only the mistakes that can be walked back", () => {
     const level = levelBySlug("bad-trade");
 
-    expect(score(level, blueprintOf(level)).worstRegret).toBe(0);
+    expect(score(level, blueprintOf(level)).worstCost).toBeLessThan(4);
   });
 
   it("counts the rows that arrive after the run has started", () => {

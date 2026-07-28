@@ -14,6 +14,7 @@ export interface Decision {
   // choice does not matter and the player is right not to think.
   tempting: number;
   worst: number;
+  cost: number;
 }
 
 export interface Tension {
@@ -21,6 +22,9 @@ export interface Tension {
   choices: number;
   tempting: number;
   worstRegret: number;
+  // The worst mistake that can still be walked back. A level whose only real
+  // mistake is fatal has a high worstRegret and no cost worth weighing.
+  worstCost: number;
 }
 
 export const REGRET_THAT_MATTERS = 2;
@@ -73,7 +77,8 @@ export function tension(
       row: state.position[1],
       options: options.length,
       tempting: regrets.filter(regret => regret >= REGRET_THAT_MATTERS).length,
-      worst: Math.max(0, ...regrets)
+      worst: Math.max(0, ...regrets),
+      cost: Math.max(0, ...regrets.filter(regret => regret < UNWINNABLE))
     });
 
     const stepped = options.find(({ position: [col, row] }) =>
@@ -90,6 +95,7 @@ export function tension(
     decisions,
     choices: decisions.filter(({ tempting }) => tempting > 0).length,
     tempting: decisions.reduce((total, step) => total + step.tempting, 0),
-    worstRegret: Math.max(0, ...decisions.map(({ worst }) => worst))
+    worstRegret: Math.max(0, ...decisions.map(({ worst }) => worst)),
+    worstCost: Math.max(0, ...decisions.map(({ cost }) => cost))
   };
 }

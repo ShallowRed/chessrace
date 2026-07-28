@@ -2,7 +2,7 @@ import { VISIBLE_ROWS } from 'app/config';
 import { levelConfig } from 'app/level/config';
 import { playthrough, planner } from 'app/level/personas';
 import { countRoutes, solve } from 'app/level/solve';
-import { tension, UNWINNABLE } from 'app/level/tension';
+import { tension } from 'app/level/tension';
 
 import type { Level } from 'app/level/catalogue';
 
@@ -11,7 +11,7 @@ export interface Score {
   par: number;
   routes: number;
   costly: number;
-  worstRegret: number;
+  worstCost: number;
   unseen: number;
   reasons: string[];
 }
@@ -23,7 +23,7 @@ export const WANTED = {
   par: [6, 14],
   routes: [2, 24],
   costly: [3, 8],
-  worstRegret: [4, 20],
+  worstCost: [4, 20],
   unseen: [1, 8]
 } as const;
 
@@ -34,7 +34,7 @@ export function score(level: Level, blueprint: number[][]): Score {
   const { columns, spawn } = level;
 
   const nothing = (reason: string): Score => ({
-    total: DEAD, par: 0, routes: 0, costly: 0, worstRegret: 0, unseen: 0,
+    total: DEAD, par: 0, routes: 0, costly: 0, worstCost: 0, unseen: 0,
     reasons: [reason]
   });
 
@@ -49,14 +49,13 @@ export function score(level: Level, blueprint: number[][]): Score {
 
   if (run.outcome !== "won") return nothing(`the planner is ${run.outcome}`);
 
-  const { choices, worstRegret } = tension(blueprint, columns, spawn);
+  const { choices, worstCost } = tension(blueprint, columns, spawn);
 
   const measured = {
     par: solution.moves.length,
     routes: countRoutes(blueprint, columns, spawn),
     costly: choices,
-    // A level where every mistake is fatal is not tense, it is a quiz.
-    worstRegret: worstRegret === UNWINNABLE ? 0 : worstRegret,
+    worstCost,
     unseen: Math.max(0, blueprint.length - VISIBLE_ROWS)
   };
 

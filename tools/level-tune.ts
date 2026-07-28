@@ -61,7 +61,7 @@ function draw(blueprint: number[][]): string {
 
 const report = (label: string, of: Score) =>
   `${label} score ${of.total}, par ${of.par}, routes ${of.routes}, ` +
-  `costly ${of.costly}, regret ${of.worstRegret}, unseen ${of.unseen}` +
+  `costly ${of.costly}, cost ${of.worstCost}, unseen ${of.unseen}` +
   (of.reasons.length ? ` — ${of.reasons.join("; ")}` : "");
 
 // A skeleton is a grid file plus a spawn: the shape is the designer's call,
