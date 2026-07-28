@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 
+import { isBeatable } from "app/level/is-beatable";
 import { generateLevelBlueprint } from "app/utils/level-generator";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
@@ -30,6 +31,15 @@ describe("generateLevelBlueprint", () => {
       for (const row of generateRows().slice(0, 4)) {
         expect(row).toEqual([1, 1, 1, 1, 1, 1, 1, 1]);
       }
+    }
+  });
+
+  it("always yields a level the spawning queen can beat", () => {
+    for (let attempt = 0; attempt < 20; attempt++) {
+      expect(isBeatable(generateRows(), DIMENSIONS.columns, {
+        position: [3, 0],
+        pieceName: "queen"
+      })).toBe(true);
     }
   });
 
