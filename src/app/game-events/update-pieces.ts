@@ -1,5 +1,7 @@
 import events from 'app/game-events/event-emitter';
 
+import { beforeTheEndOf } from 'app/utils/timing';
+
 import type Game from 'app/game';
 import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
 import type Piece from 'app/game-objects/pieces/piece-sprite';
@@ -34,7 +36,7 @@ export function EAT_PIECE(this: Game, enemy: EnemyPiece): void {
 
     this.enemies.remove(enemy);
 
-  }, this.durations.move * 800);
+  }, beforeTheEndOf(this.durations.move));
 }
 
 export function KILL_OFFBOARD_PIECES(this: Game, offBoardPieces: Piece[]): void {
@@ -50,7 +52,7 @@ export function KILL_OFFBOARD_PIECES(this: Game, offBoardPieces: Piece[]): void 
 
     this.enemies.removeEach(offBoardPieces.filter(isEnemy) as EnemyPiece[]);
 
-  }, this.durations.fall * 800);
+  }, beforeTheEndOf(this.durations.fall));
 }
 
 function isEnemy(piece: Piece): boolean { return !piece.isPlayer }

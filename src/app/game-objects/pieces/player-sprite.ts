@@ -2,6 +2,8 @@ import events from 'app/game-events/event-emitter';
 
 import Piece from 'app/game-objects/pieces/piece-sprite';
 
+import { ms } from 'app/utils/timing';
+
 import type { PieceColor, PiecePlacement } from 'app/types';
 
 type PieceFlag = "isMoving" | "isFalling";
@@ -57,7 +59,7 @@ export default class Player extends Piece {
     events.timeout("GAME_OVER", duration);
   }
 
-  setFlag(flag: PieceFlag, durationInSeconds: number): void {
+  setFlag(flag: PieceFlag, seconds: number): void {
 
     this[flag] = true;
 
@@ -65,6 +67,6 @@ export default class Player extends Piece {
 
       this[flag] = false;
 
-    }, durationInSeconds * 1000)
+    }, ms(seconds))
   }
 }
