@@ -1,8 +1,8 @@
 import { animationTimeout } from 'app/utils/animation-timeout';
 
 import type { TranslateOptions } from 'app/game-objects/game-object';
-import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
-import type Piece from 'app/game-objects/pieces/piece-sprite';
+import type EnemyPiece from 'app/game-objects/pieces/enemy';
+import type Piece from 'app/game-objects/pieces/piece';
 import type { Coords } from 'app/types';
 
 export interface GameEventMap {

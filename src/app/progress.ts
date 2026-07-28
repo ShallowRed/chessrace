@@ -1,4 +1,4 @@
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 import type { KeyValueStore } from 'app/storage';
 
 export interface Progress {

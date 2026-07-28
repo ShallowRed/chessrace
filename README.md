@@ -83,9 +83,10 @@ supposedly hard level that turned out to be a one move walk.
 ## Layout
 
 ```
-src/app/level/        blueprints, notation, patterns, solver, par
+src/app/level/        catalogue, notation, patterns, model, solver, par
 src/app/game-objects/ board geometry, canvases, pieces
 src/app/game-events/  the rules, as handlers on a typed event bus
 src/app/ui/           menu, hud, end of run screen, sound
+src/app/config.ts     the numbers worth turning
 test/                 the pure logic, no dom
 ```

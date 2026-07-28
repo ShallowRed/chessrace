@@ -1,6 +1,6 @@
 import { el, hide, show } from 'app/ui/dom';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 
 export interface HudActions {
   onMenu: () => void;

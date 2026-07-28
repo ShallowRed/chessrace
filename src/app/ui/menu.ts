@@ -2,7 +2,7 @@ import { el, hide, show, stars } from 'app/ui/dom';
 import { isCompleted, isUnlocked } from 'app/progress';
 import { par, rate } from 'app/level/par';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 import type { Progress } from 'app/progress';
 
 export default class Menu {

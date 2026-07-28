@@ -1,18 +1,18 @@
 import events from 'app/game-events/event-emitter';
 
 import { handlers } from 'app/game-events';
-import LevelModel from 'app/level/level';
+import LevelModel from 'app/level/model';
 
 import GameObject from 'app/game-objects/game-object';
-import EnemiesCollection from 'app/game-objects/pieces/models/enemies-collection';
+import EnemiesCollection from 'app/game-objects/pieces/enemies-collection';
 import Board from 'app/game-objects/board/board';
-import Player from 'app/game-objects/pieces/player-sprite';
+import Player from 'app/game-objects/pieces/player';
 
 import { getRandomPiecesColor } from 'app/utils/get-random-pieces-color';
 import { scrollDuration } from 'app/level/tempo';
 
 import type { EventName } from 'app/game-events/event-emitter';
-import type Piece from 'app/game-objects/pieces/piece-sprite';
+import type Piece from 'app/game-objects/pieces/piece';
 import type { Durations, LevelConfig, RunResult } from 'app/types';
 
 export default class Game {

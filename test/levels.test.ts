@@ -1,11 +1,11 @@
 import { describe, expect, it } from "vitest";
 
-import { blueprintOf, levelBySlug, levels, randomLevel, slugOf } from "app/level/levels";
+import { blueprintOf, levelBySlug, levels, randomLevel, slugOf } from "app/level/catalogue";
 import { isBeatable } from "app/level/solve";
 
 import { solveLevel } from "./support";
 
-import type { Level } from "app/level/levels";
+import type { Level } from "app/level/catalogue";
 
 describe.each(levels)("$name", (level) => {
 

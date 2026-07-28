@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { parseLevelGrid } from "app/level/level-notation";
+import { parseLevelGrid } from "app/level/notation";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
 describe("parseLevelGrid", () => {

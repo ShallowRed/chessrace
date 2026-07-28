@@ -1,4 +1,4 @@
-import type LevelModel from 'app/level/level';
+import type LevelModel from 'app/level/model';
 import type { Coords } from 'app/types';
 
 export default {

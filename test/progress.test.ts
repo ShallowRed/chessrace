@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { levels } from "app/level/levels";
+import { levels } from "app/level/catalogue";
 
 import {
   isCompleted,

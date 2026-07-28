@@ -1,6 +1,6 @@
 import { DURATIONS, VISIBLE_ROWS } from 'app/config';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 import type { LevelConfig } from 'app/types';
 
 export function levelConfig(level: Level): LevelConfig {

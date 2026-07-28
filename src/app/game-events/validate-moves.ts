@@ -6,12 +6,12 @@ import {
   isValidMove,
   isValidTake,
   isLongRange
-} from 'app/game-objects/pieces/models/pieces-movements';
+} from 'app/game-objects/pieces/movements';
 
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 
 import type Game from 'app/game';
-import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
+import type EnemyPiece from 'app/game-objects/pieces/enemy';
 import type { Coords } from 'app/types';
 
 export function CANVAS_CLICKED(this: Game, evt: MouseEvent): void {

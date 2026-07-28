@@ -1,6 +1,6 @@
 import events from 'app/game-events/event-emitter';
 
-import Piece from 'app/game-objects/pieces/piece-sprite';
+import Piece from 'app/game-objects/pieces/piece';
 
 import type { PieceColor, PiecePlacement } from 'app/types';
 

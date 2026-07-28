@@ -1,5 +1,5 @@
 import { TEMPO } from 'app/config';
-import { parseLevelGrid } from 'app/level/level-notation';
+import { parseLevelGrid } from 'app/level/notation';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { pattern, shift, stack } from 'app/level/patterns';
 import { generateLevelBlueprint } from 'app/utils/level-generator';

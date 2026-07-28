@@ -1,4 +1,4 @@
-import { HOLE } from 'app/level/level-notation';
+import { HOLE } from 'app/level/notation';
 
 import type { PieceName } from 'app/types';
 

@@ -3,8 +3,8 @@ import events from 'app/game-events/event-emitter';
 import { beforeTheEndOf } from 'app/utils/timing';
 
 import type Game from 'app/game';
-import type EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
-import type Piece from 'app/game-objects/pieces/piece-sprite';
+import type EnemyPiece from 'app/game-objects/pieces/enemy';
+import type Piece from 'app/game-objects/pieces/piece';
 import type { Coords } from 'app/types';
 
 export function MOVE_PLAYER(this: Game, position: Coords): void {

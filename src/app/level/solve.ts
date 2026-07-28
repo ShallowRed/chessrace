@@ -2,7 +2,7 @@ import {
   isLongRange,
   isValidMove,
   isValidTake
-} from 'app/game-objects/pieces/models/pieces-movements';
+} from 'app/game-objects/pieces/movements';
 
 import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
 

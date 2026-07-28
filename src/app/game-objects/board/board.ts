@@ -12,7 +12,7 @@ import { canvasConfig, colors } from 'app/game-objects/board/board-config';
 
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
-import type LevelModel from 'app/level/level';
+import type LevelModel from 'app/level/model';
 import type { CanvasMap } from 'app/game-objects/board/models/canvas-collection';
 import type { CanvasName } from 'app/game-objects/board/board-config';
 import type { Bound } from 'app/types';

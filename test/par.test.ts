@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { levelBySlug, levels } from "app/level/levels";
+import { levelBySlug, levels } from "app/level/catalogue";
 import { par, rate } from "app/level/par";
 
 describe("par", () => {

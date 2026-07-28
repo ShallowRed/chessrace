@@ -1,9 +1,9 @@
-import { blueprintOf } from "app/level/levels";
-import { parseLevelGrid } from "app/level/level-notation";
+import { blueprintOf } from "app/level/catalogue";
+import { parseLevelGrid } from "app/level/notation";
 import { solve } from "app/level/solve";
 import { parseBlueprint } from "app/utils/parse-blueprint";
 
-import type { Level } from "app/level/levels";
+import type { Level } from "app/level/catalogue";
 import type { Solution } from "app/level/solve";
 import type { PieceName, PiecePlacement } from "app/types";
 

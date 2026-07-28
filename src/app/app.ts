@@ -7,9 +7,9 @@ import Menu from 'app/ui/menu';
 import Result from 'app/ui/result';
 import Sound from 'app/ui/sound';
 
-import { levelConfig } from 'app/level/level-config';
+import { levelConfig } from 'app/level/config';
 import { loadMuted, saveMuted } from 'app/settings';
-import { levelBySlug, levels } from 'app/level/levels';
+import { levelBySlug, levels } from 'app/level/catalogue';
 import { par, rate } from 'app/level/par';
 
 import {
@@ -20,7 +20,7 @@ import {
   saveProgress
 } from 'app/progress';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 import type { Progress } from 'app/progress';
 import type { KeyValueStore } from 'app/storage';
 import type { RunResult } from 'app/types';

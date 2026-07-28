@@ -4,7 +4,7 @@ import {
   isLongRange,
   isValidMove,
   isValidTake
-} from "app/game-objects/pieces/models/pieces-movements";
+} from "app/game-objects/pieces/movements";
 
 import type { Coords, PieceName } from "app/types";
 

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import LevelModel from "app/level/level";
+import LevelModel from "app/level/model";
 
 // row 0: no hole - row 1: hole in column 1 - row 2: knight in column 2
 const BLUEPRINT = "1111" + "1011" + "1141";

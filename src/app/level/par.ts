@@ -1,8 +1,8 @@
 import { NEAR_ENOUGH } from 'app/config';
-import { blueprintOf } from 'app/level/levels';
+import { blueprintOf } from 'app/level/catalogue';
 import { solve } from 'app/level/solve';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 
 export type Rating = 1 | 2 | 3;
 

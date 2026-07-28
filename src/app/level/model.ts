@@ -1,4 +1,4 @@
-import LevelSquare from 'app/level/level-square';
+import LevelSquare from 'app/level/square';
 
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";

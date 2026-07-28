@@ -1,4 +1,4 @@
-import EnemyPiece from 'app/game-objects/pieces/enemy-sprite';
+import EnemyPiece from 'app/game-objects/pieces/enemy';
 
 import type { PieceColor, PiecePlacement } from 'app/types';
 

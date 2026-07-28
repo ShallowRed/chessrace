@@ -1,6 +1,6 @@
 import { el, hide, show, stars } from 'app/ui/dom';
 
-import type { Level } from 'app/level/levels';
+import type { Level } from 'app/level/catalogue';
 import type { Rating } from 'app/level/par';
 
 export interface WinReport {
