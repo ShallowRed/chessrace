@@ -60,13 +60,17 @@ Every mechanic below is priced against that:
 | **a board clock** | `tick mod period` | cheap, and it unlocks a whole family |
 | patrols, sweepers, timed terrain, check-with-grace | ride on the clock | cheap **once the clock exists** |
 | enemies that wake | one bit each | cheap |
-| squares that crumble as you leave | the crumbled set *is* the path | **fatal** — no compression, exponential |
-| enemies that chase you | every enemy's position | **fatal** beyond one enemy |
+| squares that crumble as you leave | one bit per cracked square | affordable up to a dozen — see `architecture.md` |
+| enemies that chase you | the pursuer's position | affordable for one, not for two |
 
-That table is the real design constraint. Two mechanics kill our ability to
-prove a level is even finishable, and I would rather not ship levels we cannot
-check. Everything else is affordable, and **most of the interesting things
-share one engine change: a clock.**
+*Corrected after measuring: the last two rows first read "fatal". They are not.
+The solver's worst level today explores 673 states, so a handful of cracked
+squares or a single pursuer is well within reach. `architecture.md` has the
+numbers, and the wider point that the instrument should not be steering the
+design in the first place.*
+
+**Most of the interesting things share one engine change: a clock** — though
+notably neither instant death nor cracked squares need it.
 
 ## The danger question
 
