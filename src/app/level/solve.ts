@@ -1,21 +1,9 @@
-import {
-  isLongRange,
-  isValidMove,
-  isValidTake
-} from 'app/game-objects/pieces/movements';
+import { readRules } from 'app/level/rules';
 
-import { readThreat, sameSquare, squareKey, withTaken } from 'app/level/threat';
-import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
+import type { Rules, Standing } from 'app/level/rules';
+import type { Coords, PieceName } from 'app/types';
 
-import { PIECE_NAMES } from 'app/types';
-
-import type { Coords, PieceName, PiecePlacement } from 'app/types';
-
-// Taking a piece removes what it held, so the way forward can depend on what
-// has already been eaten. The state has to carry it.
-export interface State extends PiecePlacement {
-  taken?: string;
-}
+export type State = Standing;
 
 export interface Solution {
   moves: Coords[];
@@ -27,12 +15,8 @@ export const TOO_MANY_ROUTES = 999;
 
 const STATE_LIMIT = 200000;
 
-export interface Board {
-  rows: number;
+export interface Board extends Rules {
   key: (state: State) => string;
-  isEnemy: (square: Coords) => boolean;
-  isHeld: (state: State, square: Coords) => boolean;
-  movesFrom: (state: State) => State[];
 }
 
 export function isBeatable(
@@ -54,7 +38,7 @@ export function solve(
 
   const start = spawned(spawn);
 
-  if (board.isHeld(start, start.position)) return null;
+  if (board.isHeld(start.taken, start.position)) return null;
 
   const queue: State[] = [start];
 
@@ -114,7 +98,7 @@ export function countRoutes(
 
   const start = spawned(spawn);
 
-  if (board.isHeld(start, start.position)) return 0;
+  if (board.isHeld(start.taken, start.position)) return 0;
 
   let frontier = new Map([[board.key(start), { state: start, routes: 1 }]]);
 
@@ -164,84 +148,12 @@ const spawned = ({ position, pieceName, taken = "" }: State): State =>
 
 export function readBoard(blueprint: number[][], columns: number): Board {
 
-  const rows = blueprint.length;
-
-  const valueAt = ([col, row]: Coords) => blueprint[row]?.[col];
-
-  const isHole = (square: Coords) => valueAt(square) === 0;
-
-  const standing = (square: Coords) => (valueAt(square) ?? 0) > 1;
-
-  const enemyAt = (square: Coords) =>
-    PIECE_NAMES[(valueAt(square) ?? 0) - 2] as PieceName;
-
-  const isInBoard = ([col, row]: Coords) =>
-    col >= 0 && row >= 0 && col < columns && row <= rows;
-
-  const heldFor = readThreat(blueprint, columns);
-
-  const isEnemyLeft = (state: State, square: Coords) =>
-    standing(square) &&
-    !(state.taken ?? "").split(" ").includes(squareKey(square));
-
-  const isReachable = (state: State, target: Coords) => {
-
-    const enemy = isEnemyLeft(state, target);
-
-    const legal = enemy
-      ? isValidTake(state, target)
-      : isValidMove(state, target);
-
-    if (!legal || isHole(target)) return false;
-
-    const held = heldFor(state.taken);
-
-    if (held.has(squareKey(target))) return false;
-
-    if (!isLongRange(state.pieceName)) return true;
-
-    return !getSquaresOnTrajectory(state.position, target).some(square =>
-      isHole(square) || isEnemyLeft(state, square) || held.has(squareKey(square)));
-  };
+  const rules = readRules(blueprint, columns);
 
   return {
-
-    rows,
-
-    isEnemy: standing,
-
-    isHeld: (state, square) => heldFor(state.taken).has(squareKey(square)),
+    ...rules,
 
     key: ({ position: [col, row], pieceName, taken = "" }) =>
-      `${col}_${row}_${pieceName}_${taken}`,
-
-    movesFrom: (state) => {
-
-      const reached: State[] = [];
-
-      const taken = state.taken ?? "";
-
-      for (let row = 0; row <= rows; row++) {
-
-        for (let col = 0; col < columns; col++) {
-
-          const target: Coords = [col, row];
-
-          if (sameSquare(target, state.position)) continue;
-
-          if (!isInBoard(target) || !isReachable(state, target)) continue;
-
-          const enemy = isEnemyLeft(state, target);
-
-          reached.push({
-            position: target,
-            pieceName: enemy ? enemyAt(target) : state.pieceName,
-            taken: enemy ? withTaken(taken, target) : taken
-          });
-        }
-      }
-
-      return reached;
-    }
+      `${col}_${row}_${pieceName}_${taken}`
   };
 }

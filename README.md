@@ -101,6 +101,11 @@ of the board should arrive after the run has started — and the tuner mutates a
 grid, measures it and keeps what scores higher. A level cannot be argued into
 being good, only measured, and a hand cannot try three thousand placements.
 
+`src/app/level/rules.ts` is where a click becomes what it means — a move, a
+capture, a death, or nothing. The game plays that answer, the solver keeps the
+ones that go somewhere, and the metric counts the ones that do not, so the rule
+the game enforces and the rule the solver proves cannot drift apart.
+
 That same solver walks the state space of `(square, piece)` with the real move,
 trajectory and capture rules. It proves every shipped level is winnable, sets
 the par a run is rated against, and counts the distinct shortest routes through

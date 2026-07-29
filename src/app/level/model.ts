@@ -1,12 +1,13 @@
 import LevelSquare from 'app/level/square';
 
-import { readThreat, withTaken } from 'app/level/threat';
+import { readRules } from 'app/level/rules';
+import { withTaken } from 'app/level/threat';
 import { parseBlueprint } from 'app/utils/parse-blueprint';
 import { bindObjectsMethods } from "app/utils/bind-methods";
 
 import { PIECE_NAMES } from 'app/types';
 
-import type { Held } from 'app/level/threat';
+import type { Outcome, Rules, Standing } from 'app/level/rules';
 import type {
   Bound,
   BoardDimensions,
@@ -40,7 +41,7 @@ export default class LevelModel {
 
   taken = "";
 
-  private readonly threat: Held;
+  private readonly rules: Rules;
 
   constructor(blueprint: string, { columns, rows, visibleRows }: BoardDimensions) {
 
@@ -48,7 +49,7 @@ export default class LevelModel {
 
     this.blueprint = parseBlueprint(blueprint, columns);
 
-    this.threat = readThreat(this.blueprint, columns);
+    this.rules = readRules(this.blueprint, columns);
 
     bindObjectsMethods.call(
       this as unknown as Record<string, unknown>,
@@ -70,9 +71,18 @@ export default class LevelModel {
     this.taken = "";
   }
 
-  get heldSquares(): ReadonlySet<string> {
+  holds(square: Coords): boolean {
 
-    return this.threat(this.taken);
+    return this.rules.isHeld(this.taken, square);
+  }
+
+  // The one place a click is turned into what it means. The solver reads the
+  // same answer from the same rules, so the two cannot drift apart.
+  resolve(player: PiecePlacement, target: Coords): Outcome {
+
+    const standing: Standing = { ...player, taken: this.taken };
+
+    return this.rules.resolve(standing, target);
   }
 
   capture(square: Coords): void {

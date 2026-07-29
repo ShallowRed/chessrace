@@ -1,5 +1,3 @@
-import { squareKey } from 'app/level/threat';
-
 import type LevelModel from 'app/level/model';
 import type { Coords } from 'app/types';
 
@@ -30,7 +28,7 @@ export default {
 
   isHeld(this: LevelModel, squareCoords: Coords): boolean {
 
-    return this.heldSquares.has(squareKey(squareCoords));
+    return this.holds(squareCoords);
   },
 
   isObstacle(this: LevelModel, squareCoords: Coords): boolean {

@@ -2,45 +2,49 @@ import events from 'app/game-events/event-emitter';
 
 import { animationTimeout } from 'app/utils/animation-timeout';
 
-import {
-  isValidMove,
-  isValidTake,
-  isLongRange
-} from 'app/game-objects/pieces/movements';
-
-import { getSquaresOnTrajectory } from 'app/utils/get-squares-on-trajectory';
-
 import type Game from 'app/game';
 import type EnemyPiece from 'app/game-objects/pieces/enemy';
+import type { Outcome } from 'app/level/rules';
 import type { Coords } from 'app/types';
 
 export function CANVAS_CLICKED(this: Game, evt: MouseEvent): void {
 
-  const targetSquare = this.board.getSquare.clicked(evt);
-
-  if (
-    isValidMove(this.player, targetSquare) &&
-    this.model.square.isInBoard(targetSquare) &&
-    !this.model.square.isHeld(targetSquare) &&
-    events.ask("IS_ALLOWED_MOVING") &&
-    events.ask("IS_VALID_TRAJECTORY", targetSquare)
-  ) {
-
-    events.emit("MOVE_PLAYER", targetSquare);
-  }
+  events.emit("PLAY_MOVE", this.board.getSquare.clicked(evt));
 }
 
-// An enemy never holds its own square, so a capture needs no threat check.
 export function ENEMY_CLICKED(this: Game, enemy: EnemyPiece): void {
 
-  if (
-    isValidTake(this.player, enemy.position) &&
-    events.ask("IS_ALLOWED_MOVING") &&
-    events.ask("IS_VALID_TRAJECTORY", enemy.position)
-  ) {
+  events.emit("PLAY_MOVE", enemy.position);
+}
 
-    events.emit("EAT_PIECE", enemy);
+// One click, one answer, and the same answer the solver gets.
+export function PLAY_MOVE(this: Game, target: Coords): void {
+
+  if (!events.ask("IS_ALLOWED_MOVING")) return;
+
+  act.call(this, this.model.resolve(this.player, target));
+}
+
+function act(this: Game, outcome: Outcome): void {
+
+  if (outcome.kind === "illegal") return;
+
+  if (outcome.kind === "move") return events.emit("MOVE_PLAYER", outcome.to);
+
+  if (outcome.kind === "capture") {
+
+    const enemy = this.enemies.at(outcome.to);
+
+    return enemy
+      ? events.emit("EAT_PIECE", enemy)
+      : events.emit("MOVE_PLAYER", outcome.to);
   }
+
+  events.emit("MOVE_PLAYER", outcome.at);
+
+  animationTimeout(() => {
+    this.player.fall(this.durations.fall)
+  }, this.durations.move);
 }
 
 export function IS_ALLOWED_MOVING(this: Game): boolean {
@@ -49,32 +53,4 @@ export function IS_ALLOWED_MOVING(this: Game): boolean {
     !this.player.isMoving &&
     !this.player.isFalling
   )
-}
-
-export function IS_VALID_TRAJECTORY(this: Game, targetSquare: Coords): boolean | undefined {
-
-  const squaresOnTrajectory: Coords[] = [];
-
-  const { isEnemy, isHeld, isHole } = this.model.square;
-
-  if (isLongRange(this.player.pieceName)) {
-
-    squaresOnTrajectory.push(
-      ...getSquaresOnTrajectory(this.player.position, targetSquare)
-    );
-
-    if (squaresOnTrajectory.some(square => isEnemy(square) || isHeld(square))) return;
-  }
-
-  const hole = [...squaresOnTrajectory, targetSquare].find(isHole);
-
-  if (hole) {
-
-    events.emit("MOVE_PLAYER", hole);
-
-    animationTimeout(() => {
-      this.player.fall(this.durations.fall)
-    }, this.durations.move);
-
-  } else return true;
 }

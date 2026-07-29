@@ -1,6 +1,6 @@
 import EnemyPiece from 'app/game-objects/pieces/enemy';
 
-import type { PieceColor, PiecePlacement } from 'app/types';
+import type { Coords, PieceColor, PiecePlacement } from 'app/types';
 
 export default class EnemiesCollection {
 
@@ -28,6 +28,12 @@ export default class EnemiesCollection {
 
       this.add(enemyProps);
     }
+  }
+
+  at([col, row]: Coords): EnemyPiece | undefined {
+
+    return this.collection.find(({ position }) =>
+      position[0] === col && position[1] === row);
   }
 
   remove(enemy: EnemyPiece): void {

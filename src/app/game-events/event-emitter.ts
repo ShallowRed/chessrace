@@ -17,8 +17,8 @@ export interface GameEventMap {
   KILL_OFFBOARD_PIECES: [Piece[]];
   CANVAS_CLICKED: [MouseEvent];
   ENEMY_CLICKED: [EnemyPiece];
+  PLAY_MOVE: [Coords];
   IS_ALLOWED_MOVING: [];
-  IS_VALID_TRAJECTORY: [Coords];
 }
 
 export type EventName = keyof GameEventMap;
