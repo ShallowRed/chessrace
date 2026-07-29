@@ -4,6 +4,7 @@ import { levels, worlds } from "app/level/catalogue";
 
 import {
   clearedCount,
+  freshnessOf,
   isCompleted,
   isUnlocked,
   isWorldCleared,
@@ -11,6 +12,7 @@ import {
   loadProgress,
   nextLevel,
   noProgress,
+  recordPlay,
   recordRun,
   saveProgress
 } from "app/progress";
@@ -51,6 +53,37 @@ describe("recording a run", () => {
 
     expect(before.best["leap"]).toBeUndefined();
     expect(after.best["climb"]).toBe(4);
+  });
+});
+
+describe("what has been played, and in what shape", () => {
+
+  const climb = levels[0]!;
+
+  it("calls a level untested until it has been played", () => {
+    expect(freshnessOf(noProgress, climb)).toBe("untested");
+    expect(freshnessOf(recordPlay(noProgress, climb), climb)).toBe("tested");
+  });
+
+  it("calls it changed once the board underneath it moves", () => {
+    const played = recordPlay(noProgress, climb);
+
+    const edited = { ...climb, blueprint: `${climb.blueprint}11111111` };
+
+    expect(freshnessOf(played, edited)).toBe("changed");
+  });
+
+  it("does not call it changed for a rename", () => {
+    const played = recordPlay(noProgress, climb);
+
+    expect(freshnessOf(played, { ...climb, name: "Ascent" })).toBe("tested");
+  });
+
+  it("keeps the best score while marking the shape played", () => {
+    const progress = recordPlay(recordRun(noProgress, climb.slug, 3), climb);
+
+    expect(progress.best[climb.slug]).toBe(3);
+    expect(freshnessOf(progress, climb)).toBe("tested");
   });
 });
 
@@ -140,5 +173,17 @@ describe("persistence", () => {
     storage.store.set("chessrace.progress", '{"best":{"climb":2,"leap":"nope"}}');
 
     expect(loadProgress(storage).best).toEqual({ climb: 2 });
+  });
+
+  it("reads progress written before levels were fingerprinted", () => {
+    storage.store.set("chessrace.progress", '{"best":{"climb":2}}');
+
+    expect(loadProgress(storage)).toEqual({ best: { climb: 2 }, played: {} });
+  });
+
+  it("round trips what shape each level was played in", () => {
+    saveProgress(storage, recordPlay(noProgress, levels[0]!));
+
+    expect(freshnessOf(loadProgress(storage), levels[0]!)).toBe("tested");
   });
 });

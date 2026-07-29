@@ -1,15 +1,33 @@
 import { el, hide, show, stars } from 'app/ui/dom';
-import { clearedCount, isCompleted, isUnlocked, isWorldUnlocked } from 'app/progress';
+
+import {
+  clearedCount,
+  freshnessOf,
+  isCompleted,
+  isUnlocked,
+  isWorldUnlocked
+} from 'app/progress';
+
 import { par, rate } from 'app/level/par';
 
 import type { Level, World } from 'app/level/catalogue';
-import type { Progress } from 'app/progress';
+import type { Freshness, Progress } from 'app/progress';
+
+const BADGE: Record<Freshness, string> = {
+  untested: "new",
+  changed: "changed",
+  tested: ""
+};
 
 export default class Menu {
 
   readonly domEl: HTMLElement;
 
   private readonly list: HTMLElement;
+
+  private readonly note: HTMLElement;
+
+  private dev = false;
 
   constructor(
     private readonly worlds: World[],
@@ -18,9 +36,14 @@ export default class Menu {
 
     this.list = el("div", { className: "worlds" });
 
+    this.note = el("p", { className: "dev-note", text: "dev: every level open" });
+
+    this.note.hidden = true;
+
     this.domEl = el("div", { className: "screen menu" }, [
       el("h1", { className: "title", text: "Chessrace" }),
       el("p", { className: "tagline", text: "Climb the board. Take a piece, become it." }),
+      this.note,
       this.list
     ]);
 
@@ -29,7 +52,11 @@ export default class Menu {
     document.body.append(this.domEl);
   }
 
-  show(progress: Progress): void {
+  show(progress: Progress, dev = false): void {
+
+    this.dev = dev;
+
+    this.note.hidden = !dev;
 
     this.list.replaceChildren(...this.worlds
       .map(world => this.section(world, progress)));
@@ -44,7 +71,7 @@ export default class Menu {
 
   private section(world: World, progress: Progress): HTMLElement {
 
-    const open = isWorldUnlocked(progress, this.worlds, world.slug);
+    const open = this.dev || isWorldUnlocked(progress, this.worlds, world.slug);
 
     return el("section", { className: `world${open ? "" : " locked"}` }, [
       el("header", {}, [
@@ -64,9 +91,11 @@ export default class Menu {
 
   private entry(level: Level, index: number, progress: Progress): HTMLElement {
 
-    const open = isUnlocked(progress, this.worlds, level.slug);
+    const open = this.dev || isUnlocked(progress, this.worlds, level.slug);
 
     const best = progress.best[level.slug];
+
+    const freshness = freshnessOf(progress, level);
 
     const button = el("button", {
       className: `level${open ? "" : " locked"}`,
@@ -74,6 +103,9 @@ export default class Menu {
     }, [
       el("span", { className: "rank", text: `${index + 1}` }),
       el("span", { className: "name", text: level.name }),
+      ...this.dev
+        ? [el("span", { className: `freshness ${freshness}`, text: BADGE[freshness] })]
+        : [],
       el("span", {
         className: "score",
         text: isCompleted(progress, level.slug) && best !== undefined

@@ -61,6 +61,14 @@ Both publish to the `gh-pages` branch, production at the root and staging under
 `staging/`, each replacing only its own files. Pages must be set to serve from
 the `gh-pages` branch for this to work.
 
+## While the catalogue is being written
+
+`?dev` opens every level and marks each one with what it has been played at:
+**new** for never, **changed** for a board that has moved since. A level is
+identified by its blueprint, spawn and tempo, so renaming one changes nothing
+and moving one hole changes everything. The switch sticks — `?dev=off` puts the
+locks back.
+
 ## Writing a level
 
 Levels are grids, read top down the way the board is played:

@@ -8,7 +8,7 @@ import Result from 'app/ui/result';
 import Sound from 'app/ui/sound';
 
 import { levelConfig } from 'app/level/config';
-import { loadMuted, saveMuted } from 'app/settings';
+import { devAsked, loadDev, loadMuted, saveDev, saveMuted } from 'app/settings';
 import { levelBySlug, levels, worlds } from 'app/level/catalogue';
 import { par, rate } from 'app/level/par';
 
@@ -16,6 +16,7 @@ import {
   isUnlocked,
   loadProgress,
   nextLevel,
+  recordPlay,
   recordRun,
   saveProgress
 } from 'app/progress';
@@ -41,9 +42,13 @@ export default class App {
 
   private level: Level | undefined;
 
+  private dev: boolean;
+
   constructor(private readonly storage: KeyValueStore) {
 
     this.progress = loadProgress(storage);
+
+    this.dev = loadDev(storage);
 
     this.sound = new Sound(
       () => new AudioContext(),
@@ -64,16 +69,27 @@ export default class App {
     });
   }
 
-  start(slug: string | null): void {
+  start(slug: string | null, search = ""): void {
 
     const asked = slug === null ? undefined : levelBySlug(slug);
 
-    if (asked && isUnlocked(this.progress, worlds, asked.slug)) {
+    const wanted = devAsked(search);
 
-      return this.play(asked);
+    if (wanted !== undefined && wanted !== this.dev) {
+
+      this.dev = wanted;
+
+      saveDev(this.storage, wanted);
     }
 
+    if (asked && this.isOpen(asked)) return this.play(asked);
+
     this.openMenu();
+  }
+
+  private isOpen(level: Level): boolean {
+
+    return this.dev || isUnlocked(this.progress, worlds, level.slug);
   }
 
   private openMenu(): void {
@@ -84,7 +100,7 @@ export default class App {
 
     this.hud.hide();
 
-    this.menu.show(this.progress);
+    this.menu.show(this.progress, this.dev);
   }
 
   private play(level: Level): void {
@@ -141,11 +157,16 @@ export default class App {
 
   private report(level: Level, { outcome, moves }: RunResult): void {
 
-    if (outcome === "lost") return this.result.showLoss(level);
+    this.progress = recordPlay(this.progress, level);
 
-    this.progress = recordRun(this.progress, level.slug, moves);
+    if (outcome === "won") {
+
+      this.progress = recordRun(this.progress, level.slug, moves);
+    }
 
     saveProgress(this.storage, this.progress);
+
+    if (outcome === "lost") return this.result.showLoss(level);
 
     const shortest = par(level);
 

@@ -139,6 +139,36 @@ button {
   opacity: 0.85;
 }
 
+.level:has(.freshness) {
+  grid-template-columns: 2rem 1fr auto auto;
+}
+
+.freshness {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.25rem;
+}
+
+.freshness.untested {
+  background: #3f6b8a;
+  color: #e8f2f8;
+}
+
+.freshness.changed {
+  background: #9c5a52;
+  color: #fbeae7;
+}
+
+.dev-note {
+  margin: -0.5rem 0 0.5rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  opacity: 0.55;
+}
+
 .panel {
   display: flex;
   flex-direction: column;

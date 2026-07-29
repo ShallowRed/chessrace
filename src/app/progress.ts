@@ -1,13 +1,21 @@
+import { fingerprint } from 'app/level/fingerprint';
+
 import type { Level, World } from 'app/level/catalogue';
 import type { KeyValueStore } from 'app/storage';
 
 export interface Progress {
   best: Record<string, number>;
+  // The shape each level had the last time it was played, won or lost.
+  played: Record<string, string>;
 }
+
+// Whether what is on the menu is what was played, for a catalogue still being
+// written under the player's feet.
+export type Freshness = "untested" | "changed" | "tested";
 
 const KEY = "chessrace.progress";
 
-export const noProgress: Progress = { best: {} };
+export const noProgress: Progress = { best: {}, played: {} };
 
 export function loadProgress(storage: KeyValueStore): Progress {
 
@@ -17,16 +25,13 @@ export function loadProgress(storage: KeyValueStore): Progress {
 
   try {
 
-    const parsed: unknown = JSON.parse(stored);
+    const parsed = JSON.parse(stored) as Partial<Progress> | null;
 
-    const best = (parsed as Progress | null)?.best;
-
-    if (!best || typeof best !== "object") return noProgress;
+    if (!parsed?.best || typeof parsed.best !== "object") return noProgress;
 
     return {
-      best: Object.fromEntries(Object
-        .entries(best)
-        .filter(([, moves]) => typeof moves === "number"))
+      best: onlyValues(parsed.best, "number"),
+      played: onlyValues(parsed.played ?? {}, "string")
     };
 
   } catch {
@@ -34,6 +39,11 @@ export function loadProgress(storage: KeyValueStore): Progress {
     return noProgress;
   }
 }
+
+const onlyValues = <T>(entries: Record<string, unknown>, kind: string) =>
+  Object.fromEntries(Object
+    .entries(entries)
+    .filter(([, value]) => typeof value === kind)) as Record<string, T>;
 
 export function saveProgress(storage: KeyValueStore, progress: Progress): void {
 
@@ -46,7 +56,24 @@ export function recordRun(progress: Progress, slug: string, moves: number): Prog
 
   if (previous !== undefined && previous <= moves) return progress;
 
-  return { best: { ...progress.best, [slug]: moves } };
+  return { ...progress, best: { ...progress.best, [slug]: moves } };
+}
+
+export function recordPlay(progress: Progress, level: Level): Progress {
+
+  return {
+    ...progress,
+    played: { ...progress.played, [level.slug]: fingerprint(level) }
+  };
+}
+
+export function freshnessOf(progress: Progress, level: Level): Freshness {
+
+  const seen = progress.played[level.slug];
+
+  if (seen === undefined) return "untested";
+
+  return seen === fingerprint(level) ? "tested" : "changed";
 }
 
 export function isCompleted(progress: Progress, slug: string): boolean {

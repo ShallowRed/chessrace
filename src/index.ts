@@ -5,5 +5,7 @@ import 'styles/alpha.css';
 
 import App from 'app/app';
 
+const { search } = window.location;
+
 new App(window.localStorage)
-  .start(new URLSearchParams(window.location.search).get("level"));
+  .start(new URLSearchParams(search).get("level"), search);
