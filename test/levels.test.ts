@@ -134,7 +134,7 @@ describe("past the teaching world", () => {
 
   it("makes Toll spend the queen it starts with", () => {
     expect(solveLevel(named("Toll"))?.forms)
-      .toEqual(["queen", "pawn", "knight"]);
+      .toEqual(["queen", "knight", "pawn", "knight"]);
   });
 
   it("strands the player who takes the wrong queen", () => {

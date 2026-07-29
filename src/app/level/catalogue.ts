@@ -141,14 +141,14 @@ const firstMoves: Level[] = [
 
 const tradeRoutes: Level[] = [
 
+  // A hole between them cuts the rook's rank, so both are takeable from the
+  // spawn and only one of them crosses what is above.
   level("First choice", { position: [3, 0], pieceName: "pawn" }, stack(
-    OPEN_ROW,
-    OPEN_ROW,
     OPEN_ROW,
     OPEN_ROW,
     pattern("steppingStones"),
     OPEN_ROW,
-    "..N.P...",
+    "..N_R...",
     OPEN_ROW
   )),
 
@@ -162,7 +162,7 @@ const tradeRoutes: Level[] = [
     ____N___
     ___P____
     ____P___
-    ___P____
+    ___PN___
     ___.____
   `),
 
@@ -305,13 +305,12 @@ const endgame: Level[] = [
 
   level("Down to a pawn", { position: [0, 0], pieceName: "rook" }, `
     ____.___
+    ____.___
+    ____.___
+    ____.___
+    ____.___
     ____P___
-    _____P__
-    ____P___
-    _____P__
-    ____P___
-    _____P__
-    ____P___
+    ____.___
     .....___
     ._______
     ._______

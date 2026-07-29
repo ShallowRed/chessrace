@@ -35,7 +35,7 @@ export function attacks(
 
   if (sameSquare(enemy.position, target)) return false;
 
-  if (!isValidTake(enemy, target)) return false;
+  if (!isValidTake(enemy, target, "enemy")) return false;
 
   if (!isLongRange(enemy.pieceName)) return true;
 

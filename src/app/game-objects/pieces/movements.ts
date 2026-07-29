@@ -2,7 +2,15 @@ import type { Coords, PieceName } from 'app/types';
 
 const { abs } = Math;
 
-type MoveTest = (from: Coords, to: Coords) => boolean;
+export type Side = "player" | "enemy";
+
+// Forward is up the board for the player, who is climbing it, and down it for
+// the enemies, who are facing them. The pawn is the only piece that can tell
+// the difference, and reading it the wrong way round aims its threat at the
+// two squares behind it.
+const forward = (side: Side) => side === "player" ? 1 : -1;
+
+type MoveTest = (from: Coords, to: Coords, forward: number) => boolean;
 
 interface PieceMoves {
   isValidMove: MoveTest;
@@ -17,18 +25,20 @@ interface MovingPiece {
 
 export function isValidMove(
   { position, pieceName }: MovingPiece,
-  targetPosition: Coords
+  targetPosition: Coords,
+  side: Side = "player"
 ): boolean {
 
   return (
     !isSameSquare(position, targetPosition) &&
-    Pieces[pieceName].isValidMove(position, targetPosition)
+    Pieces[pieceName].isValidMove(position, targetPosition, forward(side))
   );
 }
 
 export function isValidTake(
   { position, pieceName }: MovingPiece,
-  enemyPosition: Coords
+  enemyPosition: Coords,
+  side: Side = "player"
 ): boolean {
 
   return (
@@ -36,7 +46,7 @@ export function isValidTake(
     (
       Pieces[pieceName].isValidTake ||
       Pieces[pieceName].isValidMove
-    )(position, enemyPosition)
+    )(position, enemyPosition, forward(side))
   );
 }
 
@@ -54,13 +64,13 @@ const Pieces: Record<PieceName, PieceMoves> = {
 
   pawn: {
 
-    isValidMove: ([x1, y1], [x2, y2]) => (
-      y2 === y1 + 1 &&
+    isValidMove: ([x1, y1], [x2, y2], forward) => (
+      y2 === y1 + forward &&
       x1 === x2
     ),
 
-    isValidTake: ([x1, y1], [x2, y2]) => (
-      y2 === y1 + 1 &&
+    isValidTake: ([x1, y1], [x2, y2], forward) => (
+      y2 === y1 + forward &&
       (
         x2 === x1 - 1 ||
         x2 === x1 + 1

@@ -29,12 +29,15 @@ describe("attacks", () => {
     expect(attacks(rook, [4, 4], nothingBlocks)).toBe(false);
   });
 
-  it("has a pawn hold the two squares ahead of it, not the one in front", () => {
+  // An enemy faces the player coming up at it, so its two diagonals are the
+  // two squares below it: the ones a climber has to walk through.
+  it("has a pawn hold the two squares below it, not the one under it", () => {
     const pawn = at("pawn", [3, 3]);
 
-    expect(attacks(pawn, [2, 4], nothingBlocks)).toBe(true);
-    expect(attacks(pawn, [4, 4], nothingBlocks)).toBe(true);
-    expect(attacks(pawn, [3, 4], nothingBlocks)).toBe(false);
+    expect(attacks(pawn, [2, 2], nothingBlocks)).toBe(true);
+    expect(attacks(pawn, [4, 2], nothingBlocks)).toBe(true);
+    expect(attacks(pawn, [3, 2], nothingBlocks)).toBe(false);
+    expect(attacks(pawn, [2, 4], nothingBlocks)).toBe(false);
   });
 
   it("has a knight hold squares it could jump to, through anything", () => {
@@ -61,20 +64,21 @@ describe("heldSquares", () => {
 
   it("gathers what a board full of enemies covers", () => {
     const held = heldSquares(
-      [at("pawn", [1, 1]), at("rook", [5, 0])],
+      [at("pawn", [1, 1]), at("rook", [5, 5])],
       nothingBlocks,
       8,
       6
     );
 
-    expect(held.has("0_2")).toBe(true);
-    expect(held.has("2_2")).toBe(true);
-    expect(held.has("5_4")).toBe(true);
-    // straight ahead of a pawn is the one square it does not hold, and the
-    // rook covers the whole of rank 0, its own square excepted
-    expect(held.has("1_2")).toBe(false);
-    expect(held.has("5_0")).toBe(false);
-    expect(held.has("7_5")).toBe(false);
+    expect(held.has("0_0")).toBe(true);
+    expect(held.has("2_0")).toBe(true);
+    expect(held.has("5_2")).toBe(true);
+    expect(held.has("7_5")).toBe(true);
+    // straight under a pawn is the one square it does not hold, and no piece
+    // holds the square it stands on
+    expect(held.has("1_0")).toBe(false);
+    expect(held.has("5_5")).toBe(false);
+    expect(held.has("7_2")).toBe(false);
   });
 
   it("gathers nothing from an empty board", () => {
