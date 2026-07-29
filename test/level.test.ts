@@ -83,13 +83,12 @@ describe("what the enemies hold", () => {
   });
 });
 
-describe("producing rows", () => {
+describe("reading the level", () => {
 
   it("yields solid squares only, never holes", () => {
     const model = newModel();
 
     model.reset();
-    model.parseNextRows();
 
     expect(model.regularSquares).toHaveLength(11);
     expect(model.regularSquares).not.toContainEqual([1, 1]);
@@ -100,9 +99,8 @@ describe("producing rows", () => {
     const model = newModel();
 
     model.reset();
-    model.parseNextRows();
 
-    expect(model.newEnemyPieces).toEqual([
+    expect(model.enemyPieces).toEqual([
       { pieceName: "knight", position: [2, 2] }
     ]);
   });
@@ -111,61 +109,30 @@ describe("producing rows", () => {
     const model = newModel();
 
     model.reset();
-    model.parseNextRows();
 
     expect(model.regularSquares).toContainEqual([2, 2]);
   });
 
-  it("reports an enemy once only", () => {
-    const model = newModel();
-
-    model.reset();
-    model.parseNextRows();
-    model.parseNextRows();
-
-    expect(model.newEnemyPieces).toEqual([]);
-  });
-
-  it("stops at the last row of the level", () => {
-    const model = newModel();
-
-    model.reset();
-    model.parseNextRows();
-
-    expect(model.lastRowRendered).toBe(2);
-
-    model.parseNextRows();
-
-    expect(model.lastRowRendered).toBe(2);
-  });
-
-  it("slides its window as the board scrolls", () => {
+  // The board is drawn once and scrolled behind a window, so the model hands
+  // over the whole level however little of it is on screen.
+  it("reads past the visible rows", () => {
     const tall = new LevelModel("11".repeat(5), { columns: 2, rows: 5, visibleRows: 1 });
 
     tall.reset();
-    tall.parseNextRows();
 
-    const rowsOf = () => tall.deepRegularSquares.map(rows => rows[0]?.[1]);
-
-    expect(rowsOf()).toEqual([0, 1, 2]);
-
-    tall.parseNextRows();
-
-    expect(rowsOf()).toEqual([1, 2, 3]);
-
-    tall.parseNextRows();
-
-    expect(rowsOf()).toEqual([2, 3, 4]);
+    expect(tall.regularSquares).toHaveLength(10);
+    expect(tall.regularSquares).toContainEqual([0, 4]);
   });
 
-  it("starts over after a reset", () => {
+  it("says the same thing however often it is read", () => {
     const model = newModel();
 
     model.reset();
-    model.parseNextRows();
+
+    const first = model.regularSquares;
+
     model.reset();
 
-    expect(model.lastRowRendered).toBe(-1);
-    expect(model.deepRegularSquares).toEqual([]);
+    expect(model.regularSquares).toEqual(first);
   });
 });

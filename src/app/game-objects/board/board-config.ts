@@ -22,9 +22,9 @@ export const canvasConfig = {
 
     zIndex: 40,
 
-    getDimensions: ({ width, height, squareSize, offset }) => ({
+    getDimensions: ({ width, boardHeight, squareSize, offset }) => ({
       width,
-      height: height + squareSize,
+      height: boardHeight + squareSize,
       left: offset.left
     }),
 
@@ -39,9 +39,9 @@ export const canvasConfig = {
     zIndex: 10,
     isColored: false,
 
-    getDimensions: ({ width, height, squareSize, offset, thickness }) => ({
+    getDimensions: ({ width, boardHeight, squareSize, offset, thickness }) => ({
       width,
-      height: height + squareSize + thickness + offset.shadow,
+      height: boardHeight + squareSize + thickness + offset.shadow,
       left: offset.left + thickness + offset.shadow
     }),
 
@@ -56,9 +56,9 @@ export const canvasConfig = {
 
     zIndex: 20,
 
-    getDimensions: ({ width, height, thickness, squareSize, offset }) => ({
+    getDimensions: ({ width, boardHeight, thickness, squareSize, offset }) => ({
       width: width + thickness,
-      height: height + squareSize + thickness,
+      height: boardHeight + squareSize + thickness,
       left: offset.left
     }),
 
@@ -80,9 +80,9 @@ export const canvasConfig = {
 
     zIndex: 30,
 
-    getDimensions: ({ width, height, squareSize, thickness, offset }) => ({
+    getDimensions: ({ width, boardHeight, squareSize, thickness, offset }) => ({
       width: width - squareSize + thickness,
-      height: height + squareSize + thickness,
+      height: boardHeight + squareSize + thickness,
       left: squareSize + offset.left,
     }),
 

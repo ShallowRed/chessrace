@@ -10,7 +10,6 @@ export interface GameEventMap {
   GAME_OVER: [];
   GAME_WON: [];
   SCROLL_ONE_SQUARE_DOWN: [];
-  INIT_NEXT_SCROLL_STEP: [];
   TRANSLATE_BOARD: [TranslateOptions?];
   TRANSLATE_PIECES: [TranslateOptions?];
   MOVE_PLAYER: [Coords];

@@ -14,7 +14,7 @@ export const getSquare = {
 
   top(this: Board, row: number): number {
 
-    return (this.rows - row + this.nRenders) * PlayArea.squareSize;
+    return (this.boardRows - row) * PlayArea.squareSize;
   },
 
   coordsInCanvas(this: Board, [col, row]: Coords): { left: number; top: number } {
@@ -30,15 +30,16 @@ export const getSquare = {
     return floor(coordInCanvas / PlayArea.squareSize)
   },
 
+  // The canvas holds the whole level and carries the scroll in its own
+  // transform, so where it was clicked is already where the board was clicked.
   clicked(this: Board, { target, clientX, clientY }: MouseEvent): Coords {
 
     const { left, bottom } = (target as HTMLElement).getBoundingClientRect();
 
-    const col = this.getSquare.coord(clientX - left);
-
-    const row = this.getSquare.coord(bottom - clientY);
-
-    return [col, row + this.nRenders - 1];
+    return [
+      this.getSquare.coord(clientX - left),
+      this.getSquare.coord(bottom - clientY)
+    ];
   }
 }
 
@@ -54,14 +55,14 @@ export const isSquare = {
     return (col + row + 1) % 2
   },
 
-  inBottomRow(this: Board, coords: Coords): boolean {
+  inBottomRow(coords: Coords): boolean {
 
-    return coords[1] === this.nRenders;
+    return coords[1] === 0;
   },
 
-  notInBottomRow(this: Board, coords: Coords): boolean {
+  notInBottomRow(coords: Coords): boolean {
 
-    return coords[1] !== this.nRenders;
+    return coords[1] !== 0;
   },
 
   leftToHole(this: Board, [col, row]: Coords): boolean {

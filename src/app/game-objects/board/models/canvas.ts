@@ -62,9 +62,11 @@ export default class Canvas extends GameObject {
 
     } else {
 
+      // The window onto the board, not the board: the canvas is as tall as
+      // the whole level and slides behind this.
       this.container.style = {
         width: this.width,
-        height: this.height - PlayArea.squareSize,
+        height: PlayArea.height,
         top: PlayArea.offset.top,
         left
       } as StyleValues;

@@ -34,15 +34,9 @@ export default class LevelModel {
 
   blueprint: number[][];
 
-  deepRegularSquares: Coords[][] = [];
-
   regularSquares: Coords[] = [];
 
-  newEnemyPieces: PiecePlacement[] = [];
-
-  lastRowRendered = -1;
-
-  rowToRenderUpTo = 0;
+  enemyPieces: PiecePlacement[] = [];
 
   taken = "";
 
@@ -62,13 +56,16 @@ export default class LevelModel {
     );
   }
 
+  // The whole level is read at once: it is drawn once, and what has not been
+  // scrolled into view yet is off the top of a canvas that already holds it.
   reset(): void {
 
-    this.deepRegularSquares = [];
+    const rows = Array
+      .from({ length: this.rows }, (_none, row) => this.parseRow(row));
 
-    this.lastRowRendered = -1;
+    this.regularSquares = rows.flatMap(({ regularSquares }) => regularSquares);
 
-    this.rowToRenderUpTo = this.visibleRows + 1;
+    this.enemyPieces = rows.flatMap(({ newEnemies }) => newEnemies);
 
     this.taken = "";
   }
@@ -81,36 +78,6 @@ export default class LevelModel {
   capture(square: Coords): void {
 
     this.taken = withTaken(this.taken, square);
-  }
-
-  parseNextRows(): void {
-
-    this.newEnemyPieces = [];
-
-    let rowIndex = this.lastRowRendered + 1;
-
-    const isVisible = (rowIndex: number) =>
-      rowIndex <= this.rowToRenderUpTo && rowIndex < this.rows;
-
-    for (rowIndex; isVisible(rowIndex); rowIndex++) {
-
-      const { regularSquares, newEnemies } = this.parseRow(rowIndex);
-
-      this.deepRegularSquares.push(regularSquares);
-
-      this.newEnemyPieces.push(...newEnemies);
-
-      this.lastRowRendered = rowIndex;
-    }
-
-    this.rowToRenderUpTo = this.lastRowRendered + 1;
-
-    if (this.lastRowRendered > this.visibleRows + 1) {
-
-      this.deepRegularSquares.shift();
-    }
-
-    this.regularSquares = this.deepRegularSquares.flat();
   }
 
   parseRow(rowIndex: number): {

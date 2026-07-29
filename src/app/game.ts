@@ -21,6 +21,9 @@ export default class Game {
 
   moves = 0;
 
+  // Rows the board has scrolled, and the only thing the scroll now tracks.
+  step = 0;
+
   onOutcome?: (result: RunResult) => void;
 
   durations: Durations;
@@ -46,7 +49,7 @@ export default class Game {
 
     this.model = new LevelModel(blueprint, { columns, rows, visibleRows });
 
-    this.board = new Board({ columns, rows: visibleRows });
+    this.board = new Board({ columns, rows: visibleRows, boardRows: rows });
 
 
     const [playerColor, enemiesColor] = getRandomPiecesColor();
@@ -62,12 +65,13 @@ export default class Game {
 
     this.board.setDimensions();
 
-    this.render();
+    this.draw();
+
+    this.enemies.addEach(this.model.enemyPieces);
 
     this.player.render();
 
     this.addListeners();
-
   }
 
   addListeners(): void {
@@ -99,33 +103,14 @@ export default class Game {
 
     this.reset();
 
-    this.render();
-
     this.onOutcome?.({ outcome, moves });
   }
 
   private readonly onResize = () => this.resize();
 
-  render(): void {
-
-    if (this.board.nRenders) {
-
-      this.board.clear();
-    }
-
-    this.model.parseNextRows();
-
-    this.board.render(this.model);
-
-    this.board.nRenders++;
-
-    if (this.model.newEnemyPieces.length) {
-
-      this.enemies.addEach(this.model.newEnemyPieces);
-    }
-  }
-
-  repaint(): void {
+  // The board is drawn once and scrolled; it is only ever drawn again when
+  // what it shows changes, which is a capture or a resize.
+  draw(): void {
 
     this.board.clear();
 
@@ -138,13 +123,15 @@ export default class Game {
 
     events.emit("TRANSLATE_PIECES");
 
-    this.board.nRenders = 0;
-
-    this.board.clear();
+    this.step = 0;
 
     this.enemies.removeAll();
 
     this.model.reset();
+
+    this.draw();
+
+    this.enemies.addEach(this.model.enemyPieces);
 
     this.player.reset();
 
@@ -155,12 +142,17 @@ export default class Game {
 
     this.board.setDimensions();
 
-    this.board.render(this.model);
+    this.draw();
 
     for (const piece of this.pieces) {
 
       piece.setSpriteSize();
     }
+
+    // The transform is in pixels, so a new square size makes the old one wrong.
+    events.emit("TRANSLATE_BOARD", { rows: this.step });
+
+    events.emit("TRANSLATE_PIECES", { rows: this.step });
 
     this.player.moveSprite();
 
@@ -169,7 +161,7 @@ export default class Game {
 
   get scrollDuration(): number {
 
-    return scrollDuration(this.durations, this.board.nRenders);
+    return scrollDuration(this.durations, this.step);
   }
 
   get pieces(): Piece[] {
@@ -179,7 +171,7 @@ export default class Game {
 
   get offBoardPieces(): Piece[] {
 
-    const boardLimit = this.board.nRenders - 1;
+    const boardLimit = this.step - 1;
 
     return this.pieces.filter(({ position }) => {
 

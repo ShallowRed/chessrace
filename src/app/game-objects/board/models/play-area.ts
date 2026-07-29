@@ -34,6 +34,10 @@ export default {
 
   height: 0,
 
+  // The whole level is drawn at once, so the canvases are as tall as it is
+  // while the window onto them stays `height`.
+  boardHeight: 0,
+
   thickness: 0,
 
   offset: {
@@ -72,6 +76,7 @@ export default {
   setDimensions(
     columns: number,
     rows: number,
+    boardRows = rows,
     width = window.innerWidth,
     height = window.innerHeight
   ): void {
@@ -85,6 +90,8 @@ export default {
     this.width = columns * this.squareSize;
 
     this.height = rows * this.squareSize;
+
+    this.boardHeight = boardRows * this.squareSize;
 
     this.thickness = this.getSquareRatio("BOARD_THICKNESS");
 

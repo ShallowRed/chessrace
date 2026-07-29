@@ -43,8 +43,10 @@ npm run typecheck  # tsc --noEmit
 ```
 
 Vanilla TypeScript, no runtime dependency. The board is drawn on seven stacked
-canvases, one per face of the pseudo-3D extrusion, and scrolling is a CSS
-transform on their containers — there is no render loop.
+canvases, one per face of the pseudo-3D extrusion. The whole level is drawn
+once, into canvases as tall as it is, and scrolling is a chain of CSS
+transforms on them — one per row, each starting where the last ended. There is
+no render loop, nothing is redrawn as the board moves, and nothing snaps back.
 
 ## Deploying
 

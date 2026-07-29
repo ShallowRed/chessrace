@@ -19,11 +19,12 @@ import type { Bound } from 'app/types';
 
 export default class Board {
 
-  nRenders = 0;
-
   declare columns: number;
 
   declare rows: number;
+
+  // The window is `rows` tall; the canvases are the whole level.
+  declare boardRows: number;
 
   declare colors: typeof colors;
 
@@ -43,10 +44,13 @@ export default class Board {
 
   declare input: Bound<typeof render.input>;
 
-  constructor({ columns, rows }: { columns: number; rows: number }) {
+  constructor(
+    { columns, rows, boardRows }:
+      { columns: number; rows: number; boardRows: number }
+  ) {
 
     Object.assign(
-      this, { columns, rows, colors },
+      this, { columns, rows, boardRows, colors },
       new CanvasCollections(canvasConfig)
     );
 
@@ -63,7 +67,7 @@ export default class Board {
 
   setDimensions(): void {
 
-    PlayArea.setDimensions(this.columns, this.rows);
+    PlayArea.setDimensions(this.columns, this.rows, this.boardRows);
 
     const { width, height, thickness, squareSize, offset } = PlayArea;
 
@@ -87,10 +91,7 @@ export default class Board {
 
     this.squares.render(model.regularSquares, model.square.isHeld);
 
-    if (model.lastRowRendered === model.rows - 1) {
-
-      this.finishLine.render(model.rows);
-    }
+    this.finishLine.render(model.rows);
   }
 
   clear(): void {
