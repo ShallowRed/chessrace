@@ -12,6 +12,8 @@ export function SCROLL_ONE_SQUARE_DOWN(this: Game): void {
 
   this.step++;
 
+  this.board.renderLip(this.model, this.step);
+
   const moved = { rows: this.step, duration: this.scrollDuration };
 
   events.emit("TRANSLATE_BOARD", moved);

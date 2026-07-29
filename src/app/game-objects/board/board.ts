@@ -26,6 +26,9 @@ export default class Board {
   // The window is `rows` tall; the canvases are the whole level.
   declare boardRows: number;
 
+  // The row the window currently ends on, and so the one showing its underside.
+  lipRow = 0;
+
   declare colors: typeof colors;
 
   declare canvas: CanvasMap;
@@ -92,6 +95,13 @@ export default class Board {
     this.squares.render(model.regularSquares, model.square.isHeld);
 
     this.finishLine.render(model.rows);
+  }
+
+  renderLip(model: LevelModel, row: number): void {
+
+    this.lipRow = row;
+
+    this.squares.renderLip(model.regularSquares, model.square.isHeld);
   }
 
   clear(): void {

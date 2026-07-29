@@ -55,14 +55,16 @@ export const isSquare = {
     return (col + row + 1) % 2
   },
 
-  inBottomRow(coords: Coords): boolean {
-
-    return coords[1] === 0;
-  },
-
-  notInBottomRow(coords: Coords): boolean {
+  // The floor is the level's own bottom row, whose underside is never drawn
+  // with the rest: the lip is, and the lip is whichever row the window ends on.
+  notOnTheFloor(coords: Coords): boolean {
 
     return coords[1] !== 0;
+  },
+
+  atTheLip(this: Board, coords: Coords): boolean {
+
+    return coords[1] === this.lipRow;
   },
 
   leftToHole(this: Board, [col, row]: Coords): boolean {

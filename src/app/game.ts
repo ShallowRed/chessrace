@@ -115,6 +115,8 @@ export default class Game {
     this.board.clear();
 
     this.board.render(this.model);
+
+    this.board.renderLip(this.model, this.step);
   }
 
   reset(): void {

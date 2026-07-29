@@ -16,6 +16,18 @@ export interface CanvasConfig {
   filter?: (this: Board, squares: Coords[]) => Coords[];
 }
 
+// A face canvas is the whole board plus whatever it alone hangs below the
+// bottom row: nothing for the squares, a thickness for the sides, a thickness
+// and a shadow for the shadows.
+export const overhangOf = (canvasHeight: number, playArea: typeof PlayArea) =>
+  canvasHeight - playArea.boardHeight - playArea.squareSize;
+
+// Its window is the visible board plus that overhang, so that every face,
+// sitting on the floor of its own window, puts the bottom row in the same
+// place. Line them up any other way and the extrusion comes apart.
+export const windowHeightOf = (canvasHeight: number, playArea: typeof PlayArea) =>
+  playArea.height + overhangOf(canvasHeight, playArea);
+
 export const canvasConfig = {
 
   frontFaces: {
@@ -71,7 +83,7 @@ export const canvasConfig = {
     filter: function(squares) {
 
       return squares
-        .filter(this.isSquare.notInBottomRow)
+        .filter(this.isSquare.notOnTheFloor)
         .filter(this.isSquare.belowHole)
     }
   },
@@ -118,7 +130,7 @@ export const canvasConfig = {
 
     filter: function(squares) {
 
-      return squares.filter(this.isSquare.inBottomRow);
+      return squares.filter(this.isSquare.atTheLip);
     }
   },
 

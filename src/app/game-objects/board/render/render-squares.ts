@@ -14,6 +14,18 @@ export function render(this: Board, regularSquares: Coords[], isHeld: Held): voi
   this.squares.renderColoredSquares(regularSquares, isHeld);
 }
 
+// The lip is the underside the board shows at the bottom of the window. It is
+// the only thing that has to be redrawn as the board scrolls, because it is
+// the only thing that does not scroll with it.
+export function renderLip(this: Board, regularSquares: Coords[], isHeld: Held): void {
+
+  this.canvas.lowestBottomFace.clear();
+
+  this.squares.renderColoredSquares(
+    regularSquares, isHeld, [this.canvas.lowestBottomFace]
+  );
+}
+
 export function renderSquaresSet(this: Board, squares: Coords[], canvas: Canvas): void {
 
   squares.map(this.getSquare.coordsInCanvas)
@@ -28,7 +40,8 @@ export type Held = (square: Coords) => boolean;
 export function renderColoredSquares(
   this: Board,
   squares: Coords[],
-  isHeld: Held
+  isHeld: Held,
+  canvases: Canvas[] = this.canvas.coloredCollection
 ): void {
 
   for (const color of SQUARE_COLORS_KEYS) {
@@ -37,12 +50,14 @@ export function renderColoredSquares(
 
     this.squares.renderSquaresOfColor(
       sameColorSquares.filter(square => !isHeld(square)),
-      this.colors.squares[color]
+      this.colors.squares[color],
+      canvases
     );
 
     this.squares.renderSquaresOfColor(
       sameColorSquares.filter(isHeld),
-      this.colors.held[color]
+      this.colors.held[color],
+      canvases
     );
   }
 }
@@ -50,10 +65,11 @@ export function renderColoredSquares(
 export function renderSquaresOfColor(
   this: Board,
   squares: Coords[],
-  colorShades: Record<FaceType, string>
+  colorShades: Record<FaceType, string>,
+  canvases: Canvas[]
 ): void {
 
-  for (const canvas of this.canvas.coloredCollection) {
+  for (const canvas of canvases) {
 
     const coloredSquaresInCanvas =
       canvas.filter?.call(this, squares) || squares;

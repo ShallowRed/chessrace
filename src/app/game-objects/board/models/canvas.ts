@@ -1,6 +1,8 @@
 import GameObject from 'app/game-objects/game-object';
 import PlayArea from 'app/game-objects/board/models/play-area';
 
+import { windowHeightOf } from 'app/game-objects/board/board-config';
+
 import { drawerFor } from "app/utils/draw-shapes";
 
 import { PIXEL_RATIO } from "app/utils/set-pixel-ratio";
@@ -62,11 +64,9 @@ export default class Canvas extends GameObject {
 
     } else {
 
-      // The window onto the board, not the board: the canvas is as tall as
-      // the whole level and slides behind this.
       this.container.style = {
         width: this.width,
-        height: PlayArea.height,
+        height: windowHeightOf(this.height, PlayArea),
         top: PlayArea.offset.top,
         left
       } as StyleValues;
