@@ -10,9 +10,13 @@ export function SCROLL_ONE_SQUARE_DOWN(this: Game): void {
 
   if (!this.on || this.player.isFalling) return;
 
-  this.step++;
-
+  // The underside on show belongs to the row that has just reached the edge of
+  // the window, which is the one the board arrived at — not the one it is
+  // leaving for. Painting it after the step ahead runs the lip a row early for
+  // the whole of the slide, which inverts the light and dark of every square.
   this.board.renderLip(this.model, this.step);
+
+  this.step++;
 
   const moved = { rows: this.step, duration: this.scrollDuration };
 
