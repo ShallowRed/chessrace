@@ -10,11 +10,11 @@ export function SCROLL_ONE_SQUARE_DOWN(this: Game): void {
 
   if (!this.on || this.player.isFalling) return;
 
-  // The underside on show belongs to the row that has just reached the edge of
-  // the window, which is the one the board arrived at — not the one it is
-  // leaving for. Painting it after the step ahead runs the lip a row early for
-  // the whole of the slide, which inverts the light and dark of every square.
-  this.board.renderLip(this.model, this.step);
+  // This runs as the previous slide lands, so the board has arrived where it
+  // was heading. The underside on show belongs to that row and not to the one
+  // it is about to leave for: a lip painted a row early inverts the light and
+  // dark of every square under it for the whole of the slide.
+  this.board.arriveAt(this.step, this.model);
 
   this.step++;
 

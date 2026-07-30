@@ -27,6 +27,7 @@ export default class Board {
   declare boardRows: number;
 
   // The row the window currently ends on, and so the one showing its underside.
+  // Read where the faces are filtered; written only by arriveAt.
   lipRow = 0;
 
   declare colors: typeof colors;
@@ -97,9 +98,17 @@ export default class Board {
     this.finishLine.render(model.rows);
   }
 
-  renderLip(model: LevelModel, row: number): void {
+  // Only the scroll knows when the board has arrived somewhere new. Everything
+  // else repaints the row the lip is already on, so nothing else can hand it
+  // the wrong one.
+  arriveAt(row: number, model: LevelModel): void {
 
     this.lipRow = row;
+
+    this.renderLip(model);
+  }
+
+  renderLip(model: LevelModel): void {
 
     this.squares.renderLip(model.regularSquares, model.square.isHeld);
   }

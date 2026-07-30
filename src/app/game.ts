@@ -21,7 +21,8 @@ export default class Game {
 
   moves = 0;
 
-  // Rows the board has scrolled, and the only thing the scroll now tracks.
+  // Where the board is heading. Where it has got to is one behind for the
+  // length of a slide, and is the board's own business.
   step = 0;
 
   onOutcome?: (result: RunResult) => void;
@@ -116,7 +117,7 @@ export default class Game {
 
     this.board.render(this.model);
 
-    this.board.renderLip(this.model, this.step);
+    this.board.renderLip(this.model);
   }
 
   reset(): void {
@@ -126,6 +127,8 @@ export default class Game {
     events.emit("TRANSLATE_PIECES");
 
     this.step = 0;
+
+    this.board.arriveAt(0, this.model);
 
     this.enemies.removeAll();
 
